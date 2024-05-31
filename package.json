@@ -1,0 +1,29 @@
+{
+  "name": "4nd-project",
+  "version": "1.0.0",
+  "main": "./src/app.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon --watch ./ ./src/app.js"
+  },
+  "repository": "https://github.com/KwangSoo1555/sparta-4nd-week-project.git",
+  "author": "Bok Kwang Soo <qhrrhkdtn1555@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/client": "^5.14.0",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "joi": "^17.13.1",
+    "jsonwebtoken": "^9.0.2",
+    "prisma": "^5.14.0",
+    "winston": "^3.13.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.6",
+    "eslint": "^9.3.0",
+    "nodemon": "^3.1.2",
+    "prettier": "^3.2.5"
+  }
+}

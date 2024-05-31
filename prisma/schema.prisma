@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["omitApi"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// 사용자 스키마 (관계 추가 필요)
+model User {
+  id         Int          @id @default(autoincrement()) @map("id")
+  email      String       @unique @map("email")
+  nickname   String       @unique @map("nickname")
+  password   String?      @map("password")
+  region     String       @map("region")
+  manner     Int          @default(0) @map("manner")
+  age        Int          @map("age")
+  gender     GenderType   @map("gender")
+  social_id  String       @map("social_id")
+  provider   ProviderType @map("provider")
+  role       RoleType     @map("role")
+  created_at DateTime     @default(now()) @map("created_at")
+  updated_at DateTime     @updatedAt
+
+  @@map("user")
+}
+
+// 성별
+enum GenderType {
+  MALE
+  FEMALE
+}
+
+// 로그인 제공자
+enum ProviderType {
+  LOCAL
+  KAKAO
+  GOOLE
+}
+
+// 역할
+enum RoleType {
+  User
+  ADMIN
+}
