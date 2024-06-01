@@ -1,8 +1,9 @@
 import express from 'express';
-import { prisma } from '../utils/prisma.util.js';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import 'dotenv/config';
+import jwt from 'jsonwebtoken';
+import { prisma } from '../utils/prisma.util.js';
+import { acessTokenValidator } from '../middlewares/require-acess-token.middleware.js';
 
 const router = express.Router();
 
