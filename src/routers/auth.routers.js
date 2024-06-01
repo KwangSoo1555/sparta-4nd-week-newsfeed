@@ -83,4 +83,21 @@ router.post('/refresh', refreshTokenValidator, async (req, res, next) => {
   }
 });
 
+// 로그아웃 API
+router.post('/sign-out', refreshTokenValidator, async (req, res, next) => {
+  try {
+    const user = req.user;
+    await prisma.refreshToken.update({
+      where: { userId: user.id },
+      data: {
+        refreshToken: null,
+      },
+    });
+    return res
+      .status(HTTP_STATUS.OK)
+      .json({ status: HTTP_STATUS.OK, message: '로그아웃에 성공했습니다.', data: { id: user.id } });
+  } catch (err) {
+    next(err);
+  }
+});
 export default router;
