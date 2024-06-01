@@ -30,8 +30,11 @@ model User {
   createdAt DateTime     @default(now()) @map("created_at")
   updatedAt DateTime     @updatedAt @map("updated_at")
 
-  refreshToken RefreshToken?
-  trade        Trade[]
+  refreshToken      RefreshToken?
+  trade             Trade[]
+  tradeComment      TradeComment[]
+  likedTrade        Trade[]        @relation("trade_like")
+  likedTradeComment TradeComment[] @relation("trade_comment_like")
 
   @@map("user")
 }
@@ -81,7 +84,9 @@ model Trade {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likedBy      User[]         @relation("trade_like")
   tradePicture TradePicture[]
+  tradeComment TradeComment[]
 
   @@map("trade")
 }
@@ -97,4 +102,21 @@ model TradePicture {
   trade Trade @relation(fields: [tradeId], references: [id], onDelete: Cascade)
 
   @@map("trade_picture")
+}
+
+// 상품 댓글 스키마
+model TradeComment {
+  id        Int      @id @default(autoincrement())
+  tradeId   Int      @map("trade_id")
+  userId    Int      @map("user_id")
+  comment   String
+  like      Int
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likedby User[] @relation("trade_comment_like")
+  trade   Trade  @relation(fields: [tradeId], references: [id], onDelete: Cascade)
+
+  @@map("trade_comment")
 }
