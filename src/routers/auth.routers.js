@@ -14,7 +14,7 @@ router.post('/sign-in', async (req, res, next) => {
 
     // 이메일 조회불가 또는 비밀번호가 일치하지 않는 경우
     const user = await prisma.user.findUnique({ where: { email } });
-    const isValidUser = user && bcrypt.compare(password, user.password);
+    const isValidUser = user && (await bcrypt.compare(password, user.password));
     if (!isValidUser) {
       return res.status(401).json({ status: 401, message: '인증 정보가 유효하지 않습니다.' });
     }
@@ -37,13 +37,11 @@ router.post('/sign-in', async (req, res, next) => {
       update: { refreshToken: hashedRefreshToken },
       create: { userId: user.id, refreshToken: hashedRefreshToken },
     });
-    res
-      .status(200)
-      .json({
-        status: 200,
-        message: '로그인에 성공하였습니다',
-        data: { accessToken, refreshToken },
-      });
+    res.status(200).json({
+      status: 200,
+      message: '로그인에 성공하였습니다',
+      data: { accessToken, refreshToken },
+    });
   } catch (err) {
     next(err);
   }
