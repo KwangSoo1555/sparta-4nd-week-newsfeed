@@ -4,7 +4,7 @@ import { prisma } from '../utils/prisma.util.js';
 
 // accessToken 인증 미들웨어
 
-export const acessTokenValidator = async (req, res, next) => {
+export const accessTokenValidator = async (req, res, next) => {
   try {
     // accessToken 받아오기
     const { authorization } = req.headers;
