@@ -34,33 +34,32 @@ router.post('/sign-up', async (req, res, next) => {
         nickname,
         email,
         password: hashedPW,
-        region, 
-        age, 
-        gender
+        region,
+        age,
+        gender,
       },
     });
 
     return res.status(201).json({
-        id: userCreate.id,
-        email: userCreate.email,
-        nickname: userCreate.name,
-        region: userCreate.region,
-        manner: userCreate.manner,
-        role: userCreate.role,
-        createdAt: userCreate.created_at,
-        updatedAt: userCreate.updated_at,
-      });
-    } catch (error) {
-      next(error);
-    }
+      id: userCreate.id,
+      email: userCreate.email,
+      nickname: userCreate.nickname,
+      region: userCreate.region,
+      manner: userCreate.manner,
+      role: userCreate.role,
+      createdAt: userCreate.createdAt,
+      updatedAt: userCreate.updatedAt,
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 // access token 미들웨어 추가
 router.get('/', async (req, res, next) => {
   try {
-
     const authenticatedUser = await prisma.user.findMany({
-      where: { id: req.id }, 
+      where: { id: req.id },
     });
 
     if (!authenticatedUser) {
@@ -73,4 +72,4 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-export default router
+export default router;
