@@ -31,6 +31,7 @@ model User {
   updatedAt DateTime     @updatedAt @map("updated_at")
 
   refreshToken RefreshToken?
+  trade        Trade[]
 
   @@map("user")
 }
@@ -65,4 +66,19 @@ model RefreshToken {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("refresh_token")
+}
+
+// 상품 스키마
+model Trade {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  title     String
+  content   String   @db.Text
+  price     Int
+  region    String
+  like      Int
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
