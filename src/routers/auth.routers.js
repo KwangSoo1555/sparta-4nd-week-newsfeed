@@ -3,13 +3,13 @@ import bcrypt from 'bcrypt';
 import 'dotenv/config';
 import jwt from 'jsonwebtoken';
 import { prisma } from '../utils/prisma.util.js';
+import { signInValidator } from '../middlewares/validators/sign-in.validator.middleware.js';
 
 const router = express.Router();
 
 // 로그인 API
-router.post('/sign-in', async (req, res, next) => {
+router.post('/sign-in', signInValidator, async (req, res, next) => {
   try {
-    //유효성 - joi 추가시 설정
     const { email, password } = req.body;
 
     // 이메일 조회불가 또는 비밀번호가 일치하지 않는 경우
