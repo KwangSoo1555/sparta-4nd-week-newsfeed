@@ -16,19 +16,21 @@ datasource db {
 
 // 사용자 스키마 (관계 추가 필요)
 model User {
-  id          Int            @id @default(autoincrement())  @map("id")
-  email       String         @unique                        @map("email")
-  nickname    String         @unique                        @map("nickname")
-  password    String?                                       @map("password")
-  region      String                                        @map("region")
-  manner      Int            @default(0)                    @map("manner")
-  age         Int                                           @map("age")
-  gender      GenderType                                    @map("gender")
-  social_id   String?                                       @map("social_id")
-  provider    ProviderType?                                 @map("provider")
-  role        RoleType       @default(USER)                 @map("role")
-  created_at  DateTime       @default(now())                @map("created_at")
-  updated_at  DateTime       @updatedAt
+  id         Int           @id @default(autoincrement()) @map("id")
+  email      String        @unique @map("email")
+  nickname   String        @unique @map("nickname")
+  password   String?       @map("password")
+  region     String        @map("region")
+  manner     Int           @default(0) @map("manner")
+  age        Int           @map("age")
+  gender     GenderType    @map("gender")
+  social_id  String?       @map("social_id")
+  provider   ProviderType? @map("provider")
+  role       RoleType      @default(USER) @map("role")
+  created_at DateTime      @default(now()) @map("created_at")
+  updated_at DateTime      @updatedAt
+
+  refreshToken RefreshToken?
 
   @@map("user")
 }
@@ -50,4 +52,17 @@ enum ProviderType {
 enum RoleType {
   USER
   ADMIN
+}
+
+// refreshToken 스키마
+model RefreshToken {
+  id           Int      @id @default(autoincrement())
+  userId       Int      @unique @map("user_id")
+  refreshToken String?  @map("refresh_token")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_token")
 }
