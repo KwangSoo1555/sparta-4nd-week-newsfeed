@@ -4,6 +4,7 @@ import 'dotenv/config';
 import jwt from 'jsonwebtoken';
 import { prisma } from '../utils/prisma.util.js';
 import { signInValidator } from '../middlewares/validators/sign-in.validator.middleware.js';
+import { refreshTokenValidator } from '../middlewares/require-refresh-token.middleware.js';
 
 const router = express.Router();
 
@@ -42,6 +43,15 @@ router.post('/sign-in', signInValidator, async (req, res, next) => {
       message: '로그인에 성공하였습니다',
       data: { accessToken, refreshToken },
     });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// 미들웨어, 라우터 테스트
+router.get('/test', refreshTokenValidator, async (req, res, next) => {
+  try {
+    res.status(200).json({ data: req.user, message: 'test seccessed' });
   } catch (err) {
     next(err);
   }
