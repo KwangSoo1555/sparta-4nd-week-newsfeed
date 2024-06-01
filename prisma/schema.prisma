@@ -24,11 +24,11 @@ model User {
   manner    Int          @default(0)
   age       Int
   gender    GenderType
-  socialId  String       @map("social_id")
+  socialId  String?      @map("social_id")
   provider  ProviderType @default(LOCAL)
   role      RoleType     @default(USER)
   createdAt DateTime     @default(now()) @map("created_at")
-  updatedAt DateTime     @updatedAt
+  updatedAt DateTime     @updatedAt @map("updated_at")
 
   refreshToken RefreshToken?
 
