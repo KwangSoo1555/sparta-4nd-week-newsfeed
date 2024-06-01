@@ -80,5 +80,21 @@ model Trade {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tradePicture TradePicture[]
+
+  @@map("trade")
+}
+
+// 상품 사진 스키마
+model TradePicture {
+  id        Int      @id @default(autoincrement())
+  tradeId   Int      @map("trade_id")
+  imgUrl    String   @map("img_url")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  trade Trade @relation(fields: [tradeId], references: [id], onDelete: Cascade)
+
+  @@map("trade_picture")
 }
