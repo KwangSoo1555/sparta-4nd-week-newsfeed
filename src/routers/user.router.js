@@ -6,6 +6,7 @@ import { signUpValidator } from '../middlewares/validators/sign-up.validator.mid
 import { HASH_SALT } from '../constants/auth.constant.js';
 import { accessTokenValidator } from '../middlewares/require-access-token.middleware.js';
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
+import { MESSAGES } from '../constants/message.constant.js';
 
 
 const router = express.Router();
@@ -18,15 +19,15 @@ router.post('/sign-up', signUpValidator, async (req, res, next) => {
       where: { OR: [{ nickname }, { email }] },
     });
     if (isExistUser) {
-      return res.status(409).json({ message: 'This email or name are already exist.' });
+      return res.status(HTTP_STATUS.CONFLICT).json({ message: MESSAGES.USER.SIGN_UP.EMAIL.DUPLICATED });
     }
 
     if (!passwordCheck) {
-      return res.status(400).json({ message: 'You Should have to enter the passwordCheck.' });
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: MESSAGES.USER.COMMON.PASSWORD_CONFIRM });
     }
 
     if (password !== passwordCheck) {
-      return res.status(400).json({ message: 'Passwords do not match.' });
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: MESSAGES.USER.SIGN_UP.EMAIL.INCONSISTENT });
     }
 
     const hashedPW = await bcrypt.hash(password, HASH_SALT);
@@ -42,33 +43,43 @@ router.post('/sign-up', signUpValidator, async (req, res, next) => {
       },
     });
 
-    return res.status(201).json({
-      id: userCreate.id,
-      email: userCreate.email,
-      nickname: userCreate.nickname,
-      region: userCreate.region,
-      manner: userCreate.manner,
-      role: userCreate.role,
-      createdAt: userCreate.createdAt,
-      updatedAt: userCreate.updatedAt,
+    return res.status(HTTP_STATUS.CREATED).json({
+      status: HTTP_STATUS.CREATED,
+      message: MESSAGES.USER.SIGN_UP.SUCCEED,
+      data: {
+        id: userCreate.id,
+        email: userCreate.email,
+        nickname: userCreate.nickname,
+        region: userCreate.region,
+        manner: userCreate.manner,
+        role: userCreate.role,
+        createdAt: userCreate.createdAt,
+        updatedAt: userCreate.updatedAt,
+      }
     });
   } catch (error) {
     next(error);
   }
 });
 
-// access token 미들웨어 추가
-router.get('/:id', accessTokenValidator, async (req, res, next) => {
+router.get('/', accessTokenValidator, async (req, res, next) => {
   try {
-    const authenticatedUser = await prisma.user.findUnique({
-      where: { id: req.user.id }
+    const authUser = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      omit: { password: true },
     });
 
-    if (!authenticatedUser) {
-      return res.status(404).json({ error: 'Not found user' });
+    if (!authUser) {
+      // 등록된 유저가 없으면 메세지 추가
+      return res.status(HTTP_STATUS.NOT_FOUND).json({ message: 'Not found user' });
     }
 
-    res.status(200).json(authenticatedUser);
+    res.status(HTTP_STATUS.OK).json({
+      status: HTTP_STATUS.OK,
+      // 유저 찾기 성공 메세지 추가
+      // message: ,
+      data: authUser
+    });
   } catch (error) {
     next(error);
   }
