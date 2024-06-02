@@ -85,8 +85,4 @@ router.get('/', accessTokenValidator, async (req, res, next) => {
   }
 });
 
-router.patch('/update', accessTokenValidator, async (req, res, next) => {
-  const 
-})
-
 export default router;
