@@ -5,6 +5,8 @@ import { prisma } from '../utils/prisma.util.js';
 import { signUpValidator } from '../middlewares/validators/sign-up.validator.middleware.js';
 import { HASH_SALT } from '../constants/auth.constant.js';
 import { accessTokenValidator } from '../middlewares/require-access-token.middleware.js';
+import { HTTP_STATUS } from '../constants/http-status.constant.js';
+
 
 const router = express.Router();
 
