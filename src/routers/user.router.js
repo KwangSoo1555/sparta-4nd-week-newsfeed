@@ -2,14 +2,16 @@ import express from 'express';
 import bcrypt from 'bcrypt';
 
 import { prisma } from '../utils/prisma.util.js';
+import { signUpValidator } from '../middlewares/validators/sign-up.validator.middleware.js';
+import { HASH_SALT } from '../constants/auth.constant.js';
+import { accessTokenValidator } from '../middlewares/require-access-token.middleware.js';
+import { HTTP_STATUS } from '../constants/http-status.constant.js';
+
 
 const router = express.Router();
-// saltRounds 는 상수 값으로 저장 후 여기서는 삭제 가능
-const saltRounds = 10;
 
-router.post('/sign-up', async (req, res, next) => {
+router.post('/sign-up', signUpValidator, async (req, res, next) => {
   try {
-    // joi handle
     const { email, nickname, password, passwordCheck, region, age, gender } = req.body;
 
     const isExistUser = await prisma.user.findFirst({
@@ -27,7 +29,7 @@ router.post('/sign-up', async (req, res, next) => {
       return res.status(400).json({ message: 'Passwords do not match.' });
     }
 
-    const hashedPW = await bcrypt.hash(password, saltRounds);
+    const hashedPW = await bcrypt.hash(password, HASH_SALT);
 
     const userCreate = await prisma.user.create({
       data: {
@@ -56,10 +58,10 @@ router.post('/sign-up', async (req, res, next) => {
 });
 
 // access token 미들웨어 추가
-router.get('/', async (req, res, next) => {
+router.get('/:id', accessTokenValidator, async (req, res, next) => {
   try {
-    const authenticatedUser = await prisma.user.findMany({
-      where: { id: req.id },
+    const authenticatedUser = await prisma.user.findUnique({
+      where: { id: req.user.id }
     });
 
     if (!authenticatedUser) {
