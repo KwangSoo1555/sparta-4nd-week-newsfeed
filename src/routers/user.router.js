@@ -43,19 +43,12 @@ router.post('/sign-up', signUpValidator, async (req, res, next) => {
       },
     });
 
+    const { password: _, ...userWithoutPassword } = userCreate;
+
     return res.status(HTTP_STATUS.CREATED).json({
       status: HTTP_STATUS.CREATED,
       message: MESSAGES.USER.SIGN_UP.SUCCEED,
-      data: {
-        id: userCreate.id,
-        email: userCreate.email,
-        nickname: userCreate.nickname,
-        region: userCreate.region,
-        manner: userCreate.manner,
-        role: userCreate.role,
-        createdAt: userCreate.createdAt,
-        updatedAt: userCreate.updatedAt,
-      }
+      data: userWithoutPassword
     });
   } catch (error) {
     next(error);
@@ -81,6 +74,14 @@ router.get('/', accessTokenValidator, async (req, res, next) => {
       data: authUser
     });
   } catch (error) {
+    next(error);
+  }
+});
+
+router.patch('/update', accessTokenValidator, async (req, res, next) => {
+  try {
+
+  } catch(error) {
     next(error);
   }
 });
