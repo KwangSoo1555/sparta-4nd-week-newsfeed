@@ -8,7 +8,6 @@ import { accessTokenValidator } from '../middlewares/require-access-token.middle
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
 
-
 const router = express.Router();
 
 router.post('/sign-up', signUpValidator, async (req, res, next) => {
@@ -43,19 +42,12 @@ router.post('/sign-up', signUpValidator, async (req, res, next) => {
       },
     });
 
+    const { password: _, ...userWithoutPassword } = userCreate;
+
     return res.status(HTTP_STATUS.CREATED).json({
       status: HTTP_STATUS.CREATED,
       message: MESSAGES.USER.SIGN_UP.SUCCEED,
-      data: {
-        id: userCreate.id,
-        email: userCreate.email,
-        nickname: userCreate.nickname,
-        region: userCreate.region,
-        manner: userCreate.manner,
-        role: userCreate.role,
-        createdAt: userCreate.createdAt,
-        updatedAt: userCreate.updatedAt,
-      }
+      data: userWithoutPassword
     });
   } catch (error) {
     next(error);
@@ -70,16 +62,57 @@ router.get('/', accessTokenValidator, async (req, res, next) => {
     });
 
     if (!authUser) {
-      // 등록된 유저가 없으면 메세지 추가
+      // 정찬님 : 등록된 유저가 없으면 메세지 추가
       return res.status(HTTP_STATUS.NOT_FOUND).json({ message: 'Not found user' });
     }
 
     res.status(HTTP_STATUS.OK).json({
       status: HTTP_STATUS.OK,
-      // 유저 찾기 성공 메세지 추가
+      // 정찬님 : 유저 찾기 성공 메세지 추가
       // message: ,
       data: authUser
     });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.patch('/update', accessTokenValidator, async (req, res, next) => {
+  try {
+    const { email, nickname, password, region, age, gender } = req.body;
+
+    const authUser = await prisma.user.findUnique({
+      where: { id: req.user.id }
+    })
+
+    let updatedData = {
+      email: email || authUser.email,
+      nickname: nickname || authUser.nickname,
+      region: region || authUser.region,
+      age: age || authUser.age,
+      gender: gender || authUser.gender
+    };
+
+    // 비밀번호 변경 시 재 해쉬, 번경 없으면 기존 비밀번호
+    if (password) {
+      updatedData.password = await bcrypt.hash(password, HASH_SALT);
+    } else {
+      updatedData.password = authUser.password;
+    }
+
+    const authUserUpdate = await prisma.user.update({
+      where: { id: req.user.id },
+      data: updatedData
+    });
+
+    const { password: _, ...userWithoutPassword } = authUserUpdate;
+
+    res.status(HTTP_STATUS.OK).json({
+      status: HTTP_STATUS.OK, 
+      // 정찬님 : 수정 완료 시 메세지 추가
+      // massage: ,
+      data: userWithoutPassword
+    })
   } catch (error) {
     next(error);
   }
