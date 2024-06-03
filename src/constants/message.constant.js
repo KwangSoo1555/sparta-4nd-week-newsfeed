@@ -29,6 +29,7 @@ export const MESSAGES = {
         BASE: '비밀번호는 문자열입니다.',
         REQUIRED: 'You Should have to enter the password.',
         MIN: '비밀번호는 6자리 이상입니다.',
+        INCONSISTENT: 'Passwords do not match.',
       },
       PASSWORD_CONFIRM: {
         BASE: '비밀번호 확인은 문자입니다.',
@@ -56,7 +57,6 @@ export const MESSAGES = {
     SIGN_UP: {
       EMAIL: {
         DUPLICATED: 'This email or nickname are already exist.',
-        INCONSISTENT: 'Passwords do not match.',
       },
       SUCCEED: 'Sign-up succeed',
     },
