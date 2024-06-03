@@ -11,24 +11,24 @@ import { verificationCodes } from './auth-email.router.js';
 
 const router = express.Router();
 
-//´ñ±Û ÀÛ¼º ±â´É
+//ëŒ“ê¸€ ìž‘ì„± ê¸°ëŠ¥
 router.post('/trade/:trade_id/comment', async (req, res, next) => {
   try {
     const {
-      //·Î±×ÀÎ Á¤º¸ È®ÀÎ ¹× ÀÎ°¡ ÅäÅ«
+      //ë¡œê·¸ì¸ ì •ë³´ í™•ì¸ ë° ì¸ê°€ í† í°
     } = req.header;
 
-    if (/* À¯È¿ÇÏÁö ¾ÊÀº ÀÎ°¡ ÅäÅ« */ o) {
+    if (/* ìœ íš¨í•˜ì§€ ì•Šì€ ì¸ê°€ í† í° */ o) {
       return res.status(HTTP_STATUS.FORBIDDEN).json({ message: MESSAGES.COMMENT.SIGN_IN_CHECK });
     }
 
-    if (!(/* ´ñ±Û ³»¿ë È®ÀÎ(t/f) */ o)) {
+    if (!(/* ëŒ“ê¸€ ë‚´ìš© í™•ì¸(t/f) */ o)) {
       return res
         .status(HTTP_STATUS.BAD_REQUEST)
         .json({ message: MESSAGES.COMMENT.LENGTH_CHECK.BASE });
     }
 
-    if (!(/* ´ñ±Û ±æÀÌ È®ÀÎ(>300) */ o)) {
+    if (!(/* ëŒ“ê¸€ ê¸¸ì´ í™•ì¸(>300) */ o)) {
       return res
         .status(HTTP_STATUS.BAD_REQUEST)
         .json({ message: MESSAGES.COMMENT.LENGTH_CHECK.REQUIRED });
