@@ -29,6 +29,7 @@ export const MESSAGES = {
         BASE: '비밀번호는 문자열입니다.',
         REQUIRED: 'You Should have to enter the password.',
         MIN: '비밀번호는 6자리 이상입니다.',
+        INCONSISTENT: 'Passwords do not match.',
       },
       PASSWORD_CONFIRM: {
         BASE: '비밀번호 확인은 문자입니다.',
@@ -40,11 +41,11 @@ export const MESSAGES = {
         REQUIRED: '닉네임을 입력해 주세요.',
       },
       REGION: {
-        BASE: '지역명은 문자열입니다..',
+        BASE: '지역명은 문자열입니다.',
         REQUIRED: '지역명을 입력해 주세요.',
       },
       AGE: {
-        BASE: '나이는 정수입니다..',
+        BASE: '나이는 정수입니다.',
         REQUIRED: '나이를 입력해 주세요.',
       },
       GENDER: {
@@ -56,7 +57,10 @@ export const MESSAGES = {
     SIGN_UP: {
       EMAIL: {
         DUPLICATED: 'This email or nickname are already exist.',
-        INCONSISTENT: 'Passwords do not match.',
+      },
+      VERIFICATION_CODE: {
+        BASE: '이메일 인증 코드는 정수입니다.',
+        REQUIRED: '이메일 인증 코드를 입력해 주세요.',
       },
       SUCCEED: 'Sign-up succeed',
     },
@@ -68,6 +72,9 @@ export const MESSAGES = {
     },
     UPDATE: {
       SUCCEED: '내 정보 수정에 성공했습니다.',
+      INTRODUCE: {
+        BASE: '한 줄 소개는 문자열입니다.',
+      },
     },
     SIGN_OUT: {
       SUCCEED: '로그아웃에 성공했습니다.',
