@@ -12,7 +12,7 @@ import passport from '../passports/kakao-passport.js';
 
 const router = express.Router();
 
-// 소셜로그인 테스트중
+// 소셜로그인 테스트중.
 router.get('/fail', async (req, res, next) => {
   return res.status(401).json({ message: 'fail11' });
 });
