@@ -92,14 +92,15 @@ router.get('/', accessTokenValidator, async (req, res, next) => {
 
 router.patch('/update', accessTokenValidator, async (req, res, next) => {
   try {
-    const { email, nickname, password, confirmPassword, region, age, gender } = req.body;
+    const { email, nickname, password, confirmPassword, region, age, gender, introduce } = req.body;
 
     let updatedData = {
       email: email || req.user.email,
       nickname: nickname || req.user.nickname,
       region: region || req.user.region,
       age: age || req.user.age,
-      gender: gender || req.user.gender
+      gender: gender || req.user.gender, 
+      introduce: introduce
     };
 
     // 비밀번호 변경 시 재 해쉬, 번경 없으면 기존 비밀번호

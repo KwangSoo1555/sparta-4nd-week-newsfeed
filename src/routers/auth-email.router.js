@@ -49,7 +49,7 @@ router.post('/auth-email', async (req, res, next) => {
 
         await smtpTransport.sendMail(mailOptions);
 
-        console.log(verificationCodes)
+        console.log(verificationCodes[verificationId].code)
 
         res.json({ OK: true, message: MESSAGES.AUTH.MAIL.SUCCEED, verificationId });
     } catch (error) {
