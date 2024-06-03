@@ -2,6 +2,7 @@ import express from 'express';
 import bcrypt from 'bcrypt';
 import 'dotenv/config';
 import jwt from 'jsonwebtoken';
+
 import { prisma } from '../utils/prisma.util.js';
 import { signInValidator } from '../middlewares/validators/sign-in.validator.middleware.js';
 import { refreshTokenValidator } from '../middlewares/require-refresh-token.middleware.js';
@@ -100,4 +101,5 @@ router.post('/sign-out', refreshTokenValidator, async (req, res, next) => {
     next(err);
   }
 });
+
 export default router;
