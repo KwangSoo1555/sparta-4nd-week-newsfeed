@@ -64,6 +64,12 @@ export const MESSAGES = {
     SIGN_IN: {
       SUCCEED: 'Sign-in succeed',
     },
+    READ: {
+      SUCCEED: '내 정보 조회에 성공했습니다.',
+    },
+    UPDATE: {
+      SUCCEED: '내 정보 수정에 성공했습니다.',
+    },
     SIGN_OUT: {
       SUCCEED: '로그아웃에 성공했습니다.',
     },
