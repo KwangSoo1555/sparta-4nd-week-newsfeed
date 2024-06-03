@@ -33,10 +33,7 @@ router.post('/sign-up', signUpValidator, async (req, res, next) => {
     };
 
     if (!isVerifiedEmailCode) {
-<<<<<<< HEAD
-=======
       // 입력 메일 인증 코드랑 발송된 메일 인증 코드랑 다를 때 메세지 추가
->>>>>>> f244915cb59e961d4c4582bc8c9879d8916abbfd
       return res.status(HTTP_STATUS.UNAUTHORIZED).json({ message: 'Invalid or expired verification code.' });
     }
 
@@ -134,12 +131,7 @@ router.patch('/update', accessTokenValidator, async (req, res, next) => {
 
     res.status(HTTP_STATUS.OK).json({
       status: HTTP_STATUS.OK,
-<<<<<<< HEAD
-      // 정찬님 : 수정 완료 시 메세지 추가
-      // massage: ,
-=======
       massage: MESSAGES.USER.UPDATE.SUCCEED,
->>>>>>> f244915cb59e961d4c4582bc8c9879d8916abbfd
       data: userWithoutPassword
     })
   } catch (error) {
