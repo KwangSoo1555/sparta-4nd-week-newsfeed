@@ -14,44 +14,43 @@ export const MESSAGES = {
       },
     },
     MAIL: {
-      SUCCEED: '메일 전송에 성공하였습니다.',
-      FAIL: '메일 전송에 실패하였습니다.',
+      SUCCEED: '메일 전송에 성공했습니다.',
+      FAIL: '메일 전송에 실패했습니다.',
     },
   },
   USER: {
     COMMON: {
       EMAIL: {
-        BASE: '이메일은 문자열이어야 합니다.',
+        BASE: '이메일은 문자열입니다.',
         EMAIL: '이메일의 형식이 올바르지 않습니다',
-        REQUIRED: '이메일을 입력해주세요.',
-        DUPLICATED: '이미 가입 된 사용자입니다.',
+        REQUIRED: '이메일을 입력해 주세요.',
       },
       PASSWORD: {
-        BASE: '비밀번호는 문자열이어야 합니다.',
+        BASE: '비밀번호는 문자열입니다.',
         REQUIRED: 'You Should have to enter the password.',
-        MIN: '비밀번호는 6자리 이상이어야 합니다.',
+        MIN: '비밀번호는 6자리 이상입니다.',
       },
       PASSWORD_CONFIRM: {
-        BASE: '비밀번호 확인은 문자열이어야 합니다.',
+        BASE: '비밀번호 확인은 문자입니다.',
         REQUIRED: 'You Should have to enter the passwordCheck.',
-        MIN: '비밀번호는 6자리 이상이어야 합니다.',
+        MIN: '비밀번호는 6자리 이상입니다.',
       },
       NICKNAME: {
-        BASE: '닉네임은 문자열이어야 합니다.',
-        REQUIRED: '닉네임을 입력해주세요.',
+        BASE: '닉네임은 문자열입니다.',
+        REQUIRED: '닉네임을 입력해 주세요.',
       },
       REGION: {
-        BASE: '지역명은 문자열이어야 합니다.',
-        REQUIRED: '지역명을 입력해주세요.',
+        BASE: '지역명은 문자열입니다..',
+        REQUIRED: '지역명을 입력해 주세요.',
       },
       AGE: {
-        BASE: '나이는 정수를 입력해주세요.',
-        REQUIRED: '나이를 입력해주세요.',
+        BASE: '나이는 정수입니다..',
+        REQUIRED: '나이를 입력해 주세요.',
       },
       GENDER: {
-        BASE: '성별은 문자열이어야 합니다.',
-        REQUIRED: '성별을 입력해주세요.',
-        ONLY: '성별은 [MALE, FEMALE] 중 하나여야 합니다.',
+        BASE: '성별은 문자열입니다.',
+        REQUIRED: '성별을 입력해 주세요.',
+        ONLY: '성별은 [MALE, FEMALE] 중 하나를 입력해 주세요.',
       },
     },
     SIGN_UP: {
@@ -64,16 +63,45 @@ export const MESSAGES = {
     SIGN_IN: {
       SUCCEED: 'Sign-in succeed',
     },
+    READ: {
+      SUCCEED: '내 정보 조회에 성공했습니다.',
+    },
+    UPDATE: {
+      SUCCEED: '내 정보 수정에 성공했습니다.',
+    },
     SIGN_OUT: {
       SUCCEED: '로그아웃에 성공했습니다.',
     },
     TOKEN_REFRESH: {
-      SUCCEED: '토큰 재발급에 성공하였습니다.',
+      SUCCEED: '토큰 재발급에 성공했습니다.',
     },
   },
   TRADE: {
-    COMMON: {},
-    CREATE: {},
+    COMMON: {
+      TITLE: {
+        BASE: '제목은 문자열입니다.',
+        REQUIRED: '제목을 입력해 주세요.',
+      },
+      CONTENT: {
+        BASE: '내용은 문자열입니다.',
+        REQUIRED: '내용을 입력해 주세요.',
+      },
+      PRICE: {
+        BASE: '가격은 정수입니다.',
+        REQUIRED: '가격을 입력해 주세요.',
+      },
+      REGION: {
+        BASE: '지역은 문자열입니다.',
+        REQUIRED: '지역을 입력해 주세요.',
+      },
+      IMG: {
+        BASE: '이미지 URL은 문자열입니다.',
+        REQUIRED: '이미지 URL을 입력해 주세요.',
+      },
+    },
+    CREATE: {
+      SUCCEED: '상품 게시글 작성에 성공했습니다.',
+    },
     READ: {},
     UPDATE: {},
     DELETE: {},

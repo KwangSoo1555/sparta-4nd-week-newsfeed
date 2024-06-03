@@ -78,21 +78,10 @@ router.post('/sign-up', signUpValidator, async (req, res, next) => {
 
 router.get('/', accessTokenValidator, async (req, res, next) => {
   try {
-    const authUser = await prisma.user.findUnique({
-      where: { id: req.user.id },
-      omit: { password: true },
-    });
-
-    if (!authUser) {
-      // 정찬님 : 등록된 유저가 없으면 메세지 추가
-      return res.status(HTTP_STATUS.NOT_FOUND).json({ message: 'Not found user' });
-    }
-
     res.status(HTTP_STATUS.OK).json({
       status: HTTP_STATUS.OK,
-      // 정찬님 : 유저 찾기 성공 메세지 추가
       // message: ,
-      data: authUser
+      data: req.user
     });
   } catch (error) {
     next(error);
