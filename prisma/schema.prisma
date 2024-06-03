@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["omitApi"]
@@ -21,7 +15,7 @@ model User {
   nickname  String       @unique
   password  String?
   region    String
-  manner    Int          @default(0)
+  manner    Float        @default(36.5)
   age       Int
   gender    GenderType
   socialId  String?      @map("social_id")
@@ -80,7 +74,8 @@ model Trade {
   content   String   @db.Text
   price     Int
   region    String
-  like      Int
+  img       String
+  like      Int      @default(0)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -112,7 +107,7 @@ model TradeComment {
   tradeId   Int      @map("trade_id")
   userId    Int      @map("user_id")
   comment   String
-  like      Int
+  like      Int      @default(0)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 

@@ -7,12 +7,34 @@ import { HASH_SALT } from '../constants/auth.constant.js';
 import { accessTokenValidator } from '../middlewares/require-access-token.middleware.js';
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
+import { verificationCodes } from './auth-email.router.js'
 
 const router = express.Router();
 
 router.post('/sign-up', signUpValidator, async (req, res, next) => {
   try {
-    const { email, nickname, password, passwordCheck, region, age, gender } = req.body;
+    const {
+      email,
+      nickname,
+      password,
+      passwordCheck,
+      region,
+      age,
+      gender,
+      verificationCode
+    } = req.body;
+
+    let isVerifiedEmailCode = false;
+    for (const id in verificationCodes) {
+      if (verificationCodes[id].email === email && verificationCodes[id].code === verificationCode) {
+        isVerifiedEmailCode = true;
+        break;
+      }
+    };
+
+    if (!isVerifiedEmailCode) {
+      return res.status(HTTP_STATUS.UNAUTHORIZED).json({ message: 'Invalid or expired verification code.' });
+    }
 
     const isExistUser = await prisma.user.findFirst({
       where: { OR: [{ nickname }, { email }] },
@@ -108,7 +130,7 @@ router.patch('/update', accessTokenValidator, async (req, res, next) => {
     const { password: _, ...userWithoutPassword } = authUserUpdate;
 
     res.status(HTTP_STATUS.OK).json({
-      status: HTTP_STATUS.OK, 
+      status: HTTP_STATUS.OK,
       // 정찬님 : 수정 완료 시 메세지 추가
       // massage: ,
       data: userWithoutPassword

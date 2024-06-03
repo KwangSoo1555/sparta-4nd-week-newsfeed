@@ -13,6 +13,10 @@ export const MESSAGES = {
         DISCARDED_TOKEN: '폐기 된 인증 정보입니다.',
       },
     },
+    MAIL: {
+      SUCCEED: '메일 전송에 성공하였습니다.',
+      FAIL: '메일 전송에 실패하였습니다.',
+    },
   },
   USER: {
     COMMON: {
@@ -60,14 +64,44 @@ export const MESSAGES = {
     SIGN_IN: {
       SUCCEED: 'Sign-in succeed',
     },
-    SIGN_OUT: {},
-    TOKEN_REFRESH: {},
+    READ: {
+      SUCCEED: '내 정보 조회에 성공했습니다.',
+    },
+    UPDATE: {
+      SUCCEED: '내 정보 수정에 성공했습니다.',
+    },
+    SIGN_OUT: {
+      SUCCEED: '로그아웃에 성공했습니다.',
+    },
+    TOKEN_REFRESH: {
+      SUCCEED: '토큰 재발급에 성공하였습니다.',
+    },
   },
   TRADE: {
-    COMMON: {},
-    CREATE: {},
-    READ: {},
-    UPDATE: {},
-    DELETE: {},
+    COMMON: {
+        BAD_GATEWAY: 'This is Wrong Access',
+        SIGN_OUT: 'Please Sign-in.',
+        INVALID_ID: 'Check the post ID looking for.',
+        UNAUTHORIZED: `The passwords don't match.`,
+    },
+    CREATE: {
+        TITLE: 'Enter a title.',
+        CONTENT: 'Fill in the contents.',
+        SUCCESS: 'finished creating your post.',
+    },
+    READ: {
+        NOT_FOUND : 'There are currently no posts registered.',
+    },
+    DETAIL: {
+        NOT_FOUND:  `The post doesn't exist.`,
+    },
+    EDIT: {
+        NO_CHANGE: 'One of them needs to be changed.',
+        SUCCESS: 'Change is complete.'
+    },
+    DELETE: {
+        NOT_FOUND: `The post doesn't exist.`,
+        SUCCESS: 'Deletion is complete.',
+    },
   },
 };
