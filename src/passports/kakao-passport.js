@@ -14,22 +14,23 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        console.log(profile._json?.kakao_account);
-        let user = await prisma.user.findUnique({
+        // console.log(profile._json?.kakao_account);
+        let user = await prisma.user.findFirst({
           where: { socialId: profile.id },
         });
-
+        console.log(accessToken, refreshToken);
+        console.log('1111111111', profile.id);
         if (!user) {
           user = await prisma.user.create({
             data: {
+              email: profile._json.kakao_account.email,
+              nickname: profile.displayName,
               socialId: profile.id,
-              /*    displayName: profile.displayName, */
               // provider: profile.provider,
               provider: 'KAKAO',
             },
           });
         }
-
         return done(null, user);
       } catch (err) {
         return done(err);
@@ -39,12 +40,13 @@ passport.use(
 );
 
 passport.serializeUser((user, done) => {
+  console.log('111111111');
   done(null, user.id);
 });
 
 passport.deserializeUser(async (id, done) => {
   try {
-    const user = await prisma.user.findUnique({
+    const user = await prisma.user.findFirst({
       where: { id: id },
     });
     done(null, user);

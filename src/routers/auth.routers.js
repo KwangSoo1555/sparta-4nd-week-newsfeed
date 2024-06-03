@@ -17,17 +17,17 @@ router.get('/fail', async (req, res, next) => {
   return res.status(401).json({ message: 'fail11' });
 });
 router.get('/success', async (req, res, next) => {
-  return res.status(200).json({ message: 'success11' });
+  return res.status(200).json({ message: req.body });
 });
 // 리다이렉트 테스트 중 구현후 수정
 router.get('/kakao', passport.authenticate('kakao'));
 router.get(
   '/kakao/oauth',
   passport.authenticate('kakao', {
-    failureRedirect: '/fail',
+    failureRedirect: '/api/auth/fail',
   }),
   (req, res) => {
-    res.redirect('/success');
+    res.redirect('/api/auth/success');
   }
 );
 
