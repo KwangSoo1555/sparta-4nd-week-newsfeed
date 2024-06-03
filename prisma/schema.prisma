@@ -24,6 +24,7 @@ model User {
   manner    Float        @default(36.5)
   age       Int?
   gender    GenderType?
+  introduce String?
   socialId  Int?         @map("social_id")
   provider  ProviderType @default(LOCAL)
   role      RoleType     @default(USER)
