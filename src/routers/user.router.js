@@ -103,10 +103,6 @@ router.patch('/update', accessTokenValidator, async (req, res, next) => {
   try {
     const { email, nickname, password, region, age, gender } = req.body;
 
-    const authUser = await prisma.user.findUnique({
-      where: { id: req.user.id }
-    })
-
     let updatedData = {
       email: email || authUser.email,
       nickname: nickname || authUser.nickname,
