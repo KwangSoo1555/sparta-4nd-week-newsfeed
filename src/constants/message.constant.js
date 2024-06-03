@@ -109,17 +109,16 @@ export const MESSAGES = {
     CREATE: {
       SUCCEED: '상품 게시글 작성에 성공했습니다.',
     },
-    READ: {},
-    UPDATE: {},
-    DELETE: {},
-  },
-  COMMENT: {
-    SIGN_IN_CHECK: {
-      REQUIRED: '로그인이 필요합니다.',
+    READ: {
+      NOT_FOUND: 'There are currently no posts registered.',
     },
-    LENGTH_CHECK: {
-      BASE: '댓글은 1자 이상 작성해주세요.',
-      REQUIRED: '댓글은 300자를 초과할 수 없습니다.',
+    UPDATE: {
+      NO_CHANGE: 'One of them needs to be changed.',
+      SUCCESS: 'Change is complete.',
+    },
+    DELETE: {
+      NOT_FOUND: `The post doesn't exist.`,
+      SUCCESS: 'Deletion is complete.',
     },
   },
 };
