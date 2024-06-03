@@ -11,13 +11,26 @@ const tradeRouter = express.Router();
 // 상품 게시글 작성 API
 tradeRouter.post('/create', accessTokenValidator, createTradeValidator, async (req, res, next) => {
   try {
-    console.log(req.user);
     // 유효성 검사 거치고 req.body 가져옴
     const { title, content, price, region, img } = req.body;
 
-    // 상품 생성
-    const trade = await prisma.trade.create({
-      data: { title, content, price, region, img, userId: req.user.id },
+    console.log(img);
+
+    // 상품 생성 + 이미지 등록 트랜젝션으로 처리
+    const trade = await prisma.$transaction(async (tx) => {
+      // 상품 생성
+      const newTrade = await tx.trade.create({
+        data: { title, content, price, region, userId: req.user.id },
+      });
+
+      // 상품 사진 등록
+      // 이미지가 여러 장인 경우 Promise.All로 비동기적으로 실행
+      const tradeImg = await Promise.all(
+        img.map(async (url) => {
+          return await tx.tradePicture.create({ data: { tradeId: newTrade.id, imgUrl: url } });
+        })
+      );
+      return [newTrade, tradeImg];
     });
 
     return res.status(HTTP_STATUS.CREATED).json({
