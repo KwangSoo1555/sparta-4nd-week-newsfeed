@@ -40,7 +40,7 @@ tradeRouter.get('/', async (req, res) => {
   if (sortDate !== sort.desc && sortDate !== sort.asc) {
     sortDate = sort.desc;
   }
-  // 좋아요 순 정렬 기본 값 설정
+  // 좋아요 순 정렬 기본 값 설정 (상세한 내용은 회의가 필요)
   if (sortLike !== sort.desc && sortLike !== sort.asc) {
     sortLike = sort.desc;
   }
@@ -48,11 +48,32 @@ tradeRouter.get('/', async (req, res) => {
   // trade 테이블의 데이터 모두를 조회
   const trades = await prisma.trade.findMany({
     orderBy: [/*{ like: sortLike },*/ { createdAt: sortDate }],
+    omit: { content: true },
   });
 
   return res
     .status(HTTP_STATUS.OK)
     .json({ status: HTTP_STATUS.OK, message: MESSAGES.TRADE.READ.SUCCEED, data: { trades } });
+});
+
+// 상품 게시글 상세 조회 API
+tradeRouter.get('/:tradeId', async (req, res) => {
+  // 상품 ID 가져오기
+  const id = req.params.tradeId;
+
+  // 상품 조회하기
+  const trade = await prisma.trade.findFirst({ where: { id: +id } });
+
+  // 데이터베이스 상 해당 상품 ID에 대한 정보가 없는 경우
+  if (!trade) {
+    return res
+      .status(HTTP_STATUS.NOT_FOUND)
+      .json({ status: HTTP_STATUS.NOT_FOUND, message: MESSAGES.TRADE.READ.NOT_FOUND });
+  }
+
+  return res
+    .status(HTTP_STATUS.OK)
+    .json({ status: HTTP_STATUS.OK, message: MESSAGES.TRADE.READ.SUCCEED, data: { trade } });
 });
 
 export default tradeRouter;
