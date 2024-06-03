@@ -24,9 +24,9 @@ export const createTradeValidator = async (req, res, next) => {
         'string.empty': MESSAGES.TRADE.COMMON.REGION.REQUIRED,
         'any.required': MESSAGES.TRADE.COMMON.REGION.REQUIRED,
       }),
-      img: Joi.string().required().messages({
-        'string.base': MESSAGES.TRADE.COMMON.IMG.BASE,
-        'string.empty': MESSAGES.TRADE.COMMON.IMG.REQUIRED,
+      img: Joi.array().min(1).required().messages({
+        'array.base': MESSAGES.TRADE.COMMON.IMG.BASE,
+        'array.min': MESSAGES.TRADE.COMMON.IMG.REQUIRED,
         'any.required': MESSAGES.TRADE.COMMON.IMG.REQUIRED,
       }),
     });
