@@ -1,48 +1,46 @@
 import express from 'express';
 import routes from '../constants/trade.constant.js';
+import { prisma } from '../utils/prisma.util.js';
+import { HTTP_STATUS } from '../constants/http-status.constant.js';
+import { MESSAGES } from "../constants/message.constant.js";
 import { accessTokenValidator } from '../middlewares/require-access-token.middleware.js';
 
-//유저 아이디 등 필수 요구 사항 필요. 
-//validator 미들웨어도 추가구현
+
+//validator, error-handle 미들웨어도 추가구현 필요.
 
 const tradeRouter = express.Router();
 
 //tradeRouter.get(routes.tradeList, tradeList);
 tradeRouter.post(routes.tradeCreate, accessTokenValidator, async(req, res, next) => {
-    const{ user } = req.user;
-    const { 
-            title, 
-            content, 
-            price,
-            region,
-            img,
-        } = req.body;
 
     try{
-        const user = await prisma.user.findUnique({
-            where: { id: user.id }
-        });
-        
+        const { id } = req.user;
+        const { 
+                title, 
+                content, 
+                price,
+                region,
+                img,
+            } = req.body;
+
         if(!title) return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: MESSAGES.TRADE.CREATE.TITLE });
         if(!content) return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: MESSAGES.TRADE.CREATE.CONTENT });
 
-        const trade = await prisma.trade.create({
+        const tradeCreate = await prisma.trade.create({
             data: {
-                userId: user.id,
+                userId: id,
                 title,
                 content,
                 price,
                 region,
-                img,
+                img
             },
         });
-
-        const { userId, img, ...resData } = trade;
 
         return res.status(HTTP_STATUS.OK).json({
             status: HTTP_STATUS.CREATED,
             message: MESSAGES.TRADE.CREATE.SUCCESS,
-            data: resData,
+            data: tradeCreate
         });
     }catch(err){
         next(err);
