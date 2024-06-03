@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { MESSAGES } from '../../constants/message.constant';
+import { MESSAGES } from '../../constants/message.constant.js';
 
 export const createTradeValidator = async (req, res, next) => {
   try {

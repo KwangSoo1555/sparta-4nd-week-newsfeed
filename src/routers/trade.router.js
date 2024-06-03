@@ -1,56 +1,32 @@
 import express from 'express';
-import routes from '../constants/trade.constant.js';
 import { prisma } from '../utils/prisma.util.js';
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
-import { MESSAGES } from "../constants/message.constant.js";
+import { MESSAGES } from '../constants/message.constant.js';
 import { accessTokenValidator } from '../middlewares/require-access-token.middleware.js';
-import { refreshTokenValidator } from '../middlewares/require-refresh-token.middleware.js';
-
-
-//validator, error-handle 미들웨어도 추가구현 필요.
+import { createTradeValidator } from '../middlewares/validators/create-trade.validator.middleware.js';
 
 const tradeRouter = express.Router();
 
-//tradeRouter.get(routes.tradeList, tradeList);
-tradeRouter.post(routes.tradeCreate, refreshTokenValidator, async(req, res, next) => {
+// 상품 게시글 작성 API
+tradeRouter.post('/create', accessTokenValidator, createTradeValidator, async (req, res, next) => {
+  try {
+    console.log(req.user);
+    // 유효성 검사 거치고 req.body 가져옴
+    const { title, content, price, region, img } = req.body;
 
-    try{
-        const { id } = req.user;
-        const { 
-                title, 
-                content, 
-                price,
-                region,
-                img,
-            } = req.body;
+    // 상품 생성
+    const trade = await prisma.trade.create({
+      data: { title, content, price, region, img, userId: req.user.id },
+    });
 
-        if(!title) return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: MESSAGES.TRADE.CREATE.TITLE });
-        if(!content) return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: MESSAGES.TRADE.CREATE.CONTENT });
-
-        const tradeCreate = await prisma.trade.create({
-            data: {
-                userId: id,
-                title,
-                content,
-                price,
-                region,
-                img
-            },
-        });
-
-        return res.status(HTTP_STATUS.OK).json({
-            status: HTTP_STATUS.CREATED,
-            message: MESSAGES.TRADE.CREATE.SUCCESS,
-            data: tradeCreate
-        });
-    }catch(err){
-        next(err);
-    }
-    }
-);
-// tradeRouter.get(routes.tradePostDetail, tradeDetail);
-// tradeRouter.patch(routes.tradeEdit, updateTrade);
-// tradeRouter.delete(routes.tradeDelete, deleteTrade);
-
+    return res.status(HTTP_STATUS.CREATED).json({
+      status: HTTP_STATUS.CREATED,
+      message: MESSAGES.TRADE.CREATE.SUCCEED,
+      data: { trade },
+    });
+  } catch (err) {
+    next(err);
+  }
+});
 
 export default tradeRouter;
