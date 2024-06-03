@@ -110,15 +110,16 @@ export const MESSAGES = {
       SUCCEED: '상품 게시글 작성에 성공했습니다.',
     },
     READ: {
-      NOT_FOUND : 'There are currently no posts registered.'
+      SUCCEED: '상품 게시글 조회에 성공했습니다.',
+      NOT_FOUND: 'There are currently no posts registered.',
     },
     UPDATE: {
       NO_CHANGE: 'One of them needs to be changed.',
-      SUCCESS: 'Change is complete.'
+      SUCCESS: 'Change is complete.',
     },
     DELETE: {
       NOT_FOUND: `The post doesn't exist.`,
-      SUCCESS: 'Deletion is complete.'
+      SUCCESS: 'Deletion is complete.',
     },
-  }
+  },
 };

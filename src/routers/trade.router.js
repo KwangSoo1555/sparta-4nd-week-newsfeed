@@ -2,6 +2,7 @@ import express from 'express';
 import { prisma } from '../utils/prisma.util.js';
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
+import { sort } from '../constants/trade.constant.js';
 import { accessTokenValidator } from '../middlewares/require-access-token.middleware.js';
 import { createTradeValidator } from '../middlewares/validators/create-trade.validator.middleware.js';
 
@@ -27,6 +28,31 @@ tradeRouter.post('/create', accessTokenValidator, createTradeValidator, async (r
   } catch (err) {
     next(err);
   }
+});
+
+// 상품 게시글 목록 조회 API (뉴스피드)
+tradeRouter.get('/', async (req, res) => {
+  // 정렬 조건 쿼리 가져오기
+  let sortDate = req.query.sort.toLowerCase();
+  let sortLike = req.query.like?.toLowerCase();
+
+  // 시간 순 정렬 기본 값 설정
+  if (sortDate !== sort.desc && sortDate !== sort.asc) {
+    sortDate = sort.desc;
+  }
+  // 좋아요 순 정렬 기본 값 설정
+  if (sortLike !== sort.desc && sortLike !== sort.asc) {
+    sortLike = sort.desc;
+  }
+
+  // trade 테이블의 데이터 모두를 조회
+  const trades = await prisma.trade.findMany({
+    orderBy: [/*{ like: sortLike },*/ { createdAt: sortDate }],
+  });
+
+  return res
+    .status(HTTP_STATUS.OK)
+    .json({ status: HTTP_STATUS.OK, message: MESSAGES.TRADE.READ.SUCCEED, data: { trades } });
 });
 
 export default tradeRouter;
