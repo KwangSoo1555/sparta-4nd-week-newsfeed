@@ -5,6 +5,7 @@ import { MESSAGES } from '../constants/message.constant.js';
 import { sort } from '../constants/trade.constant.js';
 import { accessTokenValidator } from '../middlewares/require-access-token.middleware.js';
 import { createTradeValidator } from '../middlewares/validators/create-trade.validator.middleware.js';
+import { updateTradeValidator } from '../middlewares/validators/update-trade.validator.middleware.js';
 
 const tradeRouter = express.Router();
 
@@ -88,5 +89,63 @@ tradeRouter.get('/:tradeId', async (req, res) => {
     .status(HTTP_STATUS.OK)
     .json({ status: HTTP_STATUS.OK, message: MESSAGES.TRADE.READ.SUCCEED, data: { trade } });
 });
+
+// 상품 게시글 수정 API
+tradeRouter.patch(
+  '/:tradeId/edit',
+  accessTokenValidator,
+  updateTradeValidator,
+  async (req, res, next) => {
+    try {
+      // 상품 ID 가져오기
+      const id = req.params.tradeId;
+
+      // 상품 조회하기
+      const trade = await prisma.trade.findFirst({ where: { id: +id } });
+
+      // 데이터베이스 상 해당 상품 ID에 대한 정보가 없는 경우
+      if (!trade) {
+        return res
+          .status(HTTP_STATUS.NOT_FOUND)
+          .json({ status: HTTP_STATUS.NOT_FOUND, message: MESSAGES.TRADE.READ.NOT_FOUND });
+      }
+
+      // 수정할 내용 입력 받음
+      const { title, content, price, region, img } = req.body;
+
+      // 게시글 수정 + 이미지 삭제 및 추가 트랜젝션으로 처리
+      const changedTrade = await prisma.$transaction(async (tx) => {
+        // 상품 수정
+        const tradeTemp = await tx.trade.update({
+          where: { id: trade.id },
+          data: {
+            ...(title && { title }),
+            ...(content && { content }),
+            ...(price && { price }),
+            ...(region && { region }),
+          },
+        });
+
+        // 상품 이미지 수정 (정확히는 삭제 후 등록)
+        // 이미지 개수가 다를 수도 있고 어떤 이미지가 어떤 이미지로 수정되는지 알 방법이 없음
+        await tx.tradePicture.deleteMany({ where: { tradeId: trade.id } });
+        const tradeImg = await Promise.all(
+          img.map(async (url) => {
+            return await tx.tradePicture.create({ data: { tradeId: trade.id, imgUrl: url } });
+          })
+        );
+        return [tradeTemp, tradeImg];
+      });
+
+      return res.status(HTTP_STATUS.CREATED).json({
+        status: HTTP_STATUS.CREATED,
+        message: MESSAGES.TRADE.UPDATE.SUCCESS,
+        data: { changedTrade },
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 export default tradeRouter;
