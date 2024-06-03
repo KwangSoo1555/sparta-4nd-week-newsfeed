@@ -2,6 +2,7 @@ import Joi from 'joi';
 import { MESSAGES } from '../../constants/message.constant.js';
 import { PASSWORD_MIN_LENGTH, TLDS, MIN_DOMAIN_SEGMENTS } from '../../constants/auth.constant.js';
 import { USER_GENDER } from '../../constants/user-gender.constant.js';
+import { verificationCodes } from '../../routers/auth-email.router.js';
 
 // 회원가입 유효성 검사 Joi 스키마
 export const signUpValidator = async (req, res, next) => {

@@ -28,8 +28,12 @@
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/nodemailer": "^6.4.15",
+<<<<<<< HEAD
+    "eslint": "^9.4.0",
+=======
     "eslint": "^9.3.0",
+>>>>>>> f244915cb59e961d4c4582bc8c9879d8916abbfd
     "nodemon": "^3.1.2",
-    "prettier": "^3.2.5"
+    "prettier": "^3.3.0"
   }
 }
