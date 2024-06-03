@@ -16,15 +16,15 @@ datasource db {
 
 // 사용자 스키마 (관계 추가 필요)
 model User {
-  id        Int           @id @default(autoincrement())
-  email     String        @unique
-  nickname  String        @unique
+  id        Int          @id @default(autoincrement())
+  email     String       @unique
+  nickname  String       @unique
   password  String?
-  region    String
-  manner    Float         @default(36.5)
-  age       Int
-  gender    GenderType
-  socialId  String?      @map("social_id")
+  region    String?
+  manner    Float        @default(36.5)
+  age       Int?
+  gender    GenderType?
+  socialId  Int?         @map("social_id")
   provider  ProviderType @default(LOCAL)
   role      RoleType     @default(USER)
   createdAt DateTime     @default(now()) @map("created_at")
