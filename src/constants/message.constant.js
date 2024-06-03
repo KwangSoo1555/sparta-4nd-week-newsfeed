@@ -78,4 +78,13 @@ export const MESSAGES = {
     UPDATE: {},
     DELETE: {},
   },
+  COMMENT: {
+    SIGN_IN_CHECK: {
+      REQUIRED: '로그인이 필요합니다.',
+    },
+    LENGTH_CHECK: {
+      BASE: '댓글은 1자 이상 작성해주세요.',
+      REQUIRED: '댓글은 300자를 초과할 수 없습니다.',
+    },
+  },
 };
