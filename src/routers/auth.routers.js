@@ -16,7 +16,7 @@ router.post('/sign-in', signInValidator, async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    // 이메일 조회불가 또는 비밀번호가 일치하지 않는 경우
+    // 이메일 조회불가 또는 비밀번호가 일치하지 않는 경우.
     const user = await prisma.user.findUnique({ where: { email } });
     const isValidUser = user && (await bcrypt.compare(password, user.password));
     if (!isValidUser) {
