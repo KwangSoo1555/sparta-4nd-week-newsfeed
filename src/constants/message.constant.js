@@ -14,13 +14,8 @@ export const MESSAGES = {
       },
     },
     MAIL: {
-<<<<<<< HEAD
-      SUCCEED: '메일 전송에 성공하였습니다.',
-      FAIL: '메일 전송에 실패하였습니다.',
-=======
       SUCCEED: '메일 전송에 성공했습니다.',
       FAIL: '메일 전송에 실패했습니다.',
->>>>>>> f244915cb59e961d4c4582bc8c9879d8916abbfd
     },
   },
   USER: {
@@ -78,41 +73,11 @@ export const MESSAGES = {
       SUCCEED: '로그아웃에 성공했습니다.',
     },
     TOKEN_REFRESH: {
-<<<<<<< HEAD
-      SUCCEED: '토큰 재발급에 성공하였습니다.',
-=======
       SUCCEED: '토큰 재발급에 성공했습니다.',
->>>>>>> f244915cb59e961d4c4582bc8c9879d8916abbfd
     },
   },
   TRADE: {
     COMMON: {
-<<<<<<< HEAD
-        BAD_GATEWAY: 'This is Wrong Access',
-        SIGN_OUT: 'Please Sign-in.',
-        INVALID_ID: 'Check the post ID looking for.',
-        UNAUTHORIZED: `The passwords don't match.`,
-    },
-    CREATE: {
-        TITLE: 'Enter a title.',
-        CONTENT: 'Fill in the contents.',
-        SUCCESS: 'finished creating your post.',
-    },
-    READ: {
-        NOT_FOUND : 'There are currently no posts registered.',
-    },
-    DETAIL: {
-        NOT_FOUND:  `The post doesn't exist.`,
-    },
-    EDIT: {
-        NO_CHANGE: 'One of them needs to be changed.',
-        SUCCESS: 'Change is complete.'
-    },
-    DELETE: {
-        NOT_FOUND: `The post doesn't exist.`,
-        SUCCESS: 'Deletion is complete.',
-    },
-=======
       TITLE: {
         BASE: '제목은 문자열입니다.',
         REQUIRED: '제목을 입력해 주세요.',
@@ -140,6 +105,5 @@ export const MESSAGES = {
     READ: {},
     UPDATE: {},
     DELETE: {},
->>>>>>> f244915cb59e961d4c4582bc8c9879d8916abbfd
   },
 };
