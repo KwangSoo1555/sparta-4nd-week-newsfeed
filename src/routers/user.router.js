@@ -92,28 +92,34 @@ router.get('/', accessTokenValidator, async (req, res, next) => {
 
 router.patch('/update', accessTokenValidator, async (req, res, next) => {
   try {
-    const { email, nickname, password, confirmPassword, region, age, gender, introduce } = req.body;
+    const { email, nickname, newPassword, currentPasswordCheck, region, age, gender, introduce } = req.body;
+
+    const user = await prisma.user.findUnique({
+      where: {id: req.user.id}
+    })
+
+    const currentPassword = user.password
 
     let updatedData = {
-      email: email || req.user.email,
-      nickname: nickname || req.user.nickname,
-      region: region || req.user.region,
-      age: age || req.user.age,
-      gender: gender || req.user.gender, 
-      introduce: introduce
+      email: email || user.email,
+      nickname: nickname || user.nickname,
+      region: region || user.region,
+      age: age || user.age,
+      gender: gender || user.gender, 
+      introduce: introduce || user.introduce,  
+      password: currentPassword
     };
 
     // 비밀번호 변경 시 재 해쉬, 번경 없으면 기존 비밀번호
-    if (password) {
-      if (!confirmPassword || req.password.password !== confirmPassword) {
+    if (newPassword) {
+      const match = bcrypt.compare(currentPassword, currentPasswordCheck)
+      if (!currentPasswordCheck || !match) {
         return res.status(HTTP_STATUS.BAD_REQUEST).json({
           status: HTTP_STATUS.BAD_REQUEST, 
           // message: 
         })
       }
-      updatedData.password = await bcrypt.hash(password, HASH_SALT);
-    } else {
-      updatedData.password = req.user.password;
+      updatedData.password = await bcrypt.hash(newPassword, HASH_SALT);
     }
 
     const authUserUpdate = await prisma.user.update({
