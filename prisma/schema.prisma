@@ -14,11 +14,12 @@ model User {
   email     String       @unique
   nickname  String       @unique
   password  String?
-  region    String
+  region    String?
   manner    Float        @default(36.5)
-  age       Int
-  gender    GenderType
-  socialId  String?      @map("social_id")
+  age       Int?
+  gender    GenderType?
+  introduce String?
+  socialId  Int?         @map("social_id")
   provider  ProviderType @default(LOCAL)
   role      RoleType     @default(USER)
   createdAt DateTime     @default(now()) @map("created_at")

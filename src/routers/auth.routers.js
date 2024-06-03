@@ -8,14 +8,35 @@ import { refreshTokenValidator } from '../middlewares/require-refresh-token.midd
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
 
+import passport from '../passports/kakao-passport.js';
+
 const router = express.Router();
+
+// 소셜로그인 테스트중
+router.get('/fail', async (req, res, next) => {
+  return res.status(401).json({ message: 'fail11' });
+});
+router.get('/success', async (req, res, next) => {
+  return res.status(200).json({ message: 'success11' });
+});
+// 리다이렉트 테스트 중 구현후 수정
+router.get('/kakao', passport.authenticate('kakao'));
+router.get(
+  '/kakao/oauth',
+  passport.authenticate('kakao', {
+    failureRedirect: '/fail',
+  }),
+  (req, res) => {
+    res.redirect('/success');
+  }
+);
 
 // 로그인 API
 router.post('/sign-in', signInValidator, async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    // 이메일 조회불가 또는 비밀번호가 일치하지 않는 경우
+    // 이메일 조회불가 또는 비밀번호가 일치하지 않는 경우.
     const user = await prisma.user.findUnique({ where: { email } });
     const isValidUser = user && (await bcrypt.compare(password, user.password));
     if (!isValidUser) {
