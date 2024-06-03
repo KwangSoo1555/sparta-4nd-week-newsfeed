@@ -33,12 +33,14 @@ router.post('/sign-up', signUpValidator, async (req, res, next) => {
     };
 
     if (!isVerifiedEmailCode) {
+      // 입력 메일 인증 코드랑 발송된 메일 인증 코드랑 다를 때 메세지 추가
       return res.status(HTTP_STATUS.UNAUTHORIZED).json({ message: 'Invalid or expired verification code.' });
     }
 
     const isExistUser = await prisma.user.findFirst({
       where: { OR: [{ nickname }, { email }] },
     });
+
     if (isExistUser) {
       return res.status(HTTP_STATUS.CONFLICT).json({ message: MESSAGES.USER.SIGN_UP.EMAIL.DUPLICATED });
     }
@@ -80,7 +82,7 @@ router.get('/', accessTokenValidator, async (req, res, next) => {
   try {
     res.status(HTTP_STATUS.OK).json({
       status: HTTP_STATUS.OK,
-      // message: ,
+      message: MESSAGES.USER.READ.SUCCEED,
       data: req.user
     });
   } catch (error) {
@@ -90,25 +92,27 @@ router.get('/', accessTokenValidator, async (req, res, next) => {
 
 router.patch('/update', accessTokenValidator, async (req, res, next) => {
   try {
-    const { email, nickname, password, region, age, gender } = req.body;
-
-    const authUser = await prisma.user.findUnique({
-      where: { id: req.user.id }
-    })
+    const { email, nickname, password, confirmPassword, region, age, gender } = req.body;
 
     let updatedData = {
-      email: email || authUser.email,
-      nickname: nickname || authUser.nickname,
-      region: region || authUser.region,
-      age: age || authUser.age,
-      gender: gender || authUser.gender
+      email: email || req.user.email,
+      nickname: nickname || req.user.nickname,
+      region: region || req.user.region,
+      age: age || req.user.age,
+      gender: gender || req.user.gender
     };
 
     // 비밀번호 변경 시 재 해쉬, 번경 없으면 기존 비밀번호
     if (password) {
+      if (!confirmPassword || req.password.password !== confirmPassword) {
+        return res.status(HTTP_STATUS.BAD_REQUEST).json({
+          status: HTTP_STATUS.BAD_REQUEST, 
+          // message: 
+        })
+      }
       updatedData.password = await bcrypt.hash(password, HASH_SALT);
     } else {
-      updatedData.password = authUser.password;
+      updatedData.password = req.user.password;
     }
 
     const authUserUpdate = await prisma.user.update({
@@ -120,8 +124,7 @@ router.patch('/update', accessTokenValidator, async (req, res, next) => {
 
     res.status(HTTP_STATUS.OK).json({
       status: HTTP_STATUS.OK,
-      // 정찬님 : 수정 완료 시 메세지 추가
-      // massage: ,
+      massage: MESSAGES.USER.UPDATE.SUCCEED,
       data: userWithoutPassword
     })
   } catch (error) {
