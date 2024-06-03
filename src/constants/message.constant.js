@@ -13,6 +13,10 @@ export const MESSAGES = {
         DISCARDED_TOKEN: '폐기 된 인증 정보입니다.',
       },
     },
+    MAIL: {
+      SUCCEED: '메일 전송에 성공하였습니다.',
+      FAIL: '메일 전송에 실패하였습니다.',
+    },
   },
   USER: {
     COMMON: {
@@ -60,8 +64,12 @@ export const MESSAGES = {
     SIGN_IN: {
       SUCCEED: 'Sign-in succeed',
     },
-    SIGN_OUT: {},
-    TOKEN_REFRESH: {},
+    SIGN_OUT: {
+      SUCCEED: '로그아웃에 성공했습니다.',
+    },
+    TOKEN_REFRESH: {
+      SUCCEED: '토큰 재발급에 성공하였습니다.',
+    },
   },
   TRADE: {
     COMMON: {},
