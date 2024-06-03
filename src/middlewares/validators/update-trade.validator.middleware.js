@@ -1,9 +1,9 @@
 import Joi from 'joi';
 import { MESSAGES } from '../../constants/message.constant.js';
 
-export const createTradeValidator = async (req, res, next) => {
+export const updateTradeValidator = async (req, res, next) => {
   try {
-    const createTradeSchema = Joi.object({
+    const updateTradeSchema = Joi.object({
       title: Joi.string().required().messages({
         'string.base': MESSAGES.TRADE.COMMON.TITLE.BASE,
         'string.empty': MESSAGES.TRADE.COMMON.TITLE.REQUIRED,
@@ -24,14 +24,13 @@ export const createTradeValidator = async (req, res, next) => {
         'string.empty': MESSAGES.TRADE.COMMON.REGION.REQUIRED,
         'any.required': MESSAGES.TRADE.COMMON.REGION.REQUIRED,
       }),
-      img: Joi.array().min(1).required().messages({
-        'array.base': MESSAGES.TRADE.COMMON.IMG.BASE,
-        'array.min': MESSAGES.TRADE.COMMON.IMG.REQUIRED,
+      img: Joi.string().required().messages({
+        'string.base': MESSAGES.TRADE.COMMON.IMG.BASE,
+        'string.empty': MESSAGES.TRADE.COMMON.IMG.REQUIRED,
         'any.required': MESSAGES.TRADE.COMMON.IMG.REQUIRED,
       }),
     });
-    await createTradeSchema.validateAsync(req.body);
-    next();
+    await updateTradeSchema.validateAsync(req.body);
   } catch (err) {
     next(err);
   }

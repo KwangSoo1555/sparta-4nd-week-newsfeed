@@ -110,6 +110,7 @@ export const MESSAGES = {
       SUCCEED: '상품 게시글 작성에 성공했습니다.',
     },
     READ: {
+      SUCCEED: '상품 게시글 조회에 성공했습니다.',
       NOT_FOUND: 'There are currently no posts registered.',
     },
     UPDATE: {
@@ -122,9 +123,6 @@ export const MESSAGES = {
     },
   },
   COMMENT: {
-    SIGN_IN_CHECK: {
-      REQUIRED: '로그인이 필요합니다.',
-    },
     LENGTH_CHECK: {
       BASE: '댓글은 1자 이상 작성해주세요.',
       REQUIRED: '댓글은 300자를 초과할 수 없습니다.',
