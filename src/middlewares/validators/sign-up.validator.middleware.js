@@ -51,7 +51,7 @@ export const signUpValidator = async (req, res, next) => {
           'string.empty': MESSAGES.USER.COMMON.GENDER.REQUIRED,
           'any.only': MESSAGES.USER.COMMON.GENDER.ONLY,
         }),
-      verificationCode: Joi.number().required().messages({
+      VERIFICATION_CODE: Joi.number().required().messages({
         'number.base': MESSAGES.USER.SIGN_UP.VERIFICATION_CODE.BASE,
         'number.empty': MESSAGES.USER.SIGN_UP.VERIFICATION_CODE.REQUIRED,
         'any.required': MESSAGES.USER.SIGN_UP.VERIFICATION_CODE.REQUIRED,

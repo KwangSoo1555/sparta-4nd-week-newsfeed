@@ -1,11 +1,9 @@
 import express from 'express';
-import dotenv from 'dotenv';
+import 'dotenv/config';
 import router from './routers/index.js';
 import { prisma } from './utils/prisma.util.js'; // 연결 테스트용, 나중에 지울 것
 import session from 'express-session';
 import errorHandlingMiddleware from './middlewares/error-handling.middleware.js';
-
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT;
