@@ -29,25 +29,32 @@ router.post('/sign-in', signInValidator, async (req, res, next) => {
         .status(HTTP_STATUS.UNAUTHORIZED)
         .json({ status: HTTP_STATUS.UNAUTHORIZED, message: MESSAGES.AUTH.COMMON.UNAUTHORIZED });
     }
-    // accessToken 생성
-    const accessToken = jwt.sign({ id: user.id }, process.env.ACCESS_TOKEN_SECRET_KEY, {
-      expiresIn: ACCESS_TOKEN_EXPIRED_IN,
-    });
+    const payload = { id: user.id };
+    const generateToken = async (payload) => {
+      const userId = payload.id;
+      // accessToken 생성
+      const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET_KEY, {
+        expiresIn: ACCESS_TOKEN_EXPIRED_IN,
+      });
 
-    // refreshToken 생성
-    const refreshToken = jwt.sign({ id: user.id }, process.env.REFRESH_TOKEN_SECRET_KEY, {
-      expiresIn: REFRESH_TOKEN_EXPIRED_IN,
-    });
-    // refreshToken bcrypt로 해쉬하기
-    // salt round 값 환경변수, 상수로 변경하기
-    const hashedRefreshToken = await bcrypt.hash(refreshToken, HASH_SALT);
+      // refreshToken 생성
+      const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET_KEY, {
+        expiresIn: REFRESH_TOKEN_EXPIRED_IN,
+      });
+      // refreshToken bcrypt로 해쉬하기
+      // salt round 값 환경변수, 상수로 변경하기
+      const hashedRefreshToken = await bcrypt.hash(refreshToken, HASH_SALT);
 
-    // 서버에 토큰 저장
-    await prisma.refreshToken.upsert({
-      where: { userId: user.id },
-      update: { refreshToken: hashedRefreshToken },
-      create: { userId: user.id, refreshToken: hashedRefreshToken },
-    });
+      // 서버에 토큰 저장
+      await prisma.refreshToken.upsert({
+        where: { userId },
+        update: { refreshToken: hashedRefreshToken },
+        create: { userId, refreshToken: hashedRefreshToken },
+      });
+      return payload;
+    };
+    generateToken(payload);
+
     return res.status(HTTP_STATUS.OK).json({
       status: HTTP_STATUS.OK,
       message: '로그인에 성공하였습니다',
