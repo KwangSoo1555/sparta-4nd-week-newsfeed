@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { prisma } from '../utils/prisma.util.js';
+import { prisma } from './prisma.util.js';
 import { AUTH_CONSTANT } from '../constants/auth.constant.js';
 
 export const generateToken = async (payload) => {
