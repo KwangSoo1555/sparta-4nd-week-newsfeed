@@ -3,8 +3,8 @@ import { Strategy as KakaoStrategy } from 'passport-kakao';
 import { prisma } from '../utils/prisma.util.js';
 import 'dotenv/config';
 
-const KAKAO_CLIENT_ID = 'ddd0ad7dd5b59d5ebe52830bdd9074c0';
-const CALLBACK_URL = 'http://localhost:3333/api/auth/kakao/oauth';
+const KAKAO_CLIENT_ID = process.env.KAKAO_CLIENT_ID;
+const CALLBACK_URL = process.env.KAKAO_CALLBACK_URL;
 
 passport.use(
   new KakaoStrategy(
@@ -41,7 +41,6 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser(async (id, done) => {
-  console.log('11111111');
   try {
     const user = await prisma.user.findFirst({
       where: { id: id },
