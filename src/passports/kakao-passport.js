@@ -9,8 +9,10 @@ passport.use(
       clientID: process.env.KAKAO_CLIENT_ID,
       callbackURL: process.env.KAKAO_CALLBACK_URL,
     },
+
     async (accessToken, refreshToken, profile, done) => {
       try {
+        profile.id = String(profile.id);
         let user = await prisma.user.findFirst({
           where: { socialId: profile.id },
         });
@@ -49,4 +51,4 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-export default passport;
+export { passport as kakaoPassport };

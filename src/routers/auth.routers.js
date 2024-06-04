@@ -7,7 +7,7 @@ import { signInValidator } from '../middlewares/validators/sign-in.validator.mid
 import { refreshTokenValidator } from '../middlewares/require-refresh-token.middleware.js';
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
-import passport from '../passports/kakao-passport.js';
+import { kakaoPassport } from '../passports/kakao-passport.js';
 import {
   ACCESS_TOKEN_EXPIRED_IN,
   REFRESH_TOKEN_EXPIRED_IN,
@@ -23,10 +23,10 @@ router.get('/fail', async (req, res, next) => {
 });
 
 // 카카오 소셜 로그인 - 기존 access, refresh jwt 토큰 기반의 미들웨어 인증을 공유하기 위해 기존 토큰 발급 로직 활용
-router.get('/kakao', passport.authenticate('kakao'));
+router.get('/kakao', kakaoPassport.authenticate('kakao'));
 router.get(
   '/kakao/oauth',
-  passport.authenticate('kakao', {
+  kakaoPassport.authenticate('kakao', {
     failureRedirect: '/api/auth/fail',
   }),
   async (req, res) => {
