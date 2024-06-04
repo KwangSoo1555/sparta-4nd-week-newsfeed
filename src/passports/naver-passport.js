@@ -1,15 +1,14 @@
 import passport from "passport";
 import 'dotenv/config';
-import { Strategy as NaverStrategy } from 'passport-kakao';
+import { Strategy as NaverStrategy } from 'passport-naver';
 import { prisma } from '../utils/prisma.util.js';
-
-const CALLBACK_URL = 'http://localhost:3333/api/auth/naver/oauth';
 
 passport.use(
     new NaverStrategy(
         {
             clientID: process.env.NAVER_CLIENT_ID,
             clientSecret: process.env.NAVER_CLIENT_SECRET,
+            callbackURL : process.env.NAVER_CALLBACK_URL
         },
         async (accessToken, refreshToken, profile, done) => {
             try {
@@ -19,7 +18,7 @@ passport.use(
                 if (!user) {
                     user = await prisma.user.create({
                         data: {
-                            email: profile._json.naver_account.email,
+                            email: profile._json.email,
                             nickname: profile.displayName,
                             socialId: profile.id,
                             provider: 'NAVER',
@@ -34,4 +33,18 @@ passport.use(
     )
 );
 
-export default passport
+passport.serializeUser((user, done) => {
+    done(null, user.id);
+});
+
+// Deserialize user from the session
+passport.deserializeUser(async (id, done) => {
+    try {
+        const user = await prisma.user.findUnique({ where: { id } });
+        done(null, user);
+    } catch (error) {
+        done(error);
+    }
+});
+
+export { passport as naverPassport }
