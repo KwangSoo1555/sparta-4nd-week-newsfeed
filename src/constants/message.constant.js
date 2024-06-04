@@ -122,6 +122,11 @@ export const MESSAGES = {
       NOT_FOUND: `The post doesn't exist.`,
       SUCCESS: 'Deletion is complete.',
     },
+    LIKE: {
+      SUCCEED: '게시글 좋아요에 성공했습니다.',
+      NO_PERMISSION: '본인의 게시글에 좋아요 할 수 없습니다.',
+      DUPLICATED: '이미 좋아요를 눌렀습니다.',
+    },
   },
 
   COMMENT: {
