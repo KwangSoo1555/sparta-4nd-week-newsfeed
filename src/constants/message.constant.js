@@ -122,4 +122,29 @@ export const MESSAGES = {
       SUCCESS: 'Deletion is complete.',
     },
   },
+  
+  COMMENT: {
+    LENGTH_CHECK: {
+      BASE: '댓글은 1자 이상 작성해주세요.',
+      REQUIRED: '댓글은 300자를 초과할 수 없습니다.',
+    },
+    CREATE: {
+      SUCCEED: '상품 댓글 작성에 성공했습니다.',
+    },
+    READ: {
+      NOT_FOUND: `찾으시는 댓글이 없습니다. 다시 한 번 확인해주세요.`,
+      SUCCEED: '상품 댓글 조회에 성공했습니다.',
+    },
+    UPDATE: {
+      BASE: '댓글은 1자 이상 작성해주세요.',
+      REQUIRED: '댓글은 300자를 초과할 수 없습니다.',
+      NO_CHANGE: '댓글이 수정되지 않았습니다. 다시 한 번 확인해주세요.',
+      NOT_FOUND: `찾으시는 댓글이 없습니다. 다시 한 번 확인해주세요.`,
+      SUCCEED: '상품 댓글이 정상적으로 수정되었습니다.',
+    },
+    DELETE: {
+      NOT_FOUND: `찾으시는 댓글이 없습니다. 다시 한 번 확인해주세요.`,
+      SUCCEED: '상품 댓글이 정상적으로 삭제되었습니다.',
+    },
+  },
 };
