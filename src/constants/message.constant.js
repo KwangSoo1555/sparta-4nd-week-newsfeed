@@ -111,18 +111,19 @@ export const MESSAGES = {
     },
     READ: {
       SUCCEED: '상품 게시글 조회에 성공했습니다.',
-      NOT_FOUND: 'There are currently no posts registered.',
+      NOT_FOUND: `The post doesn't exist.`,
     },
     UPDATE: {
-      NO_CHANGE: 'One of them needs to be changed.',
       SUCCESS: 'Change is complete.',
+      NOT_FOUND: `The post doesn't exist.`,
+      NO_CHANGE: 'One of them needs to be changed.',
     },
     DELETE: {
       NOT_FOUND: `The post doesn't exist.`,
       SUCCESS: 'Deletion is complete.',
     },
   },
-  
+
   COMMENT: {
     LENGTH_CHECK: {
       BASE: '댓글은 1자 이상 작성해주세요.',
