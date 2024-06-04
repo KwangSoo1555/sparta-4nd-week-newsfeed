@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { AUTH_CONSTANT } from '../constants/auth.constant.js';
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
-import { VERIFICATION_CODES, VERIFICATION_CODE } from '../utils/verificationNumber.util.js.js';
+import { VERIFICATION_CODES, VERIFICATION_CODE } from '../utils/verification-number.util.js';
 
 const router = express.Router();
 

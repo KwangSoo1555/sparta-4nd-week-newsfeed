@@ -2,7 +2,7 @@ import express from 'express';
 
 import { naverPassport } from '../passports/naver-passport.js';
 import { kakaoPassport } from '../passports/kakao-passport.js';
-import { generateToken } from '../utils/generateToken.util.js';
+import { generateToken } from '../utils/generate-token.util.js';
 
 const router = express.Router();
 
@@ -13,7 +13,9 @@ router.get('/fail', async (req, res, next) => {
 
 // 카카오 소셜 로그인 - 기존 access, refresh jwt 토큰 기반의 미들웨어 인증을 공유하기 위해 기존 토큰 발급 로직 활용
 router.get('/kakao', kakaoPassport.authenticate('kakao'));
-router.get('/kakao/oauth', kakaoPassport.authenticate('kakao', {
+router.get(
+  '/kakao/oauth',
+  kakaoPassport.authenticate('kakao', {
     failureRedirect: '/api/auth/fail',
   }),
   async (req, res) => {
@@ -32,7 +34,9 @@ router.get('/kakao/oauth', kakaoPassport.authenticate('kakao', {
 
 // 네이버 소셜 로그인
 router.get('/naver', naverPassport.authenticate('naver'));
-router.get('/naver/oauth', naverPassport.authenticate('naver', {
+router.get(
+  '/naver/oauth',
+  naverPassport.authenticate('naver', {
     failureRedirect: '/api/auth/fail',
   }),
   async (req, res) => {

@@ -6,7 +6,7 @@ import { signInValidator } from '../middlewares/validators/sign-in.validator.mid
 import { refreshTokenValidator } from '../middlewares/require-refresh-token.middleware.js';
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
-import { generateToken } from '../utils/generateToken.util.js';
+import { generateToken } from '../utils/generate-token.util.js';
 
 const router = express.Router();
 

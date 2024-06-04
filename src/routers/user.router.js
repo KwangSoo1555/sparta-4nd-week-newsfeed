@@ -7,7 +7,7 @@ import { AUTH_CONSTANT } from '../constants/auth.constant.js';
 import { accessTokenValidator } from '../middlewares/require-access-token.middleware.js';
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
-import { VERIFICATION_CODES } from '../utils/verificationNumber.util.js.js';
+import { VERIFICATION_CODES } from '../utils/verification-number.util.js';
 
 const router = express.Router();
 
