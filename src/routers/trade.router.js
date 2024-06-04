@@ -2,7 +2,7 @@ import express, { Router } from 'express';
 import { prisma } from '../utils/prisma.util.js';
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
-import { sort } from '../constants/trade.constant.js';
+import { SORT } from '../constants/trade.constant.js';
 import { accessTokenValidator } from '../middlewares/require-access-token.middleware.js';
 import { createTradeValidator } from '../middlewares/validators/create-trade.validator.middleware.js';
 import { updateTradeValidator } from '../middlewares/validators/update-trade.validator.middleware.js';
@@ -54,15 +54,15 @@ tradeRouter.get('/', async (req, res) => {
   // like 정렬 쿼리가 있으면 좋아요 순으로 정렬
   if (sortLike) {
     // 시간 순 정렬 기본 값 설정
-    if (sortLike !== sort.desc && sortLike !== sort.asc) {
-      sortLike = sort.desc;
+    if (sortLike !== SORT.desc && sortLike !== SORT.asc) {
+      sortLike = SORT.desc;
     }
     // 같은 좋아요가 있는 경우 최신순으로 정렬
-    type = [{ likedBy: { _count: sortLike } }, { createdAt: sort.desc }];
+    type = [{ likedBy: { _count: sortLike } }, { createdAt: SORT.desc }];
   } else {
     // 좋아요 순 정렬 기본 값 설정 (상세한 내용은 회의가 필요)
-    if (sortDate !== sort.desc && sortDate !== sort.asc) {
-      sortDate = sort.desc;
+    if (sortDate !== SORT.desc && sortDate !== SORT.asc) {
+      sortDate = SORT.desc;
     }
     type = { createdAt: sortDate };
   }
