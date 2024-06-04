@@ -95,7 +95,7 @@ router.patch('/update', accessTokenValidator, async (req, res, next) => {
     const { email, nickname, newPassword, currentPasswordCheck, region, age, gender, introduce } = req.body;
 
     const user = await prisma.user.findUnique({
-      where: {id: req.user.id}
+      where: { id: req.user.id }
     })
 
     const currentPassword = user.password
@@ -105,8 +105,8 @@ router.patch('/update', accessTokenValidator, async (req, res, next) => {
       nickname: nickname || user.nickname,
       region: region || user.region,
       age: age || user.age,
-      gender: gender || user.gender, 
-      introduce: introduce || user.introduce,  
+      gender: gender || user.gender,
+      introduce: introduce || user.introduce,
       password: currentPassword
     };
 
@@ -115,7 +115,7 @@ router.patch('/update', accessTokenValidator, async (req, res, next) => {
       const match = bcrypt.compare(currentPassword, currentPasswordCheck)
       if (!currentPasswordCheck || !match) {
         return res.status(HTTP_STATUS.BAD_REQUEST).json({
-          status: HTTP_STATUS.BAD_REQUEST, 
+          status: HTTP_STATUS.BAD_REQUEST,
           // message: 
         })
       }

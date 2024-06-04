@@ -14,12 +14,9 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        // console.log(profile._json?.kakao_account);
         let user = await prisma.user.findFirst({
           where: { socialId: profile.id },
         });
-        console.log(accessToken, refreshToken);
-        console.log('1111111111', profile.id);
         if (!user) {
           user = await prisma.user.create({
             data: {
@@ -40,7 +37,6 @@ passport.use(
 );
 
 passport.serializeUser((user, done) => {
-  console.log('111111111');
   done(null, user.id);
 });
 
