@@ -1,7 +1,6 @@
 import passport from 'passport';
 import { Strategy as KakaoStrategy } from 'passport-kakao';
 import { prisma } from '../utils/prisma.util.js';
-import 'dotenv/config';
 
 passport.use(
   new KakaoStrategy(
