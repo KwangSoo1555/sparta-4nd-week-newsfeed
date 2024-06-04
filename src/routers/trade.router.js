@@ -1,8 +1,8 @@
-import express from 'express';
+import express, { Router } from 'express';
 import { prisma } from '../utils/prisma.util.js';
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
-import { sort } from '../constants/trade.constant.js';
+import { SORT } from '../constants/trade.constant.js';
 import { accessTokenValidator } from '../middlewares/require-access-token.middleware.js';
 import { createTradeValidator } from '../middlewares/validators/create-trade.validator.middleware.js';
 import { updateTradeValidator } from '../middlewares/validators/update-trade.validator.middleware.js';
@@ -54,22 +54,22 @@ tradeRouter.get('/', async (req, res) => {
   // like 정렬 쿼리가 있으면 좋아요 순으로 정렬
   if (sortLike) {
     // 시간 순 정렬 기본 값 설정
-    if (sortLike !== sort.desc && sortLike !== sort.asc) {
-      sortLike = sort.desc;
+    if (sortLike !== SORT.desc && sortLike !== SORT.asc) {
+      sortLike = SORT.desc;
     }
     // 같은 좋아요가 있는 경우 최신순으로 정렬
-    type = [{ like: sortLike }, { createdAt: sort.desc }];
+    type = [{ likedBy: { _count: sortLike } }, { createdAt: SORT.desc }];
   } else {
     // 좋아요 순 정렬 기본 값 설정 (상세한 내용은 회의가 필요)
-    if (sortDate !== sort.desc && sortDate !== sort.asc) {
-      sortDate = sort.desc;
+    if (sortDate !== SORT.desc && sortDate !== SORT.asc) {
+      sortDate = SORT.desc;
     }
     type = { createdAt: sortDate };
   }
 
   // trade 테이블의 데이터 모두를 조회
   let trades = await prisma.trade.findMany({
-    include: { tradePicture: true, user: true },
+    include: { tradePicture: true, user: true, likedBy: true },
     orderBy: type,
     omit: { content: true },
   });
@@ -81,7 +81,7 @@ tradeRouter.get('/', async (req, res) => {
       title: trade.title,
       price: trade.price,
       region: trade.region,
-      like: trade.like,
+      like: trade.likedBy.length,
       createdAt: trade.createdAt,
       updatedAt: trade.updatedAt,
       tradePicture: trade.tradePicture.map((img) => img.imgUrl),
@@ -108,7 +108,7 @@ tradeRouter.get('/:tradeId', async (req, res) => {
   if (!trade) {
     return res
       .status(HTTP_STATUS.NOT_FOUND)
-      .json({ status: HTTP_STATUS.NOT_FOUND, message: MESSAGES.TRADE.READ.NOT_FOUND });
+      .json({ status: HTTP_STATUS.NOT_FOUND, message: MESSAGES.TRADE.COMMON.NOT_FOUND });
   }
 
   trade = {
@@ -117,7 +117,7 @@ tradeRouter.get('/:tradeId', async (req, res) => {
     title: trade.title,
     price: trade.price,
     region: trade.region,
-    like: trade.like,
+    like: trade.likedBy.length,
     createdAt: trade.createdAt,
     updatedAt: trade.updatedAt,
     tradePicture: trade.tradePicture.map((img) => img.imgUrl),
@@ -145,7 +145,7 @@ tradeRouter.patch(
       if (!trade) {
         return res
           .status(HTTP_STATUS.NOT_FOUND)
-          .json({ status: HTTP_STATUS.NOT_FOUND, message: MESSAGES.TRADE.UPDATE.NOT_FOUND });
+          .json({ status: HTTP_STATUS.NOT_FOUND, message: MESSAGES.TRADE.COMMON.NOT_FOUND });
       }
 
       // 수정할 내용 입력 받음
@@ -199,7 +199,7 @@ tradeRouter.delete('/:tradeId/delete', accessTokenValidator, async (req, res, ne
     if (!trade) {
       return res
         .status(HTTP_STATUS.NOT_FOUND)
-        .json({ status: HTTP_STATUS.NOT_FOUND, message: MESSAGES.TRADE.UPDATE.NOT_FOUND });
+        .json({ status: HTTP_STATUS.NOT_FOUND, message: MESSAGES.TRADE.COMMON.NOT_FOUND });
     }
 
     const deletedTradeId = await prisma.trade.delete({
@@ -211,6 +211,114 @@ tradeRouter.delete('/:tradeId/delete', accessTokenValidator, async (req, res, ne
       status: HTTP_STATUS.CREATED,
       message: MESSAGES.TRADE.DELETE.SUCCESS,
       data: { deletedTradeId },
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// 상품 게시글 좋아요 API
+tradeRouter.post('/:tradeId/like', accessTokenValidator, async (req, res, next) => {
+  try {
+    // 상품 게시글 ID 가져오기
+    const id = req.params.tradeId;
+
+    // 상품 조회하기
+    const trade = await prisma.trade.findFirst({ where: { id: +id }, include: { likedBy: true } });
+
+    // 데이터베이스 상 해당 상품 ID에 대한 정보가 없는 경우
+    if (!trade) {
+      return res
+        .status(HTTP_STATUS.NOT_FOUND)
+        .json({ status: HTTP_STATUS.NOT_FOUND, message: MESSAGES.TRADE.COMMON.NOT_FOUND });
+    }
+
+    // 사용자 본인의 게시글에는 좋아요 누르지 못하도록 함
+    if (trade.userId === req.user.id) {
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .json({ status: HTTP_STATUS.BAD_REQUEST, message: MESSAGES.TRADE.LIKE.NO_PERMISSION });
+    }
+
+    // 이미 좋아요를 누른 경우
+    const isDuplicatedLike = trade.likedBy.filter((user) => {
+      return user.id === req.user.id;
+    });
+    if (isDuplicatedLike.length !== 0) {
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .json({ status: HTTP_STATUS.BAD_REQUEST, message: MESSAGES.TRADE.LIKE.DUPLICATED });
+    }
+
+    // 사용자가 좋아요를 누르는 로직
+    const user = await prisma.user.update({
+      where: { id: req.user.id },
+      omit: { password: true },
+      data: {
+        likedTrade: {
+          connect: { id: trade.id },
+        },
+      },
+    });
+
+    return res.status(HTTP_STATUS.CREATED).json({
+      status: HTTP_STATUS.CREATED,
+      message: MESSAGES.TRADE.LIKE.SUCCEED,
+      data: { tradeId: trade.id, userId: user.id },
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// 상품 게시물 좋아요 취소 API
+tradeRouter.post('/:tradeId/unlike', accessTokenValidator, async (req, res, next) => {
+  try {
+    // 상품 게시물 ID 가져오기
+    const id = req.params.tradeId;
+
+    // 상품 조회하기
+    const trade = await prisma.trade.findFirst({ where: { id: +id }, include: { likedBy: true } });
+
+    // 데이터베이스 상 해당 상품 ID에 대한 정보가 없는 경우
+    if (!trade) {
+      return res
+        .status(HTTP_STATUS.NOT_FOUND)
+        .json({ status: HTTP_STATUS.NOT_FOUND, message: MESSAGES.TRADE.COMMON.NOT_FOUND });
+    }
+
+    // 사용자 본인의 게시글에는 좋아요 취소 누르지 못하도록 함
+    if (trade.userId === req.user.id) {
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .json({ status: HTTP_STATUS.BAD_REQUEST, message: MESSAGES.TRADE.UNLIKE.NO_PERMISSION });
+    }
+
+    // 이미 좋아요 취소를 누른 경우
+    const isDuplicatedUnlike = trade.likedBy.filter((user) => {
+      return user.id === req.user.id;
+    });
+    if (isDuplicatedUnlike.length === 0) {
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .json({ status: HTTP_STATUS.BAD_REQUEST, message: MESSAGES.TRADE.UNLIKE.NOT_LIKE });
+    }
+
+    // 사용자가 좋아요 취소를 누르는 로직
+    const user = await prisma.user.update({
+      where: { id: req.user.id },
+      omit: { password: true },
+      data: {
+        likedTrade: {
+          disconnect: { id: trade.id },
+        },
+      },
+    });
+
+    return res.status(HTTP_STATUS.CREATED).json({
+      status: HTTP_STATUS.CREATED,
+      message: MESSAGES.TRADE.UNLIKE.SUCCEED,
+      data: { tradeId: trade.id, userId: user.id },
     });
   } catch (err) {
     next(err);

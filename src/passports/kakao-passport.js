@@ -1,6 +1,7 @@
 import passport from 'passport';
 import { Strategy as KakaoStrategy } from 'passport-kakao';
 import { prisma } from '../utils/prisma.util.js';
+import { USER_CONSTANT } from '../constants/user-constant.js';
 
 passport.use(
   new KakaoStrategy(
@@ -22,7 +23,7 @@ passport.use(
               email: profile._json.kakao_account.email,
               nickname: profile.displayName,
               socialId: profile.id,
-              provider: 'KAKAO',
+              provider: USER_CONSTANT.USER_PROVIDER.KAKAO,
             },
           });
         }
