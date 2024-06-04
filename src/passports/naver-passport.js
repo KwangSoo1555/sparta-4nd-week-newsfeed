@@ -3,7 +3,7 @@ import 'dotenv/config';
 import { Strategy as NaverStrategy } from 'passport-kakao';
 import { prisma } from '../utils/prisma.util.js';
 
-const CALLBACK_URL = 'http://localhost:3333/api/auth/naver/callback';
+const CALLBACK_URL = 'http://localhost:3333/api/auth/naver/oauth';
 
 passport.use(
     new NaverStrategy(
