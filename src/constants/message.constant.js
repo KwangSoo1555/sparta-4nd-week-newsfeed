@@ -61,6 +61,8 @@ export const MESSAGES = {
       VERIFICATION_CODE: {
         BASE: '이메일 인증 코드는 정수입니다.',
         REQUIRED: '이메일 인증 코드를 입력해 주세요.',
+        INCONSISTENT: '발송된 인증 코드와 다릅니다.', 
+        SUCCEED: '메일 인증이 완료되었습니다.', 
       },
       SUCCEED: 'Sign-up succeed',
     },

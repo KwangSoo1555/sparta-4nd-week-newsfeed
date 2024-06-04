@@ -1,5 +1,5 @@
 import passport from "passport";
-import 'dotenv/config';
+
 import { Strategy as NaverStrategy } from 'passport-naver';
 import { prisma } from '../utils/prisma.util.js';
 

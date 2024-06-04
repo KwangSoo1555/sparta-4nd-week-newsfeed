@@ -1,7 +1,6 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import 'dotenv/config';
 
 import { prisma } from '../utils/prisma.util.js';
 import { naverPassport } from '../passports/naver-passport.js';
