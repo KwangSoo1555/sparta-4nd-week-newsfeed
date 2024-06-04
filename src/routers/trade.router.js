@@ -10,7 +10,7 @@ import { updateTradeValidator } from '../middlewares/validators/update-trade.val
 const tradeRouter = express.Router();
 
 // 상품 게시물 작성 API
-tradeRouter.post('/create', accessTokenValidator, createTradeValidator, async (req, res, next) => {
+tradeRouter.post('/', accessTokenValidator, createTradeValidator, async (req, res, next) => {
   try {
     // 유효성 검사 거치고 req.body 가져옴
     const { title, content, price, region, img } = req.body;
@@ -130,7 +130,7 @@ tradeRouter.get('/:tradeId', async (req, res) => {
 
 // 상품 게시물 수정 API
 tradeRouter.patch(
-  '/:tradeId/edit',
+  '/:tradeId',
   accessTokenValidator,
   updateTradeValidator,
   async (req, res, next) => {
@@ -187,7 +187,7 @@ tradeRouter.patch(
 );
 
 // 상품 게시물 삭제 API
-tradeRouter.delete('/:tradeId/delete', accessTokenValidator, async (req, res, next) => {
+tradeRouter.delete('/:tradeId', accessTokenValidator, async (req, res, next) => {
   try {
     // 게시물 ID 가져오기
     const id = req.params.tradeId;
