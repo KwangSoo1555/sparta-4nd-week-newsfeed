@@ -105,27 +105,30 @@ export const MESSAGES = {
         BASE: '이미지 URL은 문자열입니다.',
         REQUIRED: '이미지 URL을 입력해 주세요.',
       },
+      NOT_FOUND: `The post doesn't exist.`,
     },
     CREATE: {
       SUCCEED: '상품 게시글 작성에 성공했습니다.',
     },
     READ: {
       SUCCEED: '상품 게시글 조회에 성공했습니다.',
-      NOT_FOUND: `The post doesn't exist.`,
     },
     UPDATE: {
       SUCCESS: 'Change is complete.',
-      NOT_FOUND: `The post doesn't exist.`,
       NO_CHANGE: 'One of them needs to be changed.',
     },
     DELETE: {
-      NOT_FOUND: `The post doesn't exist.`,
       SUCCESS: 'Deletion is complete.',
     },
     LIKE: {
       SUCCEED: '게시글 좋아요에 성공했습니다.',
       NO_PERMISSION: '본인의 게시글에 좋아요 할 수 없습니다.',
       DUPLICATED: '이미 좋아요를 눌렀습니다.',
+    },
+    UNLIKE: {
+      SUCCEED: '게시글 좋아요 취소에 성공했습니다.',
+      NO_PERMISSION: '본인의 게시글에 좋아요 취소 할 수 없습니다.',
+      NOT_LIKE: '좋아요를 누르지 않았습니다.',
     },
   },
 
