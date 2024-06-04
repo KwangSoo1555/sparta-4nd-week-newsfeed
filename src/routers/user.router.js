@@ -7,7 +7,7 @@ import { HASH_SALT } from '../constants/auth.constant.js';
 import { accessTokenValidator } from '../middlewares/require-access-token.middleware.js';
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
-import { verificationCodes } from './auth-email.router.js'
+import { VERIFICATION_CODES } from '../constants/auth-email.constant.js';
 
 const router = express.Router();
 
@@ -21,21 +21,18 @@ router.post('/sign-up', signUpValidator, async (req, res, next) => {
       region,
       age,
       gender,
-      verificationCode
+      VERIFICATION_CODE
     } = req.body;
 
     let isVerifiedEmailCode = false;
-    for (const id in verificationCodes) {
-      if (verificationCodes[id].email === email && verificationCodes[id].code === verificationCode) {
+    for (const id in VERIFICATION_CODES) {
+      if (VERIFICATION_CODES[id].email === email && VERIFICATION_CODES[id].code === VERIFICATION_CODE) {
         isVerifiedEmailCode = true;
         break;
+      } else {
+        return res.status(HTTP_STATUS.UNAUTHORIZED).json({ message: MESSAGES.USER.SIGN_UP.VERIFICATION_CODE.INCONSISTENT });
       }
     };
-
-    if (!isVerifiedEmailCode) {
-      // 입력 메일 인증 코드랑 발송된 메일 인증 코드랑 다를 때 메세지 추가
-      return res.status(HTTP_STATUS.UNAUTHORIZED).json({ message: 'Invalid or expired verification code.' });
-    }
 
     const isExistUser = await prisma.user.findFirst({
       where: { OR: [{ nickname }, { email }] },
@@ -66,6 +63,7 @@ router.post('/sign-up', signUpValidator, async (req, res, next) => {
       },
     });
 
+    //omit
     const { password: _, ...userWithoutPassword } = userCreate;
 
     return res.status(HTTP_STATUS.CREATED).json({
