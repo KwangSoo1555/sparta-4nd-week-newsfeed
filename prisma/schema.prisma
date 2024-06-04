@@ -51,7 +51,8 @@ enum GenderType {
 enum ProviderType {
   LOCAL
   KAKAO
-  GOOLE
+  GOOGLE
+  NAVER
 }
 
 // 역할
