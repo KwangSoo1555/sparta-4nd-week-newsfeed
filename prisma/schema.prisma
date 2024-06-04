@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  url      = env("MYSQL")
 }
 
 model User {
@@ -29,8 +29,27 @@ model User {
   tradeComment      TradeComment[]
   likedTradeComment TradeComment[] @relation("trade_comment_like")
   likedTrade        Trade[]        @relation("trade_like")
+  follow  Follow[]
+  
 
   @@map("user")
+}
+
+model Follow {
+  id Int @id @default(autoincrement())
+  user User @relation(fields: [userNickname], references: [nickname], onDelete: Cascade)
+  userNickname String @unique @map("user_nickname")
+  relationship Relationship @default(NORELATION) @map("relationship")
+
+  @@map("follow")
+}
+
+enum Relationship {
+  NORELATION
+  FOLLOWING
+  FOLLOWER
+  FOLLOWME
+  UNFOLLOW
 }
 
 model RefreshToken {
