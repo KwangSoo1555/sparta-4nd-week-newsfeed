@@ -60,9 +60,10 @@ export const accessTokenValidator = async (req, res, next) => {
         message: MESSAGES.AUTH.COMMON.JWT.NO_USER,
       });
     }
+    // bigint 값 json으로 변환 가능하게끔 숫자값으로 변경
+    user.socialId = Number(user.socialId);
     // 인증 통과 시 유저 정보 req.user로 넘기기(password 제외)
     req.user = user;
-    
     next();
   } catch (err) {
     next(err);
