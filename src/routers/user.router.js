@@ -16,13 +16,11 @@ router.post('/sign-up', signUpValidator, async (req, res, next) => {
     const { email, nickname, password, passwordCheck, region, age, gender, VERIFICATION_CODE } =
       req.body;
 
-    let isVerifiedEmailCode = false;
     for (const id in VERIFICATION_CODES) {
       if (
         VERIFICATION_CODES[id].email === email &&
         VERIFICATION_CODES[id].code === VERIFICATION_CODE
       ) {
-        isVerifiedEmailCode = true;
         break;
       } else {
         return res
@@ -116,9 +114,9 @@ router.patch('/update', accessTokenValidator, async (req, res, next) => {
     if (newPassword) {
       const match = bcrypt.compare(currentPassword, currentPasswordCheck);
       if (!currentPasswordCheck || !match) {
-        return res.status(HTTP_STATUS.BAD_REQUEST).json({
-          status: HTTP_STATUS.BAD_REQUEST,
-          // message:
+        return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+          status: HTTP_STATUS.UNAUTHORIZED,
+          message: MESSAGES.USER.COMMON.PASSWORD.INCONSISTENT, 
         });
       }
       updatedData.password = await bcrypt.hash(newPassword, AUTH_CONSTANT.HASH_SALT);
