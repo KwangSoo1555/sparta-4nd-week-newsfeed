@@ -58,7 +58,7 @@ tradeRouter.get('/', async (req, res) => {
       sortLike = sort.desc;
     }
     // 같은 좋아요가 있는 경우 최신순으로 정렬
-    type = [{ like: sortLike }, { createdAt: sort.desc }];
+    type = [{ likedBy: { _count: sortLike } }, { createdAt: sort.desc }];
   } else {
     // 좋아요 순 정렬 기본 값 설정 (상세한 내용은 회의가 필요)
     if (sortDate !== sort.desc && sortDate !== sort.asc) {
@@ -69,7 +69,7 @@ tradeRouter.get('/', async (req, res) => {
 
   // trade 테이블의 데이터 모두를 조회
   let trades = await prisma.trade.findMany({
-    include: { tradePicture: true, user: true },
+    include: { tradePicture: true, user: true, likedBy: true },
     orderBy: type,
     omit: { content: true },
   });
@@ -81,7 +81,7 @@ tradeRouter.get('/', async (req, res) => {
       title: trade.title,
       price: trade.price,
       region: trade.region,
-      like: trade.like,
+      like: trade.likedBy.length,
       createdAt: trade.createdAt,
       updatedAt: trade.updatedAt,
       tradePicture: trade.tradePicture.map((img) => img.imgUrl),
@@ -117,7 +117,7 @@ tradeRouter.get('/:tradeId', async (req, res) => {
     title: trade.title,
     price: trade.price,
     region: trade.region,
-    like: trade.like,
+    like: trade.likedBy.length,
     createdAt: trade.createdAt,
     updatedAt: trade.updatedAt,
     tradePicture: trade.tradePicture.map((img) => img.imgUrl),
