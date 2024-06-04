@@ -1,60 +1,61 @@
 import express from 'express';
-import nodemailer from "nodemailer";
-import 'dotenv/config';
+import nodemailer from 'nodemailer';
 
 import { v4 as uuidv4 } from 'uuid';
-import { AUTH_EMAIL } from '../constants/auth-email.constant.js';
+import { AUTH_CONSTANT } from '../constants/auth.constant.js';
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
+import { VERIFICATION_CODES, VERIFICATION_CODE } from '../utils/verification-number.util.js';
 
 const router = express.Router();
 
 const smtpTransport = nodemailer.createTransport({
-    pool: true,
-    maxConnections: process.env.MAIL_MAX_CONNECTION,
-    service: process.env.MAIL_SERVICE,
-    host: process.env.MAIL_HOST,
-    port: process.env.MAIL_PORT,
-    secure: false,
-    requireTLS: true,
-    auth: {
-        user: process.env.MAIL_AUTH_USER,
-        pass: process.env.MAIL_AUTH_PASS
-    },
-    tls: {
-        rejectUnauthorized: false
-    }
+  pool: true,
+  maxConnections: process.env.MAIL_MAX_CONNECTION,
+  service: process.env.MAIL_SERVICE,
+  host: process.env.MAIL_HOST,
+  port: process.env.MAIL_PORT,
+  secure: false,
+  requireTLS: true,
+  auth: {
+    user: process.env.MAIL_AUTH_USER,
+    pass: process.env.MAIL_AUTH_PASS,
+  },
+  tls: {
+    rejectUnauthorized: false,
+  },
 });
 
-const generateRandomNumber = (min, max) => {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-export const verificationCodes = {};
-
 router.post('/auth-email', async (req, res, next) => {
-    try {
-        const { email } = req.body;
-        const verificationCode = generateRandomNumber(111111, 999999);
-        const verificationId = uuidv4();
+  try {
+    const { email } = req.body;
 
-        verificationCodes[verificationId] = { email, code: verificationCode };
+    const verificationId = uuidv4();
 
-        const mailOptions = {
-            from: AUTH_EMAIL.OPTION.FROM,
-            to: email,
-            subject: AUTH_EMAIL.OPTION.SUBJECT,
-            html: `<h1>AUTH_EMAIL.OPTION.HTML</h1><p>${verificationCode}</p>`
-        };
+    VERIFICATION_CODES[verificationId] = { email, code: VERIFICATION_CODE };
 
-        await smtpTransport.sendMail(mailOptions);
+    const mailOptions = {
+      from: AUTH_CONSTANT.AUTH_EMAIL.FROM,
+      to: email,
+      subject: AUTH_CONSTANT.AUTH_EMAIL.SUBJECT,
+      html: `<h1>AUTH_CONSTANT.AUTH_EMAIL.HTML</h1><p>${VERIFICATION_CODE}</p>`,
+    };
 
-        console.log(verificationCodes[verificationId].code)
+    await smtpTransport.sendMail(mailOptions);
 
-        res.json({ OK: true, message: MESSAGES.AUTH.MAIL.SUCCEED, verificationId });
-    } catch (error) {
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ OK: false, message: MESSAGES.AUTH.MAIL.FAIL });
-    }
+    console.log(VERIFICATION_CODES[verificationId].code);
+
+    res.status(HTTP_STATUS.OK).json({
+      status: HTTP_STATUS.OK,
+      message: MESSAGES.AUTH.MAIL.SUCCEED,
+      data: VERIFICATION_CODES,
+    });
+  } catch (error) {
+    res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      message: MESSAGES.AUTH.MAIL.FAIL,
+    });
+  }
 });
 
 export default router;

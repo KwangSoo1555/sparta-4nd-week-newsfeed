@@ -62,7 +62,6 @@ export const accessTokenValidator = async (req, res, next) => {
     }
     // 인증 통과 시 유저 정보 req.user로 넘기기(password 제외)
     req.user = user;
-    
     next();
   } catch (err) {
     next(err);

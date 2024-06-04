@@ -1,33 +1,29 @@
 import passport from 'passport';
 import { Strategy as KakaoStrategy } from 'passport-kakao';
 import { prisma } from '../utils/prisma.util.js';
-
-const KAKAO_CLIENT_ID = 'ddd0ad7dd5b59d5ebe52830bdd9074c0';
-const KAKAO_CLIENT_SECRET = 'YOUR_KAKAO_CLIENT_SECRET';
-const CALLBACK_URL = 'http://localhost:3333/api/auth/kakao/oauth';
+import { USER_CONSTANT } from '../constants/user-constant.js';
 
 passport.use(
   new KakaoStrategy(
     {
-      clientID: KAKAO_CLIENT_ID,
-      callbackURL: CALLBACK_URL,
+      clientID: process.env.KAKAO_CLIENT_ID,
+      callbackURL: process.env.KAKAO_CALLBACK_URL,
     },
+
     async (accessToken, refreshToken, profile, done) => {
       try {
-        // console.log(profile._json?.kakao_account);
+        profile.id = String(profile.id);
         let user = await prisma.user.findFirst({
           where: { socialId: profile.id },
         });
-        console.log(accessToken, refreshToken);
-        console.log('1111111111', profile.id);
+
         if (!user) {
           user = await prisma.user.create({
             data: {
               email: profile._json.kakao_account.email,
               nickname: profile.displayName,
               socialId: profile.id,
-              // provider: profile.provider,
-              provider: 'KAKAO',
+              provider: USER_CONSTANT.USER_PROVIDER.KAKAO,
             },
           });
         }
@@ -40,7 +36,6 @@ passport.use(
 );
 
 passport.serializeUser((user, done) => {
-  console.log('111111111');
   done(null, user.id);
 });
 
@@ -49,10 +44,11 @@ passport.deserializeUser(async (id, done) => {
     const user = await prisma.user.findFirst({
       where: { id: id },
     });
+    console.log('1111');
     done(null, user);
   } catch (err) {
     done(err);
   }
 });
 
-export default passport;
+export { passport as kakaoPassport };

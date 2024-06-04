@@ -61,6 +61,8 @@ export const MESSAGES = {
       VERIFICATION_CODE: {
         BASE: '이메일 인증 코드는 정수입니다.',
         REQUIRED: '이메일 인증 코드를 입력해 주세요.',
+        INCONSISTENT: '발송된 인증 코드와 다릅니다.',
+        SUCCEED: '메일 인증이 완료되었습니다.',
       },
       SUCCEED: 'Sign-up succeed',
     },
@@ -105,45 +107,52 @@ export const MESSAGES = {
         BASE: '이미지 URL은 문자열입니다.',
         REQUIRED: '이미지 URL을 입력해 주세요.',
       },
+      NOT_FOUND: `The post doesn't exist.`,
     },
     CREATE: {
       SUCCEED: '상품 게시글 작성에 성공했습니다.',
     },
     READ: {
       SUCCEED: '상품 게시글 조회에 성공했습니다.',
-      NOT_FOUND: 'There are currently no posts registered.',
     },
     UPDATE: {
-      NO_CHANGE: 'One of them needs to be changed.',
       SUCCESS: 'Change is complete.',
+      NO_CHANGE: 'One of them needs to be changed.',
     },
     DELETE: {
-      NOT_FOUND: `The post doesn't exist.`,
       SUCCESS: 'Deletion is complete.',
     },
+    LIKE: {
+      SUCCEED: '게시글 좋아요에 성공했습니다.',
+      NO_PERMISSION: '본인의 게시글에 좋아요 할 수 없습니다.',
+      DUPLICATED: '이미 좋아요를 눌렀습니다.',
+    },
+    UNLIKE: {
+      SUCCEED: '게시글 좋아요 취소에 성공했습니다.',
+      NO_PERMISSION: '본인의 게시글에 좋아요 취소 할 수 없습니다.',
+      NOT_LIKE: '좋아요를 누르지 않았습니다.',
+    },
   },
-  
+
   COMMENT: {
-    LENGTH_CHECK: {
-      BASE: '댓글은 1자 이상 작성해주세요.',
-      REQUIRED: '댓글은 300자를 초과할 수 없습니다.',
+    COMMON: {
+      BASE: '댓글은 문자열입니다.',
+      MIN: '댓글을 1자 이상 작성해주세요.',
+      MAX: '댓글은 300자를 초과할 수 없습니다.',
+      REQUIRED: '댓글을 입력해 주세요.',
     },
     CREATE: {
       SUCCEED: '상품 댓글 작성에 성공했습니다.',
     },
     READ: {
-      NOT_FOUND: `찾으시는 댓글이 없습니다. 다시 한 번 확인해주세요.`,
       SUCCEED: '상품 댓글 조회에 성공했습니다.',
     },
     UPDATE: {
-      BASE: '댓글은 1자 이상 작성해주세요.',
-      REQUIRED: '댓글은 300자를 초과할 수 없습니다.',
-      NO_CHANGE: '댓글이 수정되지 않았습니다. 다시 한 번 확인해주세요.',
-      NOT_FOUND: `찾으시는 댓글이 없습니다. 다시 한 번 확인해주세요.`,
+      NOT_FOUND: '찾으시는 댓글이 없습니다. 다시 한 번 확인해주세요.',
       SUCCEED: '상품 댓글이 정상적으로 수정되었습니다.',
     },
     DELETE: {
-      NOT_FOUND: `찾으시는 댓글이 없습니다. 다시 한 번 확인해주세요.`,
+      NOT_FOUND: '찾으시는 댓글이 없습니다. 다시 한 번 확인해주세요.',
       SUCCEED: '상품 댓글이 정상적으로 삭제되었습니다.',
     },
   },
