@@ -217,4 +217,58 @@ tradeRouter.delete('/:tradeId/delete', accessTokenValidator, async (req, res, ne
   }
 });
 
+// 상품 게시글 좋아요 API
+tradeRouter.post('/:tradeId/like', accessTokenValidator, async (req, res, next) => {
+  try {
+    // 상품 게시글 ID 가져오기
+    const id = req.params.tradeId;
+
+    // 상품 조회하기
+    const trade = await prisma.trade.findFirst({ where: { id: +id }, include: { likedBy: true } });
+
+    // 데이터베이스 상 해당 상품 ID에 대한 정보가 없는 경우
+    if (!trade) {
+      return res
+        .status(HTTP_STATUS.NOT_FOUND)
+        .json({ status: HTTP_STATUS.NOT_FOUND, message: MESSAGES.TRADE.UPDATE.NOT_FOUND });
+    }
+
+    // 사용자 본인의 게시글에는 좋아요 누르지 못하도록 함
+    if (trade.userId === req.user.id) {
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .json({ status: HTTP_STATUS.BAD_REQUEST, message: MESSAGES.TRADE.LIKE.NO_PERMISSION });
+    }
+
+    // 이미 좋아요를 누른 경우
+    const isDuplicatedLike = trade.likedBy.filter((user) => {
+      return user.id === req.user.id;
+    });
+    if (isDuplicatedLike.length !== 0) {
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .json({ status: HTTP_STATUS.BAD_REQUEST, message: MESSAGES.TRADE.LIKE.DUPLICATED });
+    }
+
+    // 사용자가 좋아요를 누르는 로직
+    const user = await prisma.user.update({
+      where: { id: req.user.id },
+      omit: { password: true },
+      data: {
+        likedTrade: {
+          connect: { id: trade.id },
+        },
+      },
+    });
+
+    return res.status(HTTP_STATUS.CREATED).json({
+      status: HTTP_STATUS.CREATED,
+      message: MESSAGES.TRADE.LIKE.SUCCEED,
+      data: { tradeId: trade.id, userId: user.id },
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
 export default tradeRouter;
