@@ -1,9 +1,9 @@
 import passport from 'passport';
 import { Strategy as KakaoStrategy } from 'passport-kakao';
 import { prisma } from '../utils/prisma.util.js';
+import 'dotenv/config';
 
 const KAKAO_CLIENT_ID = 'ddd0ad7dd5b59d5ebe52830bdd9074c0';
-const KAKAO_CLIENT_SECRET = 'YOUR_KAKAO_CLIENT_SECRET';
 const CALLBACK_URL = 'http://localhost:3333/api/auth/kakao/oauth';
 
 passport.use(
@@ -14,19 +14,16 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        // console.log(profile._json?.kakao_account);
         let user = await prisma.user.findFirst({
           where: { socialId: profile.id },
         });
-        console.log(accessToken, refreshToken);
-        console.log('1111111111', profile.id);
+
         if (!user) {
           user = await prisma.user.create({
             data: {
               email: profile._json.kakao_account.email,
               nickname: profile.displayName,
               socialId: profile.id,
-              // provider: profile.provider,
               provider: 'KAKAO',
             },
           });
@@ -40,11 +37,11 @@ passport.use(
 );
 
 passport.serializeUser((user, done) => {
-  console.log('111111111');
   done(null, user.id);
 });
 
 passport.deserializeUser(async (id, done) => {
+  console.log('11111111');
   try {
     const user = await prisma.user.findFirst({
       where: { id: id },
