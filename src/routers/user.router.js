@@ -7,7 +7,7 @@ import { AUTH_CONSTANT } from '../constants/auth.constant.js';
 import { accessTokenValidator } from '../middlewares/require-access-token.middleware.js';
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
-import { VERIFICATION_CODES } from '../utils/verification-number.util.js';
+import { EmailVerificationUtil } from '../utils/email-verification.util.js';
 
 const router = express.Router();
 
@@ -16,10 +16,10 @@ router.post('/sign-up', signUpValidator, async (req, res, next) => {
     const { email, nickname, password, passwordCheck, region, age, gender, VERIFICATION_CODE } =
       req.body;
 
-    for (const id in VERIFICATION_CODES) {
+    for (const idx in EmailVerificationUtil.codes) {
       if (
-        VERIFICATION_CODES[id].email === email &&
-        VERIFICATION_CODES[id].code === VERIFICATION_CODE
+        EmailVerificationUtil.codes[idx].email === email &&
+        EmailVerificationUtil.codes[idx].code === VERIFICATION_CODE
       ) {
         break;
       } else {

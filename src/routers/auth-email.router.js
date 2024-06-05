@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { AUTH_CONSTANT } from '../constants/auth.constant.js';
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
-import { VERIFICATION_CODES, VERIFICATION_CODE } from '../utils/verification-number.util.js';
+import { EmailVerificationUtil } from '../utils/email-verification.util.js';
 
 const router = express.Router();
 
@@ -31,24 +31,25 @@ router.post('/auth-email', async (req, res, next) => {
     const { email } = req.body;
 
     const verificationId = uuidv4();
+    const verificationCode = EmailVerificationUtil.codeIssue();
 
-    VERIFICATION_CODES[verificationId] = { email, code: VERIFICATION_CODE };
+    EmailVerificationUtil.codes[verificationId] = { email, code: verificationCode };
 
     const mailOptions = {
       from: AUTH_CONSTANT.AUTH_EMAIL.FROM,
       to: email,
       subject: AUTH_CONSTANT.AUTH_EMAIL.SUBJECT,
-      html: `<h1>AUTH_CONSTANT.AUTH_EMAIL.HTML</h1><p>${VERIFICATION_CODE}</p>`,
+      html: `<h1>AUTH_CONSTANT.AUTH_EMAIL.HTML</h1><p>${verificationCode}</p>`,
     };
 
     await smtpTransport.sendMail(mailOptions);
 
-    console.log(VERIFICATION_CODES[verificationId].code);
+    console.log(EmailVerificationUtil.codes[verificationId].code);
 
     res.status(HTTP_STATUS.OK).json({
       status: HTTP_STATUS.OK,
       message: MESSAGES.AUTH.MAIL.SUCCEED,
-      data: VERIFICATION_CODES,
+      data: EmailVerificationUtil.codes
     });
   } catch (error) {
     res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({

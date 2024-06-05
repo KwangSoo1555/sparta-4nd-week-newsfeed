@@ -90,7 +90,7 @@ model Trade {
   likedBy      User[]         @relation("trade_like")
   tradePicture TradePicture[]
   tradeComment TradeComment[]
-  tradeHistory History?
+  tradeHistory History[]
 
   @@map("trade")
 }
@@ -127,10 +127,10 @@ model TradeComment {
 
 // 상품 구매, 판매 내역 스키마
 model History {
-  id      Int       @id @default(autoincrement())
-  userId  Int       @map("user_id")
-  tradeId Int       @unique @map("trade_id")
-  type    TradeType
+  id          Int       @id @default(autoincrement())
+  tradeId     Int       @map("trade_id")
+  userId      Int       @map("user_id")
+  type        TradeType 
 
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   trade Trade @relation(fields: [tradeId], references: [id], onDelete: Cascade)
@@ -140,6 +140,6 @@ model History {
 
 // 상품 구매, 판매
 enum TradeType {
-  PURCHASE
   SALE
+  PURCHASE
 }
