@@ -37,19 +37,19 @@ model User {
 
 model Follow {
   id Int @id @default(autoincrement())
-  user User @relation(fields: [userNickname], references: [nickname], onDelete: Cascade)
-  userNickname String @unique @map("user_nickname")
-  relationship Relationship @default(NORELATION) @map("relationship")
+  user User @relation(fields: [nickname], references: [nickname], onDelete: Cascade)
+  nickname String @unique @map("user_nickname")
+  relationship Relationship @default(NO_RELATIONSHIP) @map("relationship")
 
   @@map("follow")
 }
 
 enum Relationship {
-  NORELATION
+  NO_RELATIONSHIP
+  FOLLOW
   FOLLOWING
   FOLLOWER
-  FOLLOWME
-  UNFOLLOW
+  UN_FOLLOW
 }
 
 model RefreshToken {
