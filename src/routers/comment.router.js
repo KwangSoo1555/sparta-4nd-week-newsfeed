@@ -50,6 +50,7 @@ router.get('/:tradeId/comment', async (req, res) => {
       //조회 코드
       let commentsRead = await prisma.tradeComment.findMany({
         where : { tradeId : +tradeId, },
+        include : {user : true},
         orderBy : type.asc, //오래된 댓글이 최상단
       })
 
@@ -60,8 +61,8 @@ router.get('/:tradeId/comment', async (req, res) => {
         id : tradeComment.id,
         trade : tradeComment.tradeId.id,
         userId : tradeComment.userId.id,
+        nickname : tradeComment.user.nickname,  //닉네임 조회가 안 됨(undefined)
         comment : tradeComment.comment,
-        // nickname : tradeComment.user.nickname,  //닉네임 조회가 안 됨(undefined)
         // like : tradeComment.likedBy.length,  //좋아요 기능 넣을 때 대비
         createdAt : tradeComment.createdAt,
         updatedAt : tradeComment.updatedAt,
