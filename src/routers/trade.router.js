@@ -7,42 +7,60 @@ import { accessTokenValidator } from '../middlewares/require-access-token.middle
 import { createTradeValidator } from '../middlewares/validators/create-trade.validator.middleware.js';
 import { updateTradeValidator } from '../middlewares/validators/update-trade.validator.middleware.js';
 
+import { uploadImage } from '../middlewares/multer-image-upload.middleware.js';
+
 const tradeRouter = express.Router();
 
 // 상품 게시물 작성 API
-tradeRouter.post('/', accessTokenValidator, createTradeValidator, async (req, res, next) => {
-  try {
-    // 유효성 검사 거치고 req.body 가져옴
-    const { title, content, price, region, img } = req.body;
+tradeRouter.post(
+  '/',
+  accessTokenValidator,
+  uploadImage.array('img', 5),
+  createTradeValidator,
+  async (req, res, next) => {
+    try {
+      // 유효성 검사 거치고 req.body 가져옴
+      const { title, content, price, region } = req.body;
 
-    console.log(img);
+      // req.files에서 이미지 데이터 가져옴
+      const images = req.files;
 
-    // 상품 생성 + 이미지 등록 트랜젝션으로 처리
-    const trade = await prisma.$transaction(async (tx) => {
-      // 상품 생성
-      const newTrade = await tx.trade.create({
-        data: { title, content, price, region, userId: req.user.id },
+      // 이미지가 없을 경우 에러 처리
+      if (images.length === 0) {
+        return res
+          .status(HTTP_STATUS.BAD_REQUEST)
+          .json({ status: HTTP_STATUS.BAD_REQUEST, message: MESSAGES.TRADE.COMMON.IMG.REQUIRED });
+      }
+
+      // 상품 생성 + 이미지 등록 트랜젝션으로 처리
+      const trade = await prisma.$transaction(async (tx) => {
+        // 상품 생성
+        const newTrade = await tx.trade.create({
+          data: { title, content, price: +price, region, userId: req.user.id },
+        });
+
+        // 상품 사진 등록
+        // 이미지가 여러 장인 경우 Promise.All로 비동기적으로 실행
+        const tradeImg = await Promise.all(
+          images.map(async (image) => {
+            return await tx.tradePicture.create({
+              data: { tradeId: newTrade.id, imgUrl: image.location },
+            });
+          })
+        );
+        return [newTrade, tradeImg];
       });
 
-      // 상품 사진 등록
-      // 이미지가 여러 장인 경우 Promise.All로 비동기적으로 실행
-      const tradeImg = await Promise.all(
-        img.map(async (url) => {
-          return await tx.tradePicture.create({ data: { tradeId: newTrade.id, imgUrl: url } });
-        })
-      );
-      return [newTrade, tradeImg];
-    });
-
-    return res.status(HTTP_STATUS.CREATED).json({
-      status: HTTP_STATUS.CREATED,
-      message: MESSAGES.TRADE.CREATE.SUCCEED,
-      data: { trade },
-    });
-  } catch (err) {
-    next(err);
+      return res.status(HTTP_STATUS.CREATED).json({
+        status: HTTP_STATUS.CREATED,
+        message: MESSAGES.TRADE.CREATE.SUCCEED,
+        data: { trade },
+      });
+    } catch (err) {
+      next(err);
+    }
   }
-});
+);
 
 // 상품 게시물 목록 조회 API (뉴스피드)
 tradeRouter.get('/', async (req, res) => {
@@ -132,6 +150,7 @@ tradeRouter.get('/:tradeId', async (req, res) => {
 tradeRouter.patch(
   '/:tradeId',
   accessTokenValidator,
+  uploadImage.array('img', 5),
   updateTradeValidator,
   async (req, res, next) => {
     try {
@@ -149,7 +168,17 @@ tradeRouter.patch(
       }
 
       // 수정할 내용 입력 받음
-      const { title, content, price, region, img } = req.body;
+      const { title, content, price, region } = req.body;
+
+      // req.files에서 이미지 데이터 가져옴
+      const images = req.files;
+
+      // 이미지가 없을 경우 에러 처리
+      if (images.length === 0) {
+        return res
+          .status(HTTP_STATUS.BAD_REQUEST)
+          .json({ status: HTTP_STATUS.BAD_REQUEST, message: MESSAGES.TRADE.COMMON.IMG.REQUIRED });
+      }
 
       // 게시물 수정 + 이미지 삭제 및 추가 트랜젝션으로 처리
       const changedTrade = await prisma.$transaction(async (tx) => {
@@ -159,7 +188,7 @@ tradeRouter.patch(
           data: {
             ...(title && { title }),
             ...(content && { content }),
-            ...(price && { price }),
+            ...(price && { price: +price }),
             ...(region && { region }),
           },
         });
@@ -168,8 +197,10 @@ tradeRouter.patch(
         // 이미지 개수가 다를 수도 있고 어떤 이미지가 어떤 이미지로 수정되는지 알 방법이 없음
         await tx.tradePicture.deleteMany({ where: { tradeId: trade.id } });
         const tradeImg = await Promise.all(
-          img.map(async (url) => {
-            return await tx.tradePicture.create({ data: { tradeId: trade.id, imgUrl: url } });
+          images.map(async (image) => {
+            return await tx.tradePicture.create({
+              data: { tradeId: trade.id, imgUrl: image.location },
+            });
           })
         );
         return [tradeTemp, tradeImg];
