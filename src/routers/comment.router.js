@@ -3,6 +3,7 @@ import { prisma } from '../utils/prisma.util.js';
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
 import { accessTokenValidator } from '../middlewares/require-access-token.middleware.js';
+import { updateCommentValidator } from '../middlewares/validators/update-comment.validator.middleware.js';
 
 const router = express.Router();
 
@@ -61,7 +62,7 @@ router.get('/:tradeId/comment', async (req, res) => {
         id : tradeComment.id,
         trade : tradeComment.tradeId.id,
         userId : tradeComment.userId.id,
-        nickname : tradeComment.user.nickname,  //닉네임 조회가 안 됨(undefined)
+        nickname : tradeComment.user.nickname,
         comment : tradeComment.comment,
         // like : tradeComment.likedBy.length,  //좋아요 기능 넣을 때 대비
         createdAt : tradeComment.createdAt,
@@ -78,5 +79,71 @@ router.get('/:tradeId/comment', async (req, res) => {
       });
     }
   });
+
+router.patch(
+  "/:tradeId/comment/:commentId",
+  accessTokenValidator,
+  updateCommentValidator,
+  async (req, res, next) => {
+  try {
+    const id = req.params.commentId
+
+    //댓글 id 찾고, 그 댓글을 작성한 사람의 id가 user 테이블의 id와 같으면
+    const commentExist = await prisma.tradeComment.findFirst({
+      where : { 
+        id : +id,
+        userId : req.user.id
+      }
+    })
+
+    // 댓글이 없으면
+    if (!commentExist) {
+      return res
+      .status(HTTP_STATUS.NOT_FOUND)
+      .json({ status : HTTP_STATUS.NOT_FOUND,
+        message : '찾으시는 댓글이 없습니다. 다시 한 번 확인해주세요.'})
+    }
+
+    // 수정할 comment 내용 입력받기
+    const { comment } = req.body
+
+    //유효성 검사
+    if ( !comment ) {
+      return res
+      .status(HTTP_STATUS.BAD_REQUEST)
+      .json({
+        status : HTTP_STATUS.BAD_REQUEST,
+        message : '댓글을 입력해주세요.'
+      })
+    }
+
+    if ( comment > 300 ) {
+      return res
+      .status(HTTP_STATUS.BAD_REQUEST)
+      .json({
+        status : HTTP_STATUS.BAD_REQUEST,
+        message : '댓글은 300자를 초과할 수 없습니다.'
+      })
+    }
+
+    const commentUpdate = await prisma.tradeComment.update({
+      where : { id : +id },
+      data : {
+        ...(comment && {comment}),
+      },
+    })
+
+   return res
+   .status(HTTP_STATUS.CREATED)
+   .json({
+    status : HTTP_STATUS.CREATED,
+    message : '상품 댓글이 정상적으로 수정되었습니다.',
+    data : { commentUpdate },
+   })
+
+} catch (err) {
+  next (err)
+}}
+)
 
 export default router;
