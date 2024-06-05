@@ -117,15 +117,6 @@ router.patch(
       })
     }
 
-    if ( comment < 1 ) {
-      return res
-      .status(HTTP_STATUS.BAD_REQUEST)
-      .json({
-        status : HTTP_STATUS.BAD_REQUEST,
-        message : '댓글을 1자 이상 작성해주세요.'
-      })
-    }
-
     if ( comment > 300 ) {
       return res
       .status(HTTP_STATUS.BAD_REQUEST)
@@ -136,7 +127,7 @@ router.patch(
     }
 
     const commentUpdate = await prisma.tradeComment.update({
-      where : { id : tradeComment.id },
+      where : { id : +id },
       data : {
         ...(comment && {comment}),
       },
@@ -149,8 +140,6 @@ router.patch(
     message : '상품 댓글이 정상적으로 수정되었습니다.',
     data : { commentUpdate },
    })
-
-
 
 } catch (err) {
   next (err)
