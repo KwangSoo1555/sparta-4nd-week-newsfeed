@@ -61,8 +61,8 @@ export const MESSAGES = {
       VERIFICATION_CODE: {
         BASE: '이메일 인증 코드는 정수입니다.',
         REQUIRED: '이메일 인증 코드를 입력해 주세요.',
-        INCONSISTENT: '발송된 인증 코드와 다릅니다.', 
-        SUCCEED: '메일 인증이 완료되었습니다.', 
+        INCONSISTENT: '발송된 인증 코드와 다릅니다.',
+        SUCCEED: '메일 인증이 완료되었습니다.',
       },
       SUCCEED: 'Sign-up succeed',
     },
@@ -135,26 +135,24 @@ export const MESSAGES = {
   },
 
   COMMENT: {
-    LENGTH_CHECK: {
-      BASE: '댓글은 1자 이상 작성해주세요.',
-      REQUIRED: '댓글은 300자를 초과할 수 없습니다.',
+    COMMON: {
+      BASE: '댓글은 문자열입니다.',
+      MIN: '댓글을 1자 이상 작성해주세요.',
+      MAX: '댓글은 300자를 초과할 수 없습니다.',
+      REQUIRED: '댓글을 입력해 주세요.',
     },
     CREATE: {
       SUCCEED: '상품 댓글 작성에 성공했습니다.',
     },
     READ: {
-      NOT_FOUND: `찾으시는 댓글이 없습니다. 다시 한 번 확인해주세요.`,
       SUCCEED: '상품 댓글 조회에 성공했습니다.',
     },
     UPDATE: {
-      BASE: '댓글은 1자 이상 작성해주세요.',
-      REQUIRED: '댓글은 300자를 초과할 수 없습니다.',
-      NO_CHANGE: '댓글이 수정되지 않았습니다. 다시 한 번 확인해주세요.',
-      NOT_FOUND: `찾으시는 댓글이 없습니다. 다시 한 번 확인해주세요.`,
+      NOT_FOUND: '찾으시는 댓글이 없습니다. 다시 한 번 확인해주세요.',
       SUCCEED: '상품 댓글이 정상적으로 수정되었습니다.',
     },
     DELETE: {
-      NOT_FOUND: `찾으시는 댓글이 없습니다. 다시 한 번 확인해주세요.`,
+      NOT_FOUND: '찾으시는 댓글이 없습니다. 다시 한 번 확인해주세요.',
       SUCCEED: '상품 댓글이 정상적으로 삭제되었습니다.',
     },
   },
