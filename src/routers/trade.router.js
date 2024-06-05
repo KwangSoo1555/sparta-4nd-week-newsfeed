@@ -2,7 +2,7 @@ import express, { Router } from 'express';
 import { prisma } from '../utils/prisma.util.js';
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
-import { SORT } from '../constants/trade.constant.js';
+import { TRADE_CONSTANT } from '../constants/trade.constant.js';
 import { accessTokenValidator } from '../middlewares/require-access-token.middleware.js';
 import { createTradeValidator } from '../middlewares/validators/create-trade.validator.middleware.js';
 import { updateTradeValidator } from '../middlewares/validators/update-trade.validator.middleware.js';
@@ -72,15 +72,15 @@ tradeRouter.get('/', async (req, res) => {
   // like 정렬 쿼리가 있으면 좋아요 순으로 정렬
   if (sortLike) {
     // 시간 순 정렬 기본 값 설정
-    if (sortLike !== SORT.desc && sortLike !== SORT.asc) {
-      sortLike = SORT.desc;
+    if (sortLike !== TRADE_CONSTANT.SORT.desc && sortLike !== TRADE_CONSTANT.SORT.asc) {
+      sortLike = TRADE_CONSTANT.SORT.desc;
     }
     // 같은 좋아요가 있는 경우 최신순으로 정렬
-    type = [{ likedBy: { _count: sortLike } }, { createdAt: SORT.desc }];
+    type = [{ likedBy: { _count: sortLike } }, { createdAt: TRADE_CONSTANT.SORT.desc }];
   } else {
     // 좋아요 순 정렬 기본 값 설정 (상세한 내용은 회의가 필요)
-    if (sortDate !== SORT.desc && sortDate !== SORT.asc) {
-      sortDate = SORT.desc;
+    if (sortDate !== TRADE_CONSTANT.SORT.desc && sortDate !== TRADE_CONSTANT.SORT.asc) {
+      sortDate = TRADE_CONSTANT.SORT.desc;
     }
     type = { createdAt: sortDate };
   }
@@ -100,6 +100,7 @@ tradeRouter.get('/', async (req, res) => {
       price: trade.price,
       region: trade.region,
       like: trade.likedBy.length,
+      status: trade.status,
       createdAt: trade.createdAt,
       updatedAt: trade.updatedAt,
       tradePicture: trade.tradePicture.map((img) => img.imgUrl),
@@ -118,8 +119,8 @@ tradeRouter.get('/:tradeId', async (req, res) => {
 
   // 상품 조회하기
   let trade = await prisma.trade.findFirst({
-    where: { id: +id },
-    include: { tradePicture: true, user: true },
+    where: { id: +id, status: TRADE_CONSTANT.STATUS.FOR_SALE },
+    include: { tradePicture: true, user: true, likedBy: true },
   });
 
   // 데이터베이스 상 해당 상품 ID에 대한 정보가 없는 경우
@@ -136,6 +137,7 @@ tradeRouter.get('/:tradeId', async (req, res) => {
     price: trade.price,
     region: trade.region,
     like: trade.likedBy.length,
+    status: trade.status,
     createdAt: trade.createdAt,
     updatedAt: trade.updatedAt,
     tradePicture: trade.tradePicture.map((img) => img.imgUrl),
@@ -158,7 +160,9 @@ tradeRouter.patch(
       const id = req.params.tradeId;
 
       // 상품 조회하기
-      const trade = await prisma.trade.findFirst({ where: { id: +id, userId: req.user.id } });
+      const trade = await prisma.trade.findFirst({
+        where: { id: +id, userId: req.user.id, status: TRADE_CONSTANT.STATUS.FOR_SALE },
+      });
 
       // 데이터베이스 상 해당 상품 ID에 대한 정보가 없는 경우
       if (!trade) {
@@ -224,7 +228,9 @@ tradeRouter.delete('/:tradeId', accessTokenValidator, async (req, res, next) => 
     const id = req.params.tradeId;
 
     // 상품 조회하기
-    const trade = await prisma.trade.findFirst({ where: { id: +id, userId: req.user.id } });
+    const trade = await prisma.trade.findFirst({
+      where: { id: +id, userId: req.user.id, status: TRADE_CONSTANT.STATUS.FOR_SALE },
+    });
 
     // 데이터베이스 상 해당 상품 ID에 대한 정보가 없는 경우
     if (!trade) {
@@ -255,7 +261,10 @@ tradeRouter.post('/:tradeId/like', accessTokenValidator, async (req, res, next) 
     const id = req.params.tradeId;
 
     // 상품 조회하기
-    const trade = await prisma.trade.findFirst({ where: { id: +id }, include: { likedBy: true } });
+    const trade = await prisma.trade.findFirst({
+      where: { id: +id, status: TRADE_CONSTANT.STATUS.FOR_SALE },
+      include: { likedBy: true },
+    });
 
     // 데이터베이스 상 해당 상품 ID에 대한 정보가 없는 경우
     if (!trade) {
@@ -309,7 +318,10 @@ tradeRouter.post('/:tradeId/unlike', accessTokenValidator, async (req, res, next
     const id = req.params.tradeId;
 
     // 상품 조회하기
-    const trade = await prisma.trade.findFirst({ where: { id: +id }, include: { likedBy: true } });
+    const trade = await prisma.trade.findFirst({
+      where: { id: +id, status: TRADE_CONSTANT.STATUS.FOR_SALE },
+      include: { likedBy: true },
+    });
 
     // 데이터베이스 상 해당 상품 ID에 대한 정보가 없는 경우
     if (!trade) {
