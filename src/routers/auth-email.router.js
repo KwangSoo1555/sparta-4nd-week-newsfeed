@@ -56,6 +56,7 @@ router.post('/auth-email', async (req, res, next) => {
       status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
       message: MESSAGES.AUTH.MAIL.FAIL,
     });
+    next(error);
   }
 });
 
