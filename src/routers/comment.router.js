@@ -140,10 +140,47 @@ router.patch(
     message : '상품 댓글이 정상적으로 수정되었습니다.',
     data : { commentUpdate },
    })
-
 } catch (err) {
   next (err)
 }}
+)
+
+router.delete('/:tradeId/comment/:commentId', 
+accessTokenValidator,
+async (req, res, next) => {
+  try {
+    const id = req.params.commentId
+
+    //댓글 id 찾고, 그 댓글을 작성한 사람의 id가 user 테이블의 id와 같으면 삭제api 작동
+    const commentExist = await prisma.tradeComment.findFirst({
+      where : { 
+        id : +id,
+        userId : req.user.id
+      }
+    })
+
+    // 댓글이 없으면 err
+    if (!commentExist) {
+      return res
+      .status(HTTP_STATUS.NOT_FOUND)
+      .json({ status : HTTP_STATUS.NOT_FOUND,
+        message : '찾으시는 댓글이 없습니다. 다시 한 번 확인해주세요.'})
+    }
+
+   const commentDelete = await prisma.tradeComment.delete({
+    where : { id : +id, userId : req.user.id },
+    select : { id : true },
+   })
+
+   return res.status(HTTP_STATUS.CREATED).json({
+    status : HTTP_STATUS.CREATED,
+    message : MESSAGES.COMMENT.DELETE.SUCCEED,
+    data : { commentDelete },
+   })
+  } catch (err) {
+    next (err)
+  }
+}
 )
 
 export default router;
