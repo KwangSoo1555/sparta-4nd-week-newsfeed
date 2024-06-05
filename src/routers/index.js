@@ -10,7 +10,8 @@ import historyRouter from './trade-history.router.js';
 const router = express.Router();
 
 router.use('/auth', [authRouter, authEmailRouter, authPassportRouter]);
-router.use('/trade', [tradeRouter, commentRouter, historyRouter]);
+router.use('/trade', [tradeRouter, commentRouter]);
+router.use('/trade/history', historyRouter);
 router.use('/user', userRouter);
 
 export default router;
