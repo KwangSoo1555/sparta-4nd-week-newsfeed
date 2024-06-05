@@ -31,9 +31,9 @@ router.post('/auth-email', async (req, res, next) => {
     const { email } = req.body;
 
     const verificationId = uuidv4();
-    const verificationCode = EmailVerificationUtil.codeIssue();
+    const verificationCode = EmailVerificationUtil.codeNumber();
 
-    EmailVerificationUtil.codes[verificationId] = { email, code: verificationCode };
+    EmailVerificationUtil.codeObject[verificationId] = { email, code: verificationCode };
 
     const mailOptions = {
       from: AUTH_CONSTANT.AUTH_EMAIL.FROM,
@@ -44,12 +44,12 @@ router.post('/auth-email', async (req, res, next) => {
 
     await smtpTransport.sendMail(mailOptions);
 
-    console.log(EmailVerificationUtil.codes[verificationId].code);
+    console.log(EmailVerificationUtil.codeObject[verificationId].code);
 
     res.status(HTTP_STATUS.OK).json({
       status: HTTP_STATUS.OK,
       message: MESSAGES.AUTH.MAIL.SUCCEED,
-      data: EmailVerificationUtil.codes
+      data: EmailVerificationUtil.codeObject
     });
   } catch (error) {
     res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({

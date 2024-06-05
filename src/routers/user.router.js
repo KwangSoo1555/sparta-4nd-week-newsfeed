@@ -13,13 +13,12 @@ const router = express.Router();
 
 router.post('/sign-up', signUpValidator, async (req, res, next) => {
   try {
-    const { email, nickname, password, passwordCheck, region, age, gender, VERIFICATION_CODE } =
-      req.body;
+    const { email, nickname, password, passwordCheck, region, age, gender, verificationCode } = req.body;
 
-    for (const idx in EmailVerificationUtil.codes) {
+    for (const idx in EmailVerificationUtil.codeObject) {
       if (
-        EmailVerificationUtil.codes[idx].email === email &&
-        EmailVerificationUtil.codes[idx].code === VERIFICATION_CODE
+        EmailVerificationUtil.codeObject[idx].email === email &&
+        EmailVerificationUtil.codeObject[idx].code === verificationCode
       ) {
         break;
       } else {
