@@ -84,7 +84,6 @@ model Trade {
   content   String      @db.Text
   price     Int
   region    String
-  like      Int         @default(0)
   status    TradeStatus @default(FOR_SALE)
   createdAt DateTime    @default(now()) @map("created_at")
   updatedAt DateTime    @updatedAt @map("updated_at")
