@@ -25,41 +25,43 @@ router.get('/', accessTokenValidator, async (req, res, next) => {
 });
 
 // 내 정보 수정
-router.patch('/update',accessTokenValidator, uploadImage.single('img'), async (req, res, next) => {
+router.patch('/update', accessTokenValidator, uploadImage.single('img'), async (req, res, next) => {
   try {
 
     const { email, nickname, newPassword, currentPasswordCheck, region, age, gender, introduce } =
       req.body;
 
-    // req.files에서 이미지 데이터 가져옴
-    const image = req.file;
-
     const user = await prisma.user.findUnique({
       where: { id: req.user.id },
     });
 
+    // req.files에서 이미지 데이터 가져옴
+    const image = req.file;
+
     const currentPassword = user.password;
 
-    let updatedData = {
-      email: email || user.email,
-      nickname: nickname || user.nickname,
-      region: region || user.region,
-      age: age || user.age,
-      gender: gender || user.gender,
-      introduce: introduce || user.introduce,
-      password: currentPassword,
-      imgUrl: image?.location
-    };
-
-    const isExistUser = await prisma.user.findMany({
-      where: { email: email, nickname: nickname }
-    })
-    
-    if (isExistUser) {
-      return res.status(HTTP_STATUS.CONFLICT).json({
-        status: HTTP_STATUS.CONFLICT, 
-        message: MESSAGES
+    if (email) {
+      const isExistUserEmail = await prisma.user.findUnique({
+        where: { email }
       })
+      if (isExistUserEmail) {
+        return res.status(HTTP_STATUS.CONFLICT).json({
+          status: HTTP_STATUS.CONFLICT,
+          message: MESSAGES.USER.COMMON.EMAIL.DUPLICATED,
+        })
+      }
+    }
+
+    if (nickname) {
+      const isExistUserNickname = await prisma.user.findUnique({
+        where: { nickname }
+      })
+      if (isExistUserNickname) {
+        return res.status(HTTP_STATUS.CONFLICT).json({
+          status: HTTP_STATUS.CONFLICT,
+          message: MESSAGES.USER.COMMON.NICKNAME.DUPLICATED,
+        })
+      }
     }
 
     // 비밀번호 변경 시 재 해쉬, 번경 없으면 기존 비밀번호
@@ -81,8 +83,17 @@ router.patch('/update',accessTokenValidator, uploadImage.single('img'), async (r
 
     const authUserUpdate = await prisma.user.update({
       where: { id: req.user.id },
-      data: updatedData,
-    });
+      data: {
+        ...(email && { email }),
+        ...(nickname && { nickname }),
+        ...(region && { region }),
+        ...(age && { age }),
+        ...(gender && { gender }),
+        ...(introduce && { introduce }),
+        password: currentPassword,
+        imgUrl: image?.location
+      }
+    })
 
     const { password: _, ...userWithoutPassword } = authUserUpdate;
 
