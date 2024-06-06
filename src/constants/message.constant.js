@@ -1,6 +1,17 @@
 export const MESSAGES = {
   AUTH: {
     COMMON: {
+      EMAIL: {
+        BASE: '이메일은 문자열입니다.',
+        EMAIL: '이메일의 형식이 올바르지 않습니다',
+        REQUIRED: '이메일을 입력해 주세요.',
+      },
+      PASSWORD: {
+        BASE: '비밀번호는 문자열입니다.',
+        REQUIRED: 'You Should have to enter the password.',
+        MIN: '비밀번호는 6자리 이상입니다.',
+        INCONSISTENT: 'Passwords do not match.',
+      },
       UNAUTHORIZED: '인증 정보가 유효하지 않습니다.',
       FORBIDDEN: '접근 권한이 없습니다.',
       JWT: {
@@ -13,9 +24,29 @@ export const MESSAGES = {
         DISCARDED_TOKEN: '폐기 된 인증 정보입니다.',
       },
     },
+    SIGN_IN: {
+      SUCCEED: '로그인에 성공했습니다.',
+    },
+    TOKEN_REFRESH: {
+      SUCCEED: '토큰 재발급에 성공했습니다.',
+    },
+    SIGN_OUT: {
+      SUCCEED: '로그아웃에 성공했습니다.',
+    },
     MAIL: {
       SUCCEED: '메일 전송에 성공했습니다.',
       FAIL: '메일 전송에 실패했습니다.',
+    },
+    PASSPORT: {
+      COMMON: {
+        FAIL: '소셜 로그인에 실패했습니다.',
+      },
+      KAKAO: {
+        SUCCEED: '카카오 로그인에 성공했습니다.',
+      },
+      NAVER: {
+        SUCCEED: '네이버 로그인에 성공했습니다.',
+      },
     },
   },
   USER: {
@@ -66,9 +97,6 @@ export const MESSAGES = {
       },
       SUCCEED: 'Sign-up succeed',
     },
-    SIGN_IN: {
-      SUCCEED: 'Sign-in succeed',
-    },
     READ: {
       SUCCEED: '내 정보 조회에 성공했습니다.',
     },
@@ -78,11 +106,13 @@ export const MESSAGES = {
         BASE: '한 줄 소개는 문자열입니다.',
       },
     },
-    SIGN_OUT: {
-      SUCCEED: '로그아웃에 성공했습니다.',
+    FOLLOW: {
+      NOT_FOUND: '팔로우 할 사용자가 존재하지 않습니다.',
+      SUCCEED: '팔로우가 성공했습니다.',
     },
-    TOKEN_REFRESH: {
-      SUCCEED: '토큰 재발급에 성공했습니다.',
+    UN_FOLLOW: {
+      NOT_FOUND: '언팔로우 할 사용자가 존재하지 않습니다.',
+      SUCCEED: '팔로우가 해제되었습니다.',
     },
   },
   TRADE: {
@@ -107,7 +137,7 @@ export const MESSAGES = {
         BASE: '이미지 URL은 문자열입니다.',
         REQUIRED: '이미지 URL을 입력해 주세요.',
       },
-      NOT_FOUND: `The post doesn't exist.`,
+      NOT_FOUND: '상품이 존재하지 않습니다.',
     },
     CREATE: {
       SUCCEED: '상품 게시글 작성에 성공했습니다.',
@@ -131,6 +161,26 @@ export const MESSAGES = {
       SUCCEED: '게시글 좋아요 취소에 성공했습니다.',
       NO_PERMISSION: '본인의 게시글에 좋아요 취소 할 수 없습니다.',
       NOT_LIKE: '좋아요를 누르지 않았습니다.',
+    },
+    COMPLETE: {
+      SALE: {
+        FORBIDDEN: '당신은 구매 권한이 없는 사용자 입니다. 회원 가입 하여 인증을 완료하세요.',
+        NOT_FOR_SALE: '이미 거래가 완료된 상품입니다.',
+        UNAUTHORIZED: '현재 상품은 사용자가 등록한 것이 아닙니다.',
+        SUCCEED: '상품 거래 기록 생성에 성공했습니다.',
+      },
+      PURCHASE: {
+        NO_HISTORY: '거래한 이력이 없습니다.',
+        SUCCEED: '모든 거래가 정상적으로 완료했습니다.',
+      },
+    },
+    HISTORY: {
+      SALE: {
+        SUCCEED: '입력된 상품에 대한 판매 기록 조회에 성공했습니다.',
+      },
+      PURCHASE: {
+        SUCCEED: '입력된 상품에 대한 구매 기록 조회에 성공했습니다.',
+      },
     },
   },
 
