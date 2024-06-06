@@ -19,6 +19,7 @@ model User {
   id        Int          @id @default(autoincrement())
   email     String       @unique
   nickname  String       @unique
+  imgUrl    String?      @map("img_url")
   password  String?
   region    String?
   manner    Float        @default(36.5)
@@ -84,6 +85,7 @@ model Trade {
   content   String      @db.Text
   price     Int
   region    String
+  like      Int         @default(0)
   status    TradeStatus @default(FOR_SALE)
   createdAt DateTime    @default(now()) @map("created_at")
   updatedAt DateTime    @updatedAt @map("updated_at")

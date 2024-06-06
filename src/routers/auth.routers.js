@@ -7,8 +7,77 @@ import { refreshTokenValidator } from '../middlewares/require-refresh-token.midd
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
 import { generateToken } from '../utils/generate-token.util.js';
+import { signUpValidator } from '../middlewares/validators/sign-up.validator.middleware.js';
+import { EmailVerificationUtil } from '../utils/email-verification.util.js';
+import { AUTH_CONSTANT } from '../constants/auth.constant.js';
 
 const router = express.Router();
+
+// 회원 가입
+router.post('/sign-up', signUpValidator, async (req, res, next) => {
+  try {
+    const { email, nickname, password, passwordCheck, region, age, gender, verificationCode } =
+      req.body;
+
+    for (const idx in EmailVerificationUtil.codes) {
+      if (
+        EmailVerificationUtil.codes[idx].email === email &&
+        EmailVerificationUtil.codes[idx].code === verificationCode
+      ) {
+        break;
+      } else {
+        return res
+          .status(HTTP_STATUS.UNAUTHORIZED)
+          .json({ message: MESSAGES.USER.SIGN_UP.VERIFICATION_CODE.INCONSISTENT });
+      }
+    }
+
+    const isExistUser = await prisma.user.findFirst({
+      where: { nickname: nickname, email: email },
+    });
+
+    if (isExistUser) {
+      return res
+        .status(HTTP_STATUS.CONFLICT)
+        .json({ message: MESSAGES.USER.SIGN_UP.EMAIL.DUPLICATED });
+    }
+
+    if (!passwordCheck) {
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .json({ message: MESSAGES.USER.COMMON.PASSWORD_CONFIRM });
+    }
+
+    if (password !== passwordCheck) {
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .json({ message: MESSAGES.USER.SIGN_UP.EMAIL.INCONSISTENT });
+    }
+
+    const hashedPW = await bcrypt.hash(password, AUTH_CONSTANT.HASH_SALT);
+
+    const userCreate = await prisma.user.create({
+      data: {
+        nickname,
+        email,
+        password: hashedPW,
+        region,
+        age,
+        gender,
+      },
+    });
+
+    const { password: _, ...userWithoutPassword } = userCreate;
+
+    return res.status(HTTP_STATUS.CREATED).json({
+      status: HTTP_STATUS.CREATED,
+      message: MESSAGES.USER.SIGN_UP.SUCCEED,
+      data: userWithoutPassword,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 
 // 로그인 API
 router.post('/sign-in', signInValidator, async (req, res, next) => {

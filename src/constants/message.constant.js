@@ -1,17 +1,6 @@
 export const MESSAGES = {
   AUTH: {
     COMMON: {
-      EMAIL: {
-        BASE: '이메일은 문자열입니다.',
-        EMAIL: '이메일의 형식이 올바르지 않습니다',
-        REQUIRED: '이메일을 입력해 주세요.',
-      },
-      PASSWORD: {
-        BASE: '비밀번호는 문자열입니다.',
-        REQUIRED: '비밀번호를 입력해 주세요.',
-        MIN: '비밀번호는 6자리 이상입니다.',
-        INCONSISTENT: '비밀번호가 일치하지 않습니다.',
-      },
       UNAUTHORIZED: '인증 정보가 유효하지 않습니다.',
       FORBIDDEN: '접근 권한이 없습니다.',
       JWT: {
@@ -24,29 +13,9 @@ export const MESSAGES = {
         DISCARDED_TOKEN: '폐기 된 인증 정보입니다.',
       },
     },
-    SIGN_IN: {
-      SUCCEED: '로그인에 성공했습니다.',
-    },
-    TOKEN_REFRESH: {
-      SUCCEED: '토큰 재발급에 성공했습니다.',
-    },
-    SIGN_OUT: {
-      SUCCEED: '로그아웃에 성공했습니다.',
-    },
     MAIL: {
       SUCCEED: '메일 전송에 성공했습니다.',
       FAIL: '메일 전송에 실패했습니다.',
-    },
-    PASSPORT: {
-      COMMON: {
-        FAIL: '소셜 로그인에 실패했습니다.',
-      },
-      KAKAO: {
-        SUCCEED: '카카오 로그인에 성공했습니다.',
-      },
-      NAVER: {
-        SUCCEED: '네이버 로그인에 성공했습니다.',
-      },
     },
   },
   USER: {
@@ -58,13 +27,13 @@ export const MESSAGES = {
       },
       PASSWORD: {
         BASE: '비밀번호는 문자열입니다.',
-        REQUIRED: '비밀번호를 입력해 주세요.',
+        REQUIRED: 'You Should have to enter the password.',
         MIN: '비밀번호는 6자리 이상입니다.',
-        INCONSISTENT: '비밀번호가 일치하지 않습니다.',
+        INCONSISTENT: 'Passwords do not match.',
       },
       PASSWORD_CONFIRM: {
         BASE: '비밀번호 확인은 문자입니다.',
-        REQUIRED: '비밀번호 확인을 입력해 주세요.',
+        REQUIRED: 'You Should have to enter the passwordCheck.',
         MIN: '비밀번호는 6자리 이상입니다.',
       },
       NICKNAME: {
@@ -87,7 +56,7 @@ export const MESSAGES = {
     },
     SIGN_UP: {
       EMAIL: {
-        DUPLICATED: '이메일이나 별명이 이미 존재합니다.',
+        DUPLICATED: 'This email or nickname are already exist.',
       },
       VERIFICATION_CODE: {
         BASE: '이메일 인증 코드는 정수입니다.',
@@ -95,7 +64,10 @@ export const MESSAGES = {
         INCONSISTENT: '발송된 인증 코드와 다릅니다.',
         SUCCEED: '메일 인증이 완료되었습니다.',
       },
-      SUCCEED: '회원 가입에 성공했습니다.',
+      SUCCEED: 'Sign-up succeed',
+    },
+    SIGN_IN: {
+      SUCCEED: 'Sign-in succeed',
     },
     READ: {
       SUCCEED: '내 정보 조회에 성공했습니다.',
@@ -106,13 +78,11 @@ export const MESSAGES = {
         BASE: '한 줄 소개는 문자열입니다.',
       },
     },
-    FOLLOW: {
-      NOT_FOUND: '팔로우 할 사용자가 존재하지 않습니다.',
-      SUCCEED: '팔로우가 성공했습니다.',
+    SIGN_OUT: {
+      SUCCEED: '로그아웃에 성공했습니다.',
     },
-    UN_FOLLOW: {
-      NOT_FOUND: '언팔로우 할 사용자가 존재하지 않습니다.',
-      SUCCEED: '팔로우가 해제되었습니다.',
+    TOKEN_REFRESH: {
+      SUCCEED: '토큰 재발급에 성공했습니다.',
     },
   },
   TRADE: {
@@ -137,49 +107,30 @@ export const MESSAGES = {
         BASE: '이미지 URL은 문자열입니다.',
         REQUIRED: '이미지 URL을 입력해 주세요.',
       },
-      NOT_FOUND: '상품이 존재하지 않습니다.',
+      NOT_FOUND: `The post doesn't exist.`,
     },
     CREATE: {
-      SUCCEED: '상품 게시물 작성에 성공했습니다.',
+      SUCCEED: '상품 게시글 작성에 성공했습니다.',
     },
     READ: {
-      SUCCEED: '상품 게시물 조회에 성공했습니다.',
+      SUCCEED: '상품 게시글 조회에 성공했습니다.',
     },
     UPDATE: {
-      SUCCESS: '상품 게시물 수정에 성공했습니다.',
+      SUCCESS: 'Change is complete.',
+      NO_CHANGE: 'One of them needs to be changed.',
     },
     DELETE: {
-      SUCCESS: '상품 게시물 삭제에 성공했습니다.',
+      SUCCESS: 'Deletion is complete.',
     },
     LIKE: {
-      SUCCEED: '게시물 좋아요에 성공했습니다.',
-      NO_PERMISSION: '본인의 게시물에 좋아요 할 수 없습니다.',
+      SUCCEED: '게시글 좋아요에 성공했습니다.',
+      NO_PERMISSION: '본인의 게시글에 좋아요 할 수 없습니다.',
       DUPLICATED: '이미 좋아요를 눌렀습니다.',
     },
     UNLIKE: {
-      SUCCEED: '게시물 좋아요 취소에 성공했습니다.',
-      NO_PERMISSION: '본인의 게시물에 좋아요 취소 할 수 없습니다.',
+      SUCCEED: '게시글 좋아요 취소에 성공했습니다.',
+      NO_PERMISSION: '본인의 게시글에 좋아요 취소 할 수 없습니다.',
       NOT_LIKE: '좋아요를 누르지 않았습니다.',
-    },
-    COMPLETE: {
-      SALE: {
-        FORBIDDEN: '당신은 구매 권한이 없는 사용자 입니다. 회원 가입 하여 인증을 완료하세요.',
-        NOT_FOR_SALE: '이미 거래가 완료된 상품입니다.',
-        UNAUTHORIZED: '현재 상품은 사용자가 등록한 것이 아닙니다.',
-        SUCCEED: '상품 거래 기록 생성에 성공했습니다.',
-      },
-      PURCHASE: {
-        NO_HISTORY: '거래한 이력이 없습니다.',
-        SUCCEED: '모든 거래가 정상적으로 완료했습니다.',
-      },
-    },
-    HISTORY: {
-      SALE: {
-        SUCCEED: '입력된 상품에 대한 판매 기록 조회에 성공했습니다.',
-      },
-      PURCHASE: {
-        SUCCEED: '입력된 상품에 대한 구매 기록 조회에 성공했습니다.',
-      },
     },
   },
 
