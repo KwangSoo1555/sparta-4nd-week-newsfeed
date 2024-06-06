@@ -12,7 +12,7 @@ export const AUTH_CONSTANT = {
   MIN_DOMAIN_SEGMENTS: 2,
   // 이메일 인증 관련 상수
   AUTH_EMAIL: {
-    FROM: 'smtp1234@naver.com',
+    FROM: process.env.MAIL_AUTH_USER, 
     SUBJECT: '인증 관련 메일입니다.',
     HTML: '인증번호를 입력해주세요',
   },
