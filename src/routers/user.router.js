@@ -30,7 +30,7 @@ router.post('/sign-up', signUpValidator, async (req, res, next) => {
     }
 
     const isExistUser = await prisma.user.findFirst({
-      where: { OR: [{ nickname }, { email }] },
+      where: { nickname: nickname, email: email },
     });
 
     if (isExistUser) {

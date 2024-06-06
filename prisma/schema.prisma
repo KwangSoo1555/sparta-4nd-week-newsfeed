@@ -99,6 +99,7 @@ model Trade {
 enum TradeStatus {
   FOR_SALE
   SOLD_OUT
+  COMPLETE
 }
 
 // 상품 사진 스키마
@@ -133,10 +134,11 @@ model TradeComment {
 
 // 상품 구매, 판매 내역 스키마
 model History {
-  id      Int       @id @default(autoincrement())
-  tradeId Int       @map("trade_id")
-  userId  Int       @map("user_id")
-  type    TradeType
+  id        Int       @id @default(autoincrement())
+  tradeId   Int       @map("trade_id")
+  userId    Int       @map("user_id")
+  type      TradeType
+  createdAt DateTime  @default(now()) @map("created_at")
 
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   trade Trade @relation(fields: [tradeId], references: [id], onDelete: Cascade)
