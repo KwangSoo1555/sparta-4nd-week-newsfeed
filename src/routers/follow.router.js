@@ -1,9 +1,10 @@
-import expess from 'express';
+import express from 'express';
 import { accessTokenValidator } from '../middlewares/require-access-token.middleware.js';
 import { prisma } from '../utils/prisma.util.js';
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
+import { MESSAGES } from '../constants/message.constant.js';
 
-const router = expess.Router();
+const router = express.Router();
 
 // 팔로우
 router.post('/follow/:id', accessTokenValidator, async (req, res, next) => {
@@ -19,7 +20,7 @@ router.post('/follow/:id', accessTokenValidator, async (req, res, next) => {
     if (!user) {
       res.status(HTTP_STATUS.NOT_FOUND).json({
         status: HTTP_STATUS.NOT_FOUND,
-        message: '팔로우 할 사용자가 존재하지 않습니다.',
+        message: MESSAGES.USER.FOLLOW.NOT_FOUND,
       });
     }
     // 팔로우 정보 DB에 저장
@@ -31,7 +32,7 @@ router.post('/follow/:id', accessTokenValidator, async (req, res, next) => {
     });
     return res
       .status(HTTP_STATUS.OK)
-      .json({ status: HTTP_STATUS.OK, message: '팔로우가 성공하였습니다.', data: { follow } });
+      .json({ status: HTTP_STATUS.OK, message: MESSAGES.USER.FOLLOW.SUCCEED, data: { follow } });
   } catch (err) {
     next(err);
   }
@@ -51,7 +52,7 @@ router.delete('/un-follow/:id', accessTokenValidator, async (req, res, next) => 
     if (!user) {
       res.status(HTTP_STATUS.NOT_FOUND).json({
         status: HTTP_STATUS.NOT_FOUND,
-        message: '언팔로우 할 사용자가 존재하지 않습니다.',
+        message: MESSAGES.USER.UN_FOLLOW.NOT_FOUND,
       });
     }
     // 삭제할 팔로우 확인(delete는 where에 id값이 필요, deleteMany의 경우 다른 조건으로 작동 가능)
@@ -62,9 +63,11 @@ router.delete('/un-follow/:id', accessTokenValidator, async (req, res, next) => 
         id: follow.id,
       },
     });
-    return res
-      .status(HTTP_STATUS.OK)
-      .json({ status: HTTP_STATUS.OK, message: '팔로우가 해제되었습니다.', data: { unFollow } });
+    return res.status(HTTP_STATUS.OK).json({
+      status: HTTP_STATUS.OK,
+      message: MESSAGES.USER.UN_FOLLOW.SUCCEED,
+      data: { unFollow },
+    });
   } catch (err) {
     next(err);
   }

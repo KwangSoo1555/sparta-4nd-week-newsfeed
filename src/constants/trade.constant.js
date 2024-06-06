@@ -6,10 +6,16 @@ export const TRADE_CONSTANT = {
   STATUS: {
     FOR_SALE: 'FOR_SALE',
     SOLD_OUT: 'SOLD_OUT',
-    COMPLETE: 'COMPLETE', 
+    COMPLETE: 'COMPLETE',
   },
   MANNER: {
-    GOOD: 'good', 
-    BAD: 'bad'
-  }
+    GOOD: 'good',
+    BAD: 'bad',
+  },
+  HISTORY: {
+    TYPE: {
+      PURCHASE: 'PURCHASE',
+      SALE: 'SALE',
+    },
+  },
 };
