@@ -51,14 +51,25 @@ router.patch('/update',accessTokenValidator, uploadImage.single('img'), async (r
       imgUrl: image?.location
     };
 
-    const isExistUser = await prisma.user.findMany({
-      where: { email: email, nickname: nickname }
+    const isExistUserEmail = await prisma.user.findMany({
+      where: { email: email }
     })
     
-    if (isExistUser) {
+    const isExistUserNickname = await prisma.user.findMany({
+      where: { nickname: nickname }
+    })
+
+    if (isExistUserEmail) {
       return res.status(HTTP_STATUS.CONFLICT).json({
         status: HTTP_STATUS.CONFLICT, 
-        message: MESSAGES
+        message: MESSAGES.USER.COMMON.EMAIL.DUPLICATED, 
+      })
+    }
+
+    if (isExistUserNickname) {
+      return res.status(HTTP_STATUS.CONFLICT).json({
+        status: HTTP_STATUS.CONFLICT, 
+        message: MESSAGES.USER.COMMON.EMAIL.DUPLICATED, 
       })
     }
 

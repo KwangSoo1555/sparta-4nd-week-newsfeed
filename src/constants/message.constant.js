@@ -55,6 +55,7 @@ export const MESSAGES = {
         BASE: '이메일은 문자열입니다.',
         EMAIL: '이메일의 형식이 올바르지 않습니다',
         REQUIRED: '이메일을 입력해 주세요.',
+        DUPLICATED: '이메일이 이미 존재합니다.',
       },
       PASSWORD: {
         BASE: '비밀번호는 문자열입니다.',
@@ -70,6 +71,7 @@ export const MESSAGES = {
       NICKNAME: {
         BASE: '닉네임은 문자열입니다.',
         REQUIRED: '닉네임을 입력해 주세요.',
+        DUPLICATED: '별명이 이미 존재합니다.',
       },
       REGION: {
         BASE: '지역명은 문자열입니다.',
