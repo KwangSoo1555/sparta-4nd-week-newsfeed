@@ -8,11 +8,16 @@ import { createTradeValidator } from '../middlewares/validators/create-trade.val
 import { updateTradeValidator } from '../middlewares/validators/update-trade.validator.middleware.js';
 
 import { uploadImage } from '../middlewares/multer-image-upload.middleware.js';
+import { optionalAccessTokenValidator } from '../middlewares/optional-access-token.middleware.js';
 
 const tradeRouter = express.Router();
 
 // 상품 게시물 작성 API
-tradeRouter.post('/', accessTokenValidator, uploadImage.array('img', 5), createTradeValidator,
+tradeRouter.post(
+  '/',
+  accessTokenValidator,
+  uploadImage.array('img', 5),
+  createTradeValidator,
   async (req, res, next) => {
     try {
       // 유효성 검사 거치고 req.body 가져옴
@@ -59,7 +64,7 @@ tradeRouter.post('/', accessTokenValidator, uploadImage.array('img', 5), createT
 );
 
 // 상품 게시물 목록 조회 API (뉴스피드)
-tradeRouter.get('/', async (req, res) => {
+tradeRouter.get('/', optionalAccessTokenValidator, async (req, res, next) => {
   // 정렬 조건 쿼리 가져오기
   let sortDate = req.query.sort?.toLowerCase();
   let sortLike = req.query.like?.toLowerCase();
@@ -81,13 +86,27 @@ tradeRouter.get('/', async (req, res) => {
     type = { createdAt: sortDate };
   }
 
-  // trade 테이블의 데이터 모두를 조회
-  let trades = await prisma.trade.findMany({
-    include: { tradePicture: true, user: true, likedBy: true },
-    orderBy: type,
-    omit: { content: true },
-  });
+  let follow = req.query.follow;
+  let trades;
 
+  // 인가된 사용자만 사용하는 목록 조회 (팔로우한 사용자의 게시물만 조회)
+  if (follow && req.user) {
+    const followingIds = req.user.following.map((following) => following.followingId);
+    trades = await prisma.trade.findMany({
+      where: { userId: { in: followingIds } },
+      include: { tradePicture: true, user: true, likedBy: true },
+      orderBy: type,
+      omit: { content: true },
+    });
+  } else {
+    // 모든 사용자가 사용하는 목록 조회
+    // trade 테이블의 데이터 모두를 조회
+    trades = await prisma.trade.findMany({
+      include: { tradePicture: true, user: true, likedBy: true },
+      orderBy: type,
+      omit: { content: true },
+    });
+  }
   trades = trades.map((trade) => {
     return {
       id: trade.id,
