@@ -12,11 +12,7 @@ import { uploadImage } from '../middlewares/multer-image-upload.middleware.js';
 const tradeRouter = express.Router();
 
 // 상품 게시물 작성 API
-tradeRouter.post(
-  '/',
-  accessTokenValidator,
-  uploadImage.array('img', 5),
-  createTradeValidator,
+tradeRouter.post('/', accessTokenValidator, uploadImage.array('img', 5), createTradeValidator,
   async (req, res, next) => {
     try {
       // 유효성 검사 거치고 req.body 가져옴
