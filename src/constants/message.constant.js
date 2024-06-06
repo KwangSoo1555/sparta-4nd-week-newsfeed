@@ -8,9 +8,9 @@ export const MESSAGES = {
       },
       PASSWORD: {
         BASE: '비밀번호는 문자열입니다.',
-        REQUIRED: 'You Should have to enter the password.',
+        REQUIRED: '비밀번호를 입력해 주세요.',
         MIN: '비밀번호는 6자리 이상입니다.',
-        INCONSISTENT: 'Passwords do not match.',
+        INCONSISTENT: '비밀번호가 일치하지 않습니다.',
       },
       UNAUTHORIZED: '인증 정보가 유효하지 않습니다.',
       FORBIDDEN: '접근 권한이 없습니다.',
@@ -58,13 +58,13 @@ export const MESSAGES = {
       },
       PASSWORD: {
         BASE: '비밀번호는 문자열입니다.',
-        REQUIRED: 'You Should have to enter the password.',
+        REQUIRED: '비밀번호를 입력해 주세요.',
         MIN: '비밀번호는 6자리 이상입니다.',
-        INCONSISTENT: 'Passwords do not match.',
+        INCONSISTENT: '비밀번호가 일치하지 않습니다.',
       },
       PASSWORD_CONFIRM: {
         BASE: '비밀번호 확인은 문자입니다.',
-        REQUIRED: 'You Should have to enter the passwordCheck.',
+        REQUIRED: '비밀번호 확인을 입력해 주세요.',
         MIN: '비밀번호는 6자리 이상입니다.',
       },
       NICKNAME: {
@@ -87,7 +87,7 @@ export const MESSAGES = {
     },
     SIGN_UP: {
       EMAIL: {
-        DUPLICATED: 'This email or nickname are already exist.',
+        DUPLICATED: '이메일이나 별명이 이미 존재합니다.',
       },
       VERIFICATION_CODE: {
         BASE: '이메일 인증 코드는 정수입니다.',
@@ -95,7 +95,7 @@ export const MESSAGES = {
         INCONSISTENT: '발송된 인증 코드와 다릅니다.',
         SUCCEED: '메일 인증이 완료되었습니다.',
       },
-      SUCCEED: 'Sign-up succeed',
+      SUCCEED: '회원 가입에 성공했습니다.',
     },
     READ: {
       SUCCEED: '내 정보 조회에 성공했습니다.',
@@ -140,26 +140,25 @@ export const MESSAGES = {
       NOT_FOUND: '상품이 존재하지 않습니다.',
     },
     CREATE: {
-      SUCCEED: '상품 게시글 작성에 성공했습니다.',
+      SUCCEED: '상품 게시물 작성에 성공했습니다.',
     },
     READ: {
-      SUCCEED: '상품 게시글 조회에 성공했습니다.',
+      SUCCEED: '상품 게시물 조회에 성공했습니다.',
     },
     UPDATE: {
-      SUCCESS: 'Change is complete.',
-      NO_CHANGE: 'One of them needs to be changed.',
+      SUCCESS: '상품 게시물 수정에 성공했습니다.',
     },
     DELETE: {
-      SUCCESS: 'Deletion is complete.',
+      SUCCESS: '상품 게시물 삭제에 성공했습니다.',
     },
     LIKE: {
-      SUCCEED: '게시글 좋아요에 성공했습니다.',
-      NO_PERMISSION: '본인의 게시글에 좋아요 할 수 없습니다.',
+      SUCCEED: '게시물 좋아요에 성공했습니다.',
+      NO_PERMISSION: '본인의 게시물에 좋아요 할 수 없습니다.',
       DUPLICATED: '이미 좋아요를 눌렀습니다.',
     },
     UNLIKE: {
-      SUCCEED: '게시글 좋아요 취소에 성공했습니다.',
-      NO_PERMISSION: '본인의 게시글에 좋아요 취소 할 수 없습니다.',
+      SUCCEED: '게시물 좋아요 취소에 성공했습니다.',
+      NO_PERMISSION: '본인의 게시물에 좋아요 취소 할 수 없습니다.',
       NOT_LIKE: '좋아요를 누르지 않았습니다.',
     },
     COMPLETE: {
