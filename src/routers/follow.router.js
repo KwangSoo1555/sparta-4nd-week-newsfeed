@@ -23,6 +23,18 @@ router.post('/follow/:id', accessTokenValidator, async (req, res, next) => {
         message: MESSAGES.USER.FOLLOW.NOT_FOUND,
       });
     }
+    // 팔로우 유무 확인
+    const isFollowed = await prisma.follow.findFirst({
+      where: {
+        followerId,
+        followingId,
+      },
+    });
+    if (isFollowed) {
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .json({ status: HTTP_STATUS.BAD_REQUEST, message: '이미 팔로우 한 사용자입니다.' });
+    }
     // 팔로우 정보 DB에 저장
     const follow = await prisma.follow.create({
       data: {
@@ -55,6 +67,19 @@ router.delete('/un-follow/:id', accessTokenValidator, async (req, res, next) => 
         message: MESSAGES.USER.UN_FOLLOW.NOT_FOUND,
       });
     }
+    // 팔로우 유무 확인
+    const isFollowed = await prisma.follow.findFirst({
+      where: {
+        followerId,
+        followingId,
+      },
+    });
+    if (!isFollowed) {
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .json({ status: HTTP_STATUS.BAD_REQUEST, message: '팔로우 하지 않은 사용자입니다.' });
+    }
+
     // 삭제할 팔로우 확인(delete는 where에 id값이 필요, deleteMany의 경우 다른 조건으로 작동 가능)
     const follow = await prisma.follow.findFirst({ where: { followerId, followingId } });
     // 해당 팔로우 삭제
