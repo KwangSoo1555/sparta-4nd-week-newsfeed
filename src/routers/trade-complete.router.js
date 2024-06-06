@@ -9,7 +9,7 @@ import { MESSAGES } from '../constants/message.constant.js';
 
 const router = express.Router();
 
-router.post('/:tradeId', accessTokenValidator, async (req, res, next) => {
+router.post('/:tradeId/history', accessTokenValidator, async (req, res, next) => {
   try {
     const tradeId = +req.params.tradeId;
 
