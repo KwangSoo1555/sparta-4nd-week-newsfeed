@@ -1,7 +1,7 @@
 export const MESSAGES = {
   ERROR_HANDLER: {
     MULTER: {
-      PART_COUNT: 'Too many parts',
+      PART_COUNT: '필드와 파일 수의 총합이 너무 많습니다.',
       FILE_SIZE: '파일 용량이 너무 큽니다.',
       FILE_COUNT: '파일 수가 너무 많습니다.',
       FIELD_KEY: '필드의 이름이 너무 깁니다.',

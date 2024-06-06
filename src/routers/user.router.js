@@ -84,6 +84,13 @@ router.patch('/update', accessTokenValidator, uploadImage.single('img'),
         imgUrl = image.location || image.path
       }
 
+      if (image.size > 5 * 1024 * 1024) {
+        return res.status(HTTP_STATUS.BAD_REQUEST).json({
+          status: HTTP_STATUS.BAD_REQUEST, 
+          message: MESSAGES.ERROR_HANDLER.MULTER.FILE_SIZE
+        })
+      }
+
       const authUserUpdate = await prisma.user.update({
         where: { id: req.user.id },
         data: {
@@ -96,7 +103,7 @@ router.patch('/update', accessTokenValidator, uploadImage.single('img'),
           ...(newPassword && { password: user.password }),
           ...(image && { imgUrl })
         }
-      })
+      });
 
       const { password: _, ...userWithoutPassword } = authUserUpdate;
 
