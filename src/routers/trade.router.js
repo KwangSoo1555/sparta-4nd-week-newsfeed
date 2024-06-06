@@ -158,6 +158,7 @@ tradeRouter.patch(
       // 상품 조회하기
       const trade = await prisma.trade.findFirst({
         where: { id: +id, userId: req.user.id, status: TRADE_CONSTANT.STATUS.FOR_SALE },
+        include: { tradePicture: true },
       });
 
       // 데이터베이스 상 해당 상품 ID에 대한 정보가 없는 경우
@@ -172,13 +173,6 @@ tradeRouter.patch(
 
       // req.files에서 이미지 데이터 가져옴
       const images = req.files;
-
-      // 이미지가 없을 경우 에러 처리
-      if (images.length === 0) {
-        return res
-          .status(HTTP_STATUS.BAD_REQUEST)
-          .json({ status: HTTP_STATUS.BAD_REQUEST, message: MESSAGES.TRADE.COMMON.IMG.REQUIRED });
-      }
 
       // 게시물 수정 + 이미지 삭제 및 추가 트랜젝션으로 처리
       const changedTrade = await prisma.$transaction(async (tx) => {
@@ -195,14 +189,18 @@ tradeRouter.patch(
 
         // 상품 이미지 수정 (정확히는 삭제 후 등록)
         // 이미지 개수가 다를 수도 있고 어떤 이미지가 어떤 이미지로 수정되는지 알 방법이 없음
-        await tx.tradePicture.deleteMany({ where: { tradeId: trade.id } });
-        const tradeImg = await Promise.all(
-          images.map(async (image) => {
-            return await tx.tradePicture.create({
-              data: { tradeId: trade.id, imgUrl: image.location },
-            });
-          })
-        );
+        let tradeImg = trade.tradePicture;
+
+        if (images.length !== 0) {
+          await tx.tradePicture.deleteMany({ where: { tradeId: trade.id } });
+          tradeImg = await Promise.all(
+            images.map(async (image) => {
+              return await tx.tradePicture.create({
+                data: { tradeId: trade.id, imgUrl: image.location },
+              });
+            })
+          );
+        }
         return [tradeTemp, tradeImg];
       });
 

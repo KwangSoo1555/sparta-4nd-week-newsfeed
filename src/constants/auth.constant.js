@@ -16,4 +16,17 @@ export const AUTH_CONSTANT = {
     SUBJECT: '인증 관련 메일입니다.',
     HTML: '인증번호를 입력해주세요',
   },
+  PASSPORT: {
+    COMMON: {
+      FAILURE_REDIRECT: '/api/auth/fail'
+    },
+    KAKAO: {
+      NAME: 'kakao',
+      OAUTH: '/kakao/oauth'
+    },
+    NAVER: {
+      NAME: 'naver',
+      OAUTH: '/naver/oauth'
+    }
+  }
 };

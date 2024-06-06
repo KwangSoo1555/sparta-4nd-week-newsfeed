@@ -97,7 +97,7 @@ router.post('/sign-in', signInValidator, async (req, res, next) => {
 
     return res.status(HTTP_STATUS.OK).json({
       status: HTTP_STATUS.OK,
-      message: '로그인에 성공하였습니다',
+      message: MESSAGES.AUTH.SIGN_IN.SUCCEED,
       data,
     });
   } catch (err) {
@@ -114,7 +114,7 @@ router.post('/refresh', refreshTokenValidator, async (req, res, next) => {
 
     return res.status(HTTP_STATUS.OK).json({
       status: HTTP_STATUS.OK,
-      message: '토큰 재발급에 성공하였습니다',
+      message: MESSAGES.AUTH.TOKEN_REFRESH.SUCCEED,
       data,
     });
   } catch (err) {
@@ -132,9 +132,11 @@ router.post('/sign-out', refreshTokenValidator, async (req, res, next) => {
         refreshToken: null,
       },
     });
-    return res
-      .status(HTTP_STATUS.OK)
-      .json({ status: HTTP_STATUS.OK, message: '로그아웃에 성공했습니다.', data: { id: user.id } });
+    return res.status(HTTP_STATUS.OK).json({
+      status: HTTP_STATUS.OK,
+      message: MESSAGES.AUTH.SIGN_OUT.SUCCEED,
+      data: { id: user.id },
+    });
   } catch (err) {
     next(err);
   }

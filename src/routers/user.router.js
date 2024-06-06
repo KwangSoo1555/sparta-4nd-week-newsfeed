@@ -34,7 +34,6 @@ router.patch('/update',accessTokenValidator, uploadImage.single('img'), async (r
     // req.files에서 이미지 데이터 가져옴
     const image = req.file;
 
-    console.log(image)
     const user = await prisma.user.findUnique({
       where: { id: req.user.id },
     });
@@ -51,6 +50,17 @@ router.patch('/update',accessTokenValidator, uploadImage.single('img'), async (r
       password: currentPassword,
       imgUrl: image?.location
     };
+
+    const isExistUser = await prisma.user.findMany({
+      where: { email: email, nickname: nickname }
+    })
+    
+    if (isExistUser) {
+      return res.status(HTTP_STATUS.CONFLICT).json({
+        status: HTTP_STATUS.CONFLICT, 
+        message: MESSAGES
+      })
+    }
 
     // 비밀번호 변경 시 재 해쉬, 번경 없으면 기존 비밀번호
     if (newPassword) {
