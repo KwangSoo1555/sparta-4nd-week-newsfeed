@@ -1,18 +1,20 @@
 # 🖥️ Team Ace의 Node.js 뉴스피드 프로젝트
+
 ![썸네일](./imgs/thumbnail.png)
 
-
 ## 프로젝트 소개
+
 - 프로젝트 이름 : 둥근 마켓
 - 내용 : 현재 서비스 중인 “당근 마켓” 사이트를 오마주 하여 뉴스피드 프로젝트
 - 구분 : 팀 프로젝트
 - GitHub : https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed
-- 시연 영상 : 
+- 시연 영상 :
 - 배포 : https://currypang.shop/
 
 <br>
 
 ## 팀원 구성
+
 - 팀장 : 복광수 [@KwangSoo1555](https://github.com/KwangSoo1555)
 - 팀원 : 김정찬 [@jkc-mycode](https://github.com/jkc-mycode)
 - 팀원 : 채유일 [@currypang](https://github.com/currypang)
@@ -22,11 +24,13 @@
 <br>
 
 ## 1. 개발 기간
+
 - 2024.05.31 ~ 2024.06.06
 
 <br>
 
 ## 2. 개발 환경
+
 - 운영체제 : Window/Mac
 - FrontEnd : X
 - BackEnd : Node.js, Express, MySQL(Prisma)
@@ -36,6 +40,7 @@
 <br>
 
 ## 3. 역할 분배
+
 - **복광수**
   - 회원가입 기능
   - nodemailer를 이용한 이메일 인증
@@ -51,30 +56,32 @@
   - multer를 이용한 이미지 업로더
 - **채유일**
   - 로그인/로그아웃
-  - Access Token, Refresh Token 미들웨어
+  - Access Token, Refresh Token, 역할 인가 미들웨어
   - passport를 이용한 카카오 소셜 로그인
   - AWS S3 구성 및 설정
   - ERD 작성 및 테이블 스키마 설계
+  - 팔로우, 언팔로우 기능
 - **구남욱**
   - 게시물 댓글 CRUD
   - 게시물 댓글 좋아요/좋아요 취소
 - **주진아**
   - 게시물 생성
-  - 사용자 간 팔로우
-
 
 <br>
 
 ## 4. API 명세서 및 ERD, 와이어 프레임
- - API 명세서 : https://west-territory-778.notion.site/Team-Ace-Node-js-API-221adeefaec14c38bf1a623f068c0c22?pvs=4
- - ERD : https://drawsql.app/teams/currypangs-team/diagrams/team1
+
+- API 명세서 : https://west-territory-778.notion.site/Team-Ace-Node-js-API-221adeefaec14c38bf1a623f068c0c22?pvs=4
+- ERD : https://drawsql.app/teams/currypangs-team/diagrams/team1
 
 ![와이어프레임](./imgs/wireframe.jpg)
 
 <br>
 
 ## 4. 주요 기능 및 설명
+
 ### 4-1. 이메일 인증 API
+
 - 회원 가입을 위한 이메일 인증 코드를 반환하는 API입니다.
 
 - 이메일 가입 시 이메일 인증을 위한 Nodemailer와 같은 패키지를 사용했습니다.
@@ -88,6 +95,7 @@
 <br>
 
 ### 4-2. 회원가입 API
+
 - **이메일, 비밀번호, 비밀번호 확인, 별명, 거래 지역, 나이, 성별, 이메일 인증 코드**를 Request Body(**`req.body`**)로 전달 받습니다.
 
 - **보안을 위해 비밀번호는** 평문(Plain Text)으로 저장하지 않고 `Hash` 된 값을 저장합니다.
@@ -97,19 +105,21 @@
 <br>
 
 ### 4-3. 로그인 API
+
 - **이메일, 비밀번호**를 Request Body(**`req.body`**)로 전달 받습니다.
 
--  **AccessToken(Payload**에 `사용자 ID`를 포함하고, **유효기한**이 `12시간`)을 생성합니다.
+- **AccessToken(Payload**에 `사용자 ID`를 포함하고, **유효기한**이 `12시간`)을 생성합니다.
 
--  **RefreshToken(Payload**에 `사용자 ID`를 포함하고, **유효기한**이 `7일`)을 생성합니다.
+- **RefreshToken(Payload**에 `사용자 ID`를 포함하고, **유효기한**이 `7일`)을 생성합니다.
 
--  **AccessToken**와**RefreshToken**을 반환합니다.
+- **AccessToken**와**RefreshToken**을 반환합니다.
 
 - https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/d18ff6d70a04d30a36232b60cc7e42e8d2f3ea64/src/routers/auth.routers.js#L14
 
 <br>
 
 ### 4-4. 카카오 소셜 로그인 API
+
 - `OAuth`를 이용한 로그인 API입니다.
 
 - 외부의 로그인 인증 수단을 사용하기 위해 `passport` 모듈을 사용했습니다.
@@ -117,6 +127,7 @@
 - 사용하기 위해서는 https://developers.kakao.com/ 에서 애플리케이션을 등록해야 합니다.
 
 - 로그인 과정
+
   - `/auth/kakao` 라우터를 통해 로그인 요청이 들어오면 `passport.authenticate` 메서드 호출합니다.
   - `KakaoStrategy 전략` 실행해서 데이터베이스에 사용자 정보를 등록합니다
   - `사용자 ID`를 담은 `JWT 토큰`을 생성해서 클라이언트에게 반환합니다.
@@ -126,6 +137,7 @@
 <br>
 
 ### 4-5. 네이버 소셜 로그인 API
+
 - `OAuth`를 이용한 로그인 API입니다.
 
 - 외부의 로그인 인증 수단을 사용하기 위해 `passport` 모듈을 사용했습니다.
@@ -133,6 +145,7 @@
 - 사용하기 위해서는 https://developers.naver.com/ 에서 애플리케이션을 등록해야 합니다.
 
 - 로그인 과정
+
   - `/auth/naver` 라우터를 통해 로그인 요청이 들어오면 `passport.authenticate` 메서드 호출합니다.
   - `naverStrategy 전략` 실행해서 데이터베이스에 사용자 정보를 등록합니다
   - `사용자 ID`를 담은 `JWT 토큰`을 생성해서 클라이언트에게 반환합니다.
@@ -142,6 +155,7 @@
 <br>
 
 ### 4-6. 내 정보 조회 API
+
 - 로그인한 사용자의 정보를 조회하는 API입니다.
 
 - accessTokenValidator를 통해서 로그인한 사용자의 Access Token를 검증합니다.
@@ -155,6 +169,7 @@
 <br>
 
 ### 4-7. 내 정보 수정 API
+
 - 사용자의 정보를 수정하는 API입니다.
 
 - `이메일, 별명, 수정할 비밀번호, 현재 비밀번호, 지역, 나이, 성별, 한 줄 소개`를 `req.body`를 통해 받아옵니다.
@@ -168,6 +183,7 @@
 <br>
 
 ### 4-8. 게시물 생성 API
+
 - 판매할 상품의 정보를 입력 받아 게시물을 생성하는 API입니다.
 
 - `게시물 제목, 게시물 내용, 상품 가격, 판매 지역`을 `req.body`를 통해 받아옵니다.
@@ -183,6 +199,7 @@
 <br>
 
 ### 4-9. 게시물 목록 조회 API
+
 - 판매 등록된 상품의 정보 목록을 조회하는 API입니다.
 
 - 일종의 `뉴스피드`, 모든 사용자들이 올리는 게시물을 보는 기능입니다.
@@ -196,6 +213,7 @@
 <br>
 
 ### 4-10. 게시물 상세 조회 API
+
 - 게시물의 상세한 정보를 조회하는 API입니다.
 
 - 목록 조회와는 다르게 게시물의 `내용`도 포함하여 출력합니다.
@@ -209,6 +227,7 @@
 <br>
 
 ### 4-11. 게시물 수정 API
+
 - 상품 게시물의 정보를 수정하는 API입니다.
 
 - 상품 게시물 작성과 마찬가지로 `게시물 제목, 게시물 내용, 상품 가격, 판매 지역`을 `req.body`를 통해 받아옵니다.
@@ -224,6 +243,7 @@
 <br>
 
 ### 4-12. 게시물 삭제 API
+
 - 상품 게시물을 선택해서 삭제하는 API입니다.
 
 - `상품 게시물의 ID`는 `req.params`를 통해 URL에서 가져옵니다.
@@ -235,6 +255,7 @@
 <br>
 
 ### 4-13. 게시물 좋아요 API
+
 - 상품 게시물에 좋아요를 할 수 있는 API입니다.
 
 - `상품 게시물의 ID`는 `req.params`를 통해 URL에서 가져옵니다.
@@ -250,6 +271,7 @@
 <br>
 
 ### 4-14. 댓글 생성 API
+
 - 해당 상품 게시물에 댓글을 작성하는 API입니다.
 
 - `accessTokenValidator 미들웨어`를 통해 생성된 `req.user`에서 로그인한 사용자의 ID를 가져옵니다.
@@ -263,6 +285,7 @@
 <br>
 
 ### 4-15. 댓글 조회 API
+
 - 사용자들이 게시물에 작성한 댓글들을 조회하는 API입니다.
 
 - 본인 뿐만 아니라 `모든 사용자의 댓글`이 보입니다.
@@ -276,6 +299,7 @@
 <br>
 
 ### 4-16. 댓글 수정 API
+
 - 본인이 작성한 댓글을 수정하는 API입니다.
 
 - `상품 게시물의 ID, 댓글의 ID`는 `req.params`를 통해 URL에서 가져옵니다.
@@ -285,6 +309,7 @@
 <br>
 
 ### 4-17. 댓글 삭제 API
+
 - 본인이 작성한 댓글을 삭제하는 API입니다.
 
 - `상품 게시물의 ID, 댓글의 ID`는 `req.params`를 통해 URL에서 가져옵니다.
@@ -296,6 +321,7 @@
 <br>
 
 ### 4-18. 댓글 좋아요 API
+
 - 상품 게시물 댓글에 좋아요를 할 수 있는 API입니다.
 
 - `상품 게시물의 ID, 댓글의 ID`는 `req.params`를 통해 URL에서 가져옵니다.
@@ -306,11 +332,12 @@
 
 - `댓글 좋아요 취소 API`는 로직이 거의 동일하기에 작성하지 않았습니다.
 
-- 
+-
 
 <br>
 
 ### 4-19. 상품 판매 완료 API
+
 - 판매자가 상품 판매를 완료하는 API입니다.
 
 - `상품 게시물의 ID`는 `req.params`를 통해 URL에서 가져옵니다.
@@ -328,61 +355,124 @@
 <br>
 
 ### 4-20. 상품 구매/판매 내역 조회 API
-- 
+
+-
 
 - https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/d18ff6d70a04d30a36232b60cc7e42e8d2f3ea64/src/routers/trade-history.router.js#L49
 
 <br>
 
 ## 5. 테스트 사진 첨부
+
 - 회원가입 API
-![회원가입 API](./imgs/sign-up.png)
+  ![회원가입 API](./imgs/1-sign-up.png)
+
+- 회원가입 이메일 인증 API
+  ![회원가입 이메일 인증](./imgs/2-sign-up-email.png)
 
 - 로그인 API
-![로그인 API](./imgs/sign-in.png)
+  ![로그인 API](./imgs/3-sign-in.png)
 
-- 내 정보 조회 API
-![내 정보 조회 API](./imgs/user_info.png)
+- 카카오 소셜 로그인 API
+  ![카카오 소셜 로그인 API](./imgs/4-kakao-social.png)
 
-- 이력서 생성 API
-![이력서 생성 API](./imgs/resume_create.png)
+- 네이버 소셜 로그인 API
+  ![네이버 소셜 로그인 API](./imgs/5-naver-social.png)
 
-- 이력서 목록 조회 API
-![이력서 목록 조회 API](./imgs/resume_list.png)
+- 사용자 조회 API
+  ![사용자 조회 API](./imgs/6-user-information.png)
 
-- 이력서 상세 조회 API
-![이력서 상세 조회 API](./imgs/resume_detail.png)
-
-- 이력서 수정 API
-![이력서 수정 API](./imgs/resume_update.png)
-
-- 이력서 삭제 API
-![이력서 삭제 API](./imgs/resume_delete.png)
-
-- 이력서 지원 상태 변경 API
-![이력서 지원 상태 변경 API](./imgs/resume_change_state.png)
-
-- 이력서 로그 목록 조회 API
-![이력서 로그 목록 조회 API](./imgs/resume_log_list.png)
+- 사용자 정보 수정 API
+  ![사용자 정보 수정 API](./imgs/7-user-update.png)
 
 - 토큰 재발급 API
-![토큰 재발급 API](./imgs/token_refresh.png)
+  ![토큰 재발급 API](./imgs/8-token-reissue.png)
 
-- 로그아웃 API
-![로그아웃 API](./imgs/sign-out.png)
+- 로그 아웃 API
+  ![로그 아웃 API](./imgs/9-sign-out.png)
+
+- 팔로우 API
+  ![팔로우 API](./imgs/10-follow.png)
+
+- 언팔로우 API
+  ![언팔로우 API](./imgs/11-unfollow.png)
+
+- 게시물 생성 API
+  ![게시물 생성 API](./imgs/12-trade-create.png)
+
+- 게시물 목록조회 - 기본값 API
+  ![게시물 목록조회-기본값 API](./imgs/13-trade-list-default.png)
+
+- 게시물 목록조회 - sort API
+  ![게시물 목록조회 - sort API](./imgs/14-trade-list-sort.png)
+
+- 게시물 목록조회 - like API
+  ![게시물 목록조회 - like API](./imgs/15-trade-list-like.png)
+
+- 게시물 목록조회 - follow API
+  ![게시물 목록조회 - follow API](./imgs/16-trade-list-follow.png)
+
+- 게시물 상세 조회 API
+  ![게시물 상세 조회 API](./imgs/17-trade-detail.png)
+
+- 게시물 수정 API
+  ![게시물 수정 API](./imgs/18-trade-update.png)
+
+- 게시물 삭제 API
+  ![게시물 삭제 API](./imgs/19-trade-delete.png)
+
+- 게시물 좋아요 API
+  ![게시물 좋아요 API](./imgs/20-trade-like.png)
+
+- 게시물 좋아요 취소 API
+  ![게시물 좋아요 취소 API](./imgs/21-trade-unlike.png)
+
+- 댓글 생성 API
+  ![댓글 생성 API](./imgs/22-comment-create.png)
+
+- 댓글 수정 API
+  ![댓글 수정 API](./imgs/23-comment-update.png)
+
+- 댓글 조회 API
+  ![댓글 조회 API](./imgs/24-comment-list.png)
+
+- 댓글 삭제 API
+  ![댓글 삭제 API](./imgs/25-comment-delete.png)
+
+- 댓글 좋아요 API
+  ![댓글 좋아요 API](./imgs/26-comment-like.png)
+
+- 댓글 좋아요 취소 API
+  ![댓글 좋아요 취소 API](./imgs/27-comment-unlike.png)
+
+- 거래 내역 생성 API
+  ![거래 내역 생성 API](./imgs/28-make-history.png)
+
+- 구매 완료 내역 생성 API
+  ![구매 완료 내역 생성 API](./imgs/29-make-purchase-history.png)
+
+- 판매 내역 조회 API
+  ![판매 내역 조회 API](./imgs/30-sell-history.png)
+
+- 구매 내역 조회 API
+  ![구매 내역 조회 API](./imgs/31-purchase-history.png)
 
 <br>
 
 ## 6. 어려웠던 점
-### 6-1. 
-- 
+
+### 6-1.
+
+-
 
 <br>
 
-### 6-2. 
--  
+### 6-2.
+
+-
 
 <br>
 
-### 6-3. 
-- 
+### 6-3.
+
+-
