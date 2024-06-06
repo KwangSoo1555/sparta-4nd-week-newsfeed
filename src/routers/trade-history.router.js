@@ -32,7 +32,7 @@ router.get('/purchase', accessTokenValidator, async (req, res, next) => {
 
     return res.status(HTTP_STATUS.OK).json({
       status: HTTP_STATUS.OK,
-      message: MESSAGES.TRADE.HISTORY.SALE.SUCCEED,
+      message: MESSAGES.TRADE.HISTORY.PURCHASE.SUCCEED, 
       data: purchaseHistory,
     });
   } catch (error) {
