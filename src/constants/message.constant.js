@@ -139,7 +139,7 @@ export const MESSAGES = {
       BASE: '댓글은 문자열입니다.',
       MIN: '댓글을 1자 이상 작성해주세요.',
       MAX: '댓글은 300자를 초과할 수 없습니다.',
-      REQUIRED: '댓글을 입력해 주세요.',
+      REQUIRED: '댓글을 입력해주세요.',
     },
     CREATE: {
       SUCCEED: '상품 댓글 작성에 성공했습니다.',

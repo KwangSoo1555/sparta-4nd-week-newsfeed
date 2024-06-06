@@ -2,7 +2,9 @@ import express from 'express';
 import { prisma } from '../utils/prisma.util.js';
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
+import { TRADE_CONSTANT } from '../constants/trade.constant.js';
 import { accessTokenValidator } from '../middlewares/require-access-token.middleware.js';
+import { updateCommentValidator } from '../middlewares/validators/update-comment.validator.middleware.js';
 
 const router = express.Router();
 
@@ -16,13 +18,23 @@ router.post('/:tradeId/comment', accessTokenValidator, async (req, res, next) =>
     //body에서 댓글 내용 받아오게
     const { comment } = req.body;
 
-    console.log(req.user)
+    // 상품 조회하기
+    let trade = await prisma.trade.findFirst({
+      where: { id: +tradeId, status: TRADE_CONSTANT.STATUS.FOR_SALE },
+    });
+
+    // 데이터베이스 상 해당 상품 ID에 대한 정보가 없는 경우
+    if (!trade) {
+      return res
+        .status(HTTP_STATUS.NOT_FOUND)
+        .json({ status: HTTP_STATUS.NOT_FOUND, message: MESSAGES.TRADE.COMMON.NOT_FOUND });
+    }
 
     //댓글 작성
     const commentCreate = await prisma.tradeComment.create({
       data: {
-        tradeId : +tradeId,
-        userId : id,
+        tradeId: +tradeId,
+        userId: id,
         comment,
       },
     });
@@ -37,46 +49,178 @@ router.post('/:tradeId/comment', accessTokenValidator, async (req, res, next) =>
 });
 
 router.get('/:tradeId/comment', async (req, res) => {
-    {  
-      const { tradeId } = req.params
+  {
+    const { tradeId } = req.params;
 
-      //댓글 조회는 기본적으로 시간 순 
-      let sortDate = req.query.sort?.toLowerCase();
-      let type
-      type = {createdAt : sortDate}
+    // 상품 조회하기
+    let trade = await prisma.trade.findFirst({
+      where: { id: +tradeId, status: TRADE_CONSTANT.STATUS.FOR_SALE },
+    });
 
+    // 데이터베이스 상 해당 상품 ID에 대한 정보가 없는 경우
+    if (!trade) {
+      return res
+        .status(HTTP_STATUS.NOT_FOUND)
+        .json({ status: HTTP_STATUS.NOT_FOUND, message: MESSAGES.TRADE.COMMON.NOT_FOUND });
+    }
 
+    //댓글 조회는 기본적으로 시간 순
+    let sortDate = req.query.sort?.toLowerCase();
+    let type;
+    type = { createdAt: sortDate };
 
-      //조회 코드
-      let commentsRead = await prisma.tradeComment.findMany({
-        where : { tradeId : +tradeId, },
-        include : {user : true},
-        orderBy : type.asc, //오래된 댓글이 최상단
-      })
+    //조회 코드
+    let commentsRead = await prisma.tradeComment.findMany({
+      where: { tradeId: +tradeId },
+      include: { user: true },
+      orderBy: type.asc, //오래된 댓글이 최상단
+    });
 
-
-      //tradeComment 테이블 데이터 조회
-      commentsRead = commentsRead.map((tradeComment) => {
-        return {
-        id : tradeComment.id,
-        trade : tradeComment.tradeId.id,
-        userId : tradeComment.userId.id,
-        nickname : tradeComment.user.nickname,  //닉네임 조회가 안 됨(undefined)
-        comment : tradeComment.comment,
+    //tradeComment 테이블 데이터 조회
+    commentsRead = commentsRead.map((tradeComment) => {
+      return {
+        id: tradeComment.id,
+        trade: tradeComment.tradeId.id,
+        userId: tradeComment.userId.id,
+        nickname: tradeComment.user.nickname,
+        comment: tradeComment.comment,
         // like : tradeComment.likedBy.length,  //좋아요 기능 넣을 때 대비
-        createdAt : tradeComment.createdAt,
-        updatedAt : tradeComment.updatedAt,
-      }}
-      )
+        createdAt: tradeComment.createdAt,
+        updatedAt: tradeComment.updatedAt,
+      };
+    });
 
-      return res.status(HTTP_STATUS.OK).json({
-        status: HTTP_STATUS.OK,
-        message: MESSAGES.COMMENT.READ.SUCCEED,
-        data: {
-          commentsRead,
+    return res.status(HTTP_STATUS.OK).json({
+      status: HTTP_STATUS.OK,
+      message: MESSAGES.COMMENT.READ.SUCCEED,
+      data: {
+        commentsRead,
+      },
+    });
+  }
+});
+
+router.patch(
+  '/:tradeId/comment/:commentId',
+  accessTokenValidator,
+  updateCommentValidator,
+  async (req, res, next) => {
+    try {
+      const { tradeId } = req.params;
+
+      // 상품 조회하기
+      let trade = await prisma.trade.findFirst({
+        where: { id: +tradeId, status: TRADE_CONSTANT.STATUS.FOR_SALE },
+      });
+
+      // 데이터베이스 상 해당 상품 ID에 대한 정보가 없는 경우
+      if (!trade) {
+        return res
+          .status(HTTP_STATUS.NOT_FOUND)
+          .json({ status: HTTP_STATUS.NOT_FOUND, message: MESSAGES.TRADE.COMMON.NOT_FOUND });
+      }
+
+      const id = req.params.commentId;
+
+      //댓글 id 찾고, 그 댓글을 작성한 사람의 id가 user 테이블의 id와 같으면
+      const commentExist = await prisma.tradeComment.findFirst({
+        where: {
+          id: +id,
+          userId: req.user.id,
         },
       });
+
+      // 댓글이 없으면
+      if (!commentExist) {
+        return res.status(HTTP_STATUS.NOT_FOUND).json({
+          status: HTTP_STATUS.NOT_FOUND,
+          message: '찾으시는 댓글이 없습니다. 다시 한 번 확인해주세요.',
+        });
+      }
+
+      // 수정할 comment 내용 입력받기
+      const { comment } = req.body;
+
+      //유효성 검사
+      if (!comment) {
+        return res.status(HTTP_STATUS.BAD_REQUEST).json({
+          status: HTTP_STATUS.BAD_REQUEST,
+          message: '댓글을 입력해주세요.',
+        });
+      }
+
+      if (comment > 300) {
+        return res.status(HTTP_STATUS.BAD_REQUEST).json({
+          status: HTTP_STATUS.BAD_REQUEST,
+          message: '댓글은 300자를 초과할 수 없습니다.',
+        });
+      }
+
+      const commentUpdate = await prisma.tradeComment.update({
+        where: { id: +id },
+        data: {
+          ...(comment && { comment }),
+        },
+      });
+
+      return res.status(HTTP_STATUS.CREATED).json({
+        status: HTTP_STATUS.CREATED,
+        message: '상품 댓글이 정상적으로 수정되었습니다.',
+        data: { commentUpdate },
+      });
+    } catch (err) {
+      next(err);
     }
-  });
+  }
+);
+
+router.delete('/:tradeId/comment/:commentId', accessTokenValidator, async (req, res, next) => {
+  try {
+    const { tradeId } = req.params;
+
+    // 상품 조회하기
+    let trade = await prisma.trade.findFirst({
+      where: { id: +tradeId, status: TRADE_CONSTANT.STATUS.FOR_SALE },
+    });
+
+    // 데이터베이스 상 해당 상품 ID에 대한 정보가 없는 경우
+    if (!trade) {
+      return res
+        .status(HTTP_STATUS.NOT_FOUND)
+        .json({ status: HTTP_STATUS.NOT_FOUND, message: MESSAGES.TRADE.COMMON.NOT_FOUND });
+    }
+
+    const id = req.params.commentId;
+
+    //댓글 id 찾고, 그 댓글을 작성한 사람의 id가 user 테이블의 id와 같으면 삭제api 작동
+    const commentExist = await prisma.tradeComment.findFirst({
+      where: {
+        id: +id,
+        userId: req.user.id,
+      },
+    });
+
+    // 댓글이 없으면 err
+    if (!commentExist) {
+      return res.status(HTTP_STATUS.NOT_FOUND).json({
+        status: HTTP_STATUS.NOT_FOUND,
+        message: '찾으시는 댓글이 없습니다. 다시 한 번 확인해주세요.',
+      });
+    }
+
+    const commentDelete = await prisma.tradeComment.delete({
+      where: { id: +id, userId: req.user.id },
+      select: { id: true },
+    });
+
+    return res.status(HTTP_STATUS.CREATED).json({
+      status: HTTP_STATUS.CREATED,
+      message: MESSAGES.COMMENT.DELETE.SUCCEED,
+      data: { commentDelete },
+    });
+  } catch (err) {
+    next(err);
+  }
+});
 
 export default router;
