@@ -1,4 +1,17 @@
 export const MESSAGES = {
+  ERROR_HANDLER: {
+    MULTER: {
+      PART_COUNT: 'Too many parts',
+      FILE_SIZE: '파일 용량이 너무 큽니다.',
+      FILE_COUNT: '파일 수가 너무 많습니다.',
+      FIELD_KEY: '필드의 이름이 너무 깁니다.',
+      FIELD_VALUE: '필드의 값이 너무 깁니다.',
+      FIELD_COUNT: '필드가 너무 많습니다.',
+      UNEXPECTED_FILE: '지원하지 않은 파일입니다.',
+      FIELD_NAME: '필드의 이름을 읽어버렸습니다.',
+    },
+    ETC: '예상치 못한 에러가 발생했습니다. 관리자에게 문의해 주세요.',
+  },
   AUTH: {
     COMMON: {
       EMAIL: {
@@ -197,7 +210,6 @@ export const MESSAGES = {
       },
     },
   },
-
   COMMENT: {
     COMMON: {
       BASE: '댓글은 문자열입니다.',
