@@ -78,10 +78,10 @@ router.patch('/update', accessTokenValidator, uploadImage.single('img'),
       const image = req.file;
 
       // 이미지 데이터 처리
-      let imgUrl;
+      let imgUrl = user.imgUrl;
 
-      if (!image) {
-        imgUrl = req.user.imgUrl;
+      if (image) {
+        imgUrl = image.location || image.path
       }
 
       const authUserUpdate = await prisma.user.update({
@@ -94,7 +94,7 @@ router.patch('/update', accessTokenValidator, uploadImage.single('img'),
           ...(gender && { gender }),
           ...(introduce && { introduce }),
           ...(newPassword && { password: user.password }),
-          ...(imgUrl && { imgUrl: image })
+          ...(image && { imgUrl })
         }
       })
 
@@ -103,8 +103,7 @@ router.patch('/update', accessTokenValidator, uploadImage.single('img'),
       res.status(HTTP_STATUS.OK).json({
         status: HTTP_STATUS.OK,
         massage: MESSAGES.USER.UPDATE.SUCCEED,
-        data: authUserUpdate
-        // data: userWithoutPassword,
+        data: userWithoutPassword,
       });
     } catch (error) {
       next(error);
