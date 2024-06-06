@@ -162,6 +162,19 @@ export const MESSAGES = {
       NOT_LIKE: '좋아요를 누르지 않았습니다.',
     },
     COMPLETE: {
+      BUYER_ID: {
+        BASE: '구매자 ID는 정수입니다.',
+        REQUIRED: '구매자 ID를 입력해 주세요.',
+      },
+      MANNER: {
+        BASE: '매너 상태는 문자열입니다.',
+        REQUIRED: '매너 상태를 입력해 주세요.',
+        ONLY: '매너 상태는 [good, bad] 중 하나만 입력해 주세요.',
+      },
+      SELLER_ID: {
+        BASE: '판매자 ID는 정수입니다.',
+        REQUIRED: '판매자 ID를 입력해 주세요.',
+      },
       SALE: {
         FORBIDDEN: '당신은 구매 권한이 없는 사용자 입니다. 회원 가입 하여 인증을 완료하세요.',
         NOT_FOR_SALE: '이미 거래가 완료된 상품입니다.',
