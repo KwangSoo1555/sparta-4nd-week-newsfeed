@@ -71,7 +71,7 @@ router.post('/:tradeId/history', accessTokenValidator, async (req, res, next) =>
         },
       });
 
-      await prisma.trade.update({
+      await tx.trade.update({
         where: { id: tradeId },
         data: {
           status: TRADE_CONSTANT.STATUS.SOLD_OUT,
@@ -81,7 +81,6 @@ router.post('/:tradeId/history', accessTokenValidator, async (req, res, next) =>
       return [purchaseHistory, saleHistory];
     });
 
-    console.log(transaction);
     return res.status(HTTP_STATUS.OK).json({
       status: HTTP_STATUS.OK,
       message: MESSAGES.TRADE.COMPLETE.SALE.SUCCEED,
