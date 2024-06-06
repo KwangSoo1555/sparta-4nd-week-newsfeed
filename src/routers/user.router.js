@@ -25,86 +25,91 @@ router.get('/', accessTokenValidator, async (req, res, next) => {
 });
 
 // 내 정보 수정
-router.patch('/update', accessTokenValidator, uploadImage.single('img'), async (req, res, next) => {
-  try {
+router.patch('/update', accessTokenValidator, uploadImage.single('img'),
+  async (req, res, next) => {
+    try {
+      const { email, nickname, newPassword, currentPasswordCheck, region, age, gender, introduce } =
+        req.body;
 
-    const { email, nickname, newPassword, currentPasswordCheck, region, age, gender, introduce } =
-      req.body;
-
-    const user = await prisma.user.findUnique({
-      where: { id: req.user.id },
-    });
-
-    // req.files에서 이미지 데이터 가져옴
-    const image = req.file;
-
-    const currentPassword = user.password;
-
-    if (email) {
-      const isExistUserEmail = await prisma.user.findUnique({
-        where: { email }
-      })
-      if (isExistUserEmail) {
-        return res.status(HTTP_STATUS.CONFLICT).json({
-          status: HTTP_STATUS.CONFLICT,
-          message: MESSAGES.USER.COMMON.EMAIL.DUPLICATED,
-        })
-      }
-    }
-
-    if (nickname) {
-      const isExistUserNickname = await prisma.user.findUnique({
-        where: { nickname }
-      })
-      if (isExistUserNickname) {
-        return res.status(HTTP_STATUS.CONFLICT).json({
-          status: HTTP_STATUS.CONFLICT,
-          message: MESSAGES.USER.COMMON.NICKNAME.DUPLICATED,
-        })
-      }
-    }
-
-    // 비밀번호 변경 시 재 해쉬, 번경 없으면 기존 비밀번호
-    if (newPassword) {
-      const match = bcrypt.compare(currentPassword, currentPasswordCheck);
-      if (!currentPasswordCheck || !match) {
-        return res.status(HTTP_STATUS.UNAUTHORIZED).json({
-          status: HTTP_STATUS.UNAUTHORIZED,
-          message: MESSAGES.USER.COMMON.PASSWORD.INCONSISTENT,
+      if (email) {
+        const isExistUserEmail = await prisma.user.findUnique({
+          where: { email }
         });
+        if (isExistUserEmail) {
+          return res.status(HTTP_STATUS.CONFLICT).json({
+            status: HTTP_STATUS.CONFLICT,
+            message: MESSAGES.USER.COMMON.EMAIL.DUPLICATED,
+          });
+        };
+      };
+
+      if (nickname) {
+        const isExistUserNickname = await prisma.user.findUnique({
+          where: { nickname }
+        });
+        if (isExistUserNickname) {
+          return res.status(HTTP_STATUS.CONFLICT).json({
+            status: HTTP_STATUS.CONFLICT,
+            message: MESSAGES.USER.COMMON.NICKNAME.DUPLICATED,
+          });
+        };
+      };
+
+      // 비밀번호 변경 시 재 해쉬, 번경 없으면 기존 비밀번호
+      const user = await prisma.user.findUnique({
+        where: { id: req.user.id }
+      })
+
+      const currentPassword = user.password;
+
+      if (newPassword) {
+        const passwordMatch = await bcrypt.compare(currentPasswordCheck, currentPassword);
+
+        if (!currentPasswordCheck || !passwordMatch) {
+          return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+            status: HTTP_STATUS.UNAUTHORIZED,
+            message: MESSAGES.USER.COMMON.PASSWORD.INCONSISTENT,
+          });
+        };
+        user.password = await bcrypt.hash(newPassword, AUTH_CONSTANT.HASH_SALT);
       }
-      updatedData.password = await bcrypt.hash(newPassword, AUTH_CONSTANT.HASH_SALT);
-    }
 
-    // 이미지 데이터 처리
-    if (!image) {
-      updatedData.imgUrl = user.imgUrl;
-    }
+      // req.files에서 이미지 데이터 가져옴
+      const image = req.file;
 
-    const authUserUpdate = await prisma.user.update({
-      where: { id: req.user.id },
-      data: {
-        ...(email && { email }),
-        ...(nickname && { nickname }),
-        ...(region && { region }),
-        ...(age && { age }),
-        ...(gender && { gender }),
-        ...(introduce && { introduce }),
-        password: currentPassword,
-        imgUrl: image?.location
+      // 이미지 데이터 처리
+      let imgUrl;
+
+      if (!image) {
+        imgUrl = req.user.imgUrl;
       }
-    })
 
-    const { password: _, ...userWithoutPassword } = authUserUpdate;
+      const authUserUpdate = await prisma.user.update({
+        where: { id: req.user.id },
+        data: {
+          ...(email && { email }),
+          ...(nickname && { nickname }),
+          ...(region && { region }),
+          ...(age && { age }),
+          ...(gender && { gender }),
+          ...(introduce && { introduce }),
+          ...(newPassword && { password: user.password }),
+          ...(imgUrl && { imgUrl: image })
+        }
+      })
 
-    res.status(HTTP_STATUS.OK).json({
-      status: HTTP_STATUS.OK,
-      massage: MESSAGES.USER.UPDATE.SUCCEED,
-      data: userWithoutPassword,
-    });
-  } catch (error) {
-    next(error);
+      const { password: _, ...userWithoutPassword } = authUserUpdate;
+
+      res.status(HTTP_STATUS.OK).json({
+        status: HTTP_STATUS.OK,
+        massage: MESSAGES.USER.UPDATE.SUCCEED,
+        data: authUserUpdate
+        // data: userWithoutPassword,
+      });
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 export default router;
