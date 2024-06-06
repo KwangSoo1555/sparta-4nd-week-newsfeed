@@ -6,7 +6,7 @@ import session from 'express-session';
 import errorHandlingMiddleware from './middlewares/error-handling.middleware.js';
 
 const app = express();
-const PORT = process.env.MYPORT;
+const PORT = process.env.PORT;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
