@@ -37,6 +37,8 @@ model User {
   likedTrade        Trade[]        @relation("trade_like")
   likedTradeComment TradeComment[] @relation("trade_comment_like")
   tradeHistory      History[]
+  follower          Follow[]       @relation("following")
+  following         Follow[]       @relation("follower")
 
   @@map("user")
 }
@@ -148,4 +150,16 @@ model History {
 enum TradeType {
   SALE
   PURCHASE
+}
+
+// 팔로우 
+model Follow {
+  id          Int @id @default(autoincrement())
+  followerId  Int @map("follower_id")
+  followingId Int @map("following_id")
+
+  follower  User @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@map("follow")
 }
