@@ -48,6 +48,7 @@ export const accessTokenValidator = async (req, res, next) => {
           .json({ status: HTTP_STATUS.UNAUTHORIZED, message: MESSAGES.AUTH.COMMON.JWT.INVALID });
       }
     }
+
     // decodedToken에 담긴 사용자 id와 db의 유저 비교 검증
     const user = await prisma.user.findUnique({
       where: { id: decodedToken.id },
