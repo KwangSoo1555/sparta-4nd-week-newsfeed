@@ -90,7 +90,7 @@
 
 - codeObject라는 인증 코드 객체를 통해서 코드의 유효 여부를 판단합니다.
 
-- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/d18ff6d70a04d30a36232b60cc7e42e8d2f3ea64/src/routers/auth-email.router.js#L29
+- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/2f60e3fe63728d35484131e85c85fd5456817e06/src/routers/auth-email.router.js#L29
 
 ![회원가입 이메일 인증](./imgs/2-sign-up-email.png)
 
@@ -102,7 +102,7 @@
 
 - **보안을 위해 비밀번호는** 평문(Plain Text)으로 저장하지 않고 `Hash` 된 값을 저장합니다.
 
-- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/d18ff6d70a04d30a36232b60cc7e42e8d2f3ea64/src/routers/user.router.js#L14
+- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/2f60e3fe63728d35484131e85c85fd5456817e06/src/routers/auth.routers.js#L17
 
 ![회원가입 API](./imgs/1-sign-up.png)
 
@@ -118,7 +118,7 @@
 
 - **AccessToken**와**RefreshToken**을 반환합니다.
 
-- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/d18ff6d70a04d30a36232b60cc7e42e8d2f3ea64/src/routers/auth.routers.js#L14
+- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/2f60e3fe63728d35484131e85c85fd5456817e06/src/routers/auth.routers.js#L83
 
 ![로그인 API](./imgs/3-sign-in.png)
 
@@ -138,7 +138,7 @@
   - `KakaoStrategy 전략` 실행해서 데이터베이스에 사용자 정보를 등록합니다
   - `사용자 ID`를 담은 `JWT 토큰`을 생성해서 클라이언트에게 반환합니다.
 
-- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/d18ff6d70a04d30a36232b60cc7e42e8d2f3ea64/src/routers/auth-passport.router.js#L15
+- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/2f60e3fe63728d35484131e85c85fd5456817e06/src/routers/auth-passport.router.js#L17
 
 ![카카오 소셜 로그인 API](./imgs/4-kakao-social.png)
 
@@ -158,7 +158,7 @@
   - `naverStrategy 전략` 실행해서 데이터베이스에 사용자 정보를 등록합니다
   - `사용자 ID`를 담은 `JWT 토큰`을 생성해서 클라이언트에게 반환합니다.
 
-- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/d18ff6d70a04d30a36232b60cc7e42e8d2f3ea64/src/routers/auth-passport.router.js#L36
+- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/2f60e3fe63728d35484131e85c85fd5456817e06/src/routers/auth-passport.router.js#L38
 
 ![네이버 소셜 로그인 API](./imgs/5-naver-social.png)
 
@@ -172,7 +172,7 @@
 
 - 토큰 유효성 검사가 통과하면 새로운 Refresh 토큰을 재발급 받습니다.
 
-- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/d18ff6d70a04d30a36232b60cc7e42e8d2f3ea64/src/routers/user.router.js#L80
+- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/2f60e3fe63728d35484131e85c85fd5456817e06/src/routers/auth.routers.js#L109
 
 ![토큰 재발급 API](./imgs/8-token-reissue.png)
 
@@ -188,29 +188,45 @@
 
 - 즉, Refresh Token을 폐기하는 것입니다.
 
-- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/d18ff6d70a04d30a36232b60cc7e42e8d2f3ea64/src/routers/user.router.js#L80
+- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/2f60e3fe63728d35484131e85c85fd5456817e06/src/routers/auth.routers.js#L126
 
 ![로그 아웃 API](./imgs/9-sign-out.png)
 
 <br>
 
-### 5-8. 내 정보 수정 API
+### 5-8. 내 정보 조회 API
+
+- 로그인한 사용자의 정보를 조회하는 API입니다.
+
+- `accessTokenValidator`를 통해서 로그인한 사용자의 `Access Token를 검증`합니다.
+
+- 토큰 유효성 검사가 통과하면 `req.user`를 통해 사용자의 정보를 가져옵니다.
+
+- 그대로 조회한 사용자 데이터를 반환합니다.
+
+- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/2f60e3fe63728d35484131e85c85fd5456817e06/src/routers/user.router.js#L15
+
+![사용자 조회 API](./imgs/6-user-information.png)
+
+<br>
+
+### 5-9. 내 정보 수정 API
 
 - 사용자의 정보를 수정하는 API입니다.
 
 - `이메일, 별명, 수정할 비밀번호, 현재 비밀번호, 지역, 나이, 성별, 한 줄 소개`를 `req.body`를 통해 받아옵니다.
 
-- 사용자 프로필은 `multer`를 이용해 `AWS S3`에 저장합니다.
+- 사용자 프로필 사진은 `multer`를 이용해 `AWS S3`에 저장합니다.
 
 - `newPassword(수정할 비밀번호)`가 입력되어 들어올 때만 비밀번호를 수정합니다.
 
-- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/d18ff6d70a04d30a36232b60cc7e42e8d2f3ea64/src/routers/user.router.js#L92
+- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/2f60e3fe63728d35484131e85c85fd5456817e06/src/routers/user.router.js#L28
 
 ![사용자 정보 수정 API](./imgs/7-user-update.png)
 
 <br>
 
-### 5-9. 게시물 생성 API
+### 5-10. 게시물 생성 API
 
 - 판매할 상품의 정보를 입력 받아 게시물을 생성하는 API입니다.
 
@@ -222,13 +238,13 @@
 
 - 상품 사진은 필수로 첨부해야 합니다.
 
-- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/d18ff6d70a04d30a36232b60cc7e42e8d2f3ea64/src/routers/trade.router.js#L15
+- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/2f60e3fe63728d35484131e85c85fd5456817e06/src/routers/trade.router.js#L16
 
 ![게시물 생성 API](./imgs/12-trade-create.png)
 
 <br>
 
-### 5-10. 게시물 목록 조회 API
+### 5-11. 게시물 목록 조회 API
 
 - 판매 등록된 상품의 정보 목록을 조회하는 API입니다.
 
@@ -238,7 +254,7 @@
 
 - 상품들의 데이터 조회 시 관계가 설정된 `tradePicture 테이블`에서 `이미지 URL`를 반복해서 가져옵니다.
 
-- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/d18ff6d70a04d30a36232b60cc7e42e8d2f3ea64/src/routers/trade.router.js#L66
+- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/2f60e3fe63728d35484131e85c85fd5456817e06/src/routers/trade.router.js#L67
 
 ![게시물 목록조회-기본값 API](./imgs/13-trade-list-default.png)
 ![게시물 목록조회 - sort API](./imgs/14-trade-list-sort.png)
@@ -247,7 +263,7 @@
 
 <br>
 
-### 5-11. 게시물 상세 조회 API
+### 5-12. 게시물 상세 조회 API
 
 - 게시물의 상세한 정보를 조회하는 API입니다.
 
@@ -257,13 +273,13 @@
 
 - 상품들의 데이터 조회 시 관계가 설정된 `tradePicture 테이블`에서 `이미지 URL`를 반복해서 가져옵니다.
 
-- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/d18ff6d70a04d30a36232b60cc7e42e8d2f3ea64/src/routers/trade.router.js#L115
+- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/2f60e3fe63728d35484131e85c85fd5456817e06/src/routers/trade.router.js#L131
 
 ![게시물 상세 조회 API](./imgs/17-trade-detail.png)
 
 <br>
 
-### 5-12. 게시물 수정 API
+### 5-13. 게시물 수정 API
 
 - 상품 게시물의 정보를 수정하는 API입니다.
 
@@ -275,13 +291,13 @@
 
 - 이미지 개수가 다를 수도 있고 어떤 이미지가 어떤 이미지로 수정되는지 알 방법이 없기 때문입니다.
 
-- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/d18ff6d70a04d30a36232b60cc7e42e8d2f3ea64/src/routers/trade.router.js#L150
+- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/2f60e3fe63728d35484131e85c85fd5456817e06/src/routers/trade.router.js#L167
 
 ![게시물 수정 API](./imgs/18-trade-update.png)
 
 <br>
 
-### 5-13. 게시물 삭제 API
+### 5-14. 게시물 삭제 API
 
 - 상품 게시물을 선택해서 삭제하는 API입니다.
 
@@ -289,13 +305,13 @@
 
 - 해당 ID를 조회하고 삭제를 진행합니다. `(Hard Delete)`
 
-- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/d18ff6d70a04d30a36232b60cc7e42e8d2f3ea64/src/routers/trade.router.js#L150
+- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/2f60e3fe63728d35484131e85c85fd5456817e06/src/routers/trade.router.js#L238
 
 ![게시물 삭제 API](./imgs/19-trade-delete.png)
 
 <br>
 
-### 5-14. 게시물 좋아요 API
+### 5-15. 게시물 좋아요 API
 
 - 상품 게시물에 좋아요를 할 수 있는 API입니다.
 
@@ -307,14 +323,14 @@
 
 - `좋아요 취소 API`는 로직이 거의 동일하기에 작성하지 않았습니다.
 
-- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/d18ff6d70a04d30a36232b60cc7e42e8d2f3ea64/src/routers/trade.router.js#L252
+- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/2f60e3fe63728d35484131e85c85fd5456817e06/src/routers/trade.router.js#L271
 
 ![게시물 좋아요 API](./imgs/20-trade-like.png)
 ![게시물 좋아요 취소 API](./imgs/21-trade-unlike.png)
 
 <br>
 
-### 5-15. 댓글 생성 API
+### 5-16. 댓글 생성 API
 
 - 해당 상품 게시물에 댓글을 작성하는 API입니다.
 
@@ -324,13 +340,13 @@
 
 - `댓글 내용`을 `req.body`를 통해 가져옵니다.
 
-- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/d18ff6d70a04d30a36232b60cc7e42e8d2f3ea64/src/routers/comment.router.js#L11
+- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/2f60e3fe63728d35484131e85c85fd5456817e06/src/routers/comment.router.js#L12
 
 ![댓글 생성 API](./imgs/22-comment-create.png)
 
 <br>
 
-### 5-16. 댓글 조회 API
+### 5-17. 댓글 조회 API
 
 - 사용자들이 게시물에 작성한 댓글들을 조회하는 API입니다.
 
@@ -340,25 +356,25 @@
 
 - 기본적으로 `오래된 댓글일 수록 위에` 보입니다.
 
-- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/d18ff6d70a04d30a36232b60cc7e42e8d2f3ea64/src/routers/comment.router.js#L40
+- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/2f60e3fe63728d35484131e85c85fd5456817e06/src/routers/comment.router.js#L66
 
 ![댓글 조회 API](./imgs/24-comment-list.png)
 
 <br>
 
-### 5-17. 댓글 수정 API
+### 5-18. 댓글 수정 API
 
 - 본인이 작성한 댓글을 수정하는 API입니다.
 
 - `상품 게시물의 ID, 댓글의 ID`는 `req.params`를 통해 URL에서 가져옵니다.
 
-- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/d18ff6d70a04d30a36232b60cc7e42e8d2f3ea64/src/routers/comment.router.js#L83
+- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/2f60e3fe63728d35484131e85c85fd5456817e06/src/routers/comment.router.js#L120
 
 ![댓글 수정 API](./imgs/23-comment-update.png)
 
 <br>
 
-### 5-18. 댓글 삭제 API
+### 5-19. 댓글 삭제 API
 
 - 본인이 작성한 댓글을 삭제하는 API입니다.
 
@@ -366,13 +382,13 @@
 
 - 해당 ID를 조회하고 삭제를 진행합니다. `(Hard Delete)`
 
-- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/d18ff6d70a04d30a36232b60cc7e42e8d2f3ea64/src/routers/comment.router.js#L148
+- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/2f60e3fe63728d35484131e85c85fd5456817e06/src/routers/comment.router.js#L358
 
 ![댓글 삭제 API](./imgs/25-comment-delete.png)
 
 <br>
 
-### 5-19. 댓글 좋아요 API
+### 5-20. 댓글 좋아요 API
 
 - 상품 게시물 댓글에 좋아요를 할 수 있는 API입니다.
 
@@ -384,14 +400,14 @@
 
 - `댓글 좋아요 취소 API`는 로직이 거의 동일하기에 작성하지 않았습니다.
 
-- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/5202c7659f9f1a7d332151cc7feca14246f809cd/src/routers/comment.router.js#L194
+- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/2f60e3fe63728d35484131e85c85fd5456817e06/src/routers/comment.router.js#L195
 
 ![댓글 좋아요 API](./imgs/26-comment-like.png)
 ![댓글 좋아요 취소 API](./imgs/27-comment-unlike.png)
 
 <br>
 
-### 5-20. 상품 판매/구매 완료 API
+### 5-21. 상품 판매/구매 완료 API
 
 - 판매자(구매자)가 상품 판매(구매)를 완료하는 API입니다.
 
@@ -405,14 +421,14 @@
 
 - `판매` 기록에는 상품 게시물의 ID와 `판매자의 ID`, 타입은 판매로 설정합니다.
 
-- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/d18ff6d70a04d30a36232b60cc7e42e8d2f3ea64/src/routers/trade-history.router.js#L9
+- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/2f60e3fe63728d35484131e85c85fd5456817e06/src/routers/trade-complete.router.js#L12
 
 ![거래 내역 생성 API](./imgs/28-make-history.png)
 ![구매 완료 내역 생성 API](./imgs/29-make-purchase-history.png)
 
 <br>
 
-### 5-21. 상품 구매/판매 내역 조회 API
+### 5-22. 상품 구매/판매 내역 조회 API
 
 - 이용자가 자신의 상품 거래 기록을 조회 할 수 있는 API 입니다.
 
@@ -422,14 +438,14 @@
 
 - 받아온 사용자 정보의 `id`를 통해 `history` 테이블의 거래기록에 접근 할 수 있고, 해당 테이블의 `type`에 따라 구매, 판매 내역을 조회 할 수 있습니다.
 
-- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/d18ff6d70a04d30a36232b60cc7e42e8d2f3ea64/src/routers/trade-history.router.js#L49
+- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/2f60e3fe63728d35484131e85c85fd5456817e06/src/routers/trade-history.router.js#L11
 
 ![판매 내역 조회 API](./imgs/30-sell-history.png)
 ![구매 내역 조회 API](./imgs/31-purchase-history.png)
 
 <br>
 
-### 5-22. 팔로우 API
+### 5-23. 팔로우 API
 
 - 사용자가 다른 이용자를 팔로우하고 해당 이용자를 트래킹 할 수 있게 해주는 API 입니다.
 
@@ -439,7 +455,7 @@
 
 - `언팔로우 API`는 로직이 거의 동일하기에 작성하지 않았습니다.
 
-- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/5202c7659f9f1a7d332151cc7feca14246f809cd/src/routers/follow.router.js#L10
+- https://github.com/KwangSoo1555/sparta-4nd-week-newsfeed/blob/2f60e3fe63728d35484131e85c85fd5456817e06/src/routers/follow.router.js#L10
 
 ![팔로우 API](./imgs/10-follow.png)
 ![언팔로우 API](./imgs/11-unfollow.png)

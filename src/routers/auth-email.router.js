@@ -49,7 +49,7 @@ router.post('/auth-email', async (req, res, next) => {
     res.status(HTTP_STATUS.OK).json({
       status: HTTP_STATUS.OK,
       message: MESSAGES.AUTH.MAIL.SUCCEED,
-      data: EmailVerificationUtil.codes
+      data: EmailVerificationUtil.codes,
     });
   } catch (error) {
     res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
