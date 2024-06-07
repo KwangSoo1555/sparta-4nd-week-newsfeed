@@ -52,7 +52,6 @@ router.post('/:tradeId/comment', accessTokenValidator, async (req, res, next) =>
       },
     });
 
-
     return res.status(HTTP_STATUS.CREATED).json({
       status: HTTP_STATUS.CREATED,
       message: MESSAGES.COMMENT.CREATE.SUCCEED,
@@ -70,7 +69,7 @@ router.get('/:tradeId/comment', async (req, res) => {
     // 상품 조회하기
     let trade = await prisma.trade.findFirst({
       where: { id: +tradeId, status: TRADE_CONSTANT.STATUS.FOR_SALE },
-      include : { likedBy : true }
+      include: { likedBy: true },
     });
 
     // 데이터베이스 상 해당 상품 ID에 대한 정보가 없는 경우
@@ -88,10 +87,9 @@ router.get('/:tradeId/comment', async (req, res) => {
     //조회 코드
     let commentsRead = await prisma.tradeComment.findMany({
       where: { tradeId: +tradeId },
-      include: { user: true , likedby : true},
+      include: { user: true, likedby: true },
       orderBy: type.asc, //오래된 댓글이 최상단
     });
-
 
     //tradeComment 테이블 데이터 조회
     commentsRead = commentsRead.map((tradeComment) => {
@@ -101,7 +99,7 @@ router.get('/:tradeId/comment', async (req, res) => {
         userId: tradeComment.userId.id,
         nickname: tradeComment.user.nickname,
         comment: tradeComment.comment,
-        like : tradeComment.likedby.length,  
+        like: tradeComment.likedby.length,
         createdAt: tradeComment.createdAt,
         updatedAt: tradeComment.updatedAt,
       };
@@ -192,7 +190,7 @@ router.patch(
 );
 
 //댓글 좋아요 api
-router.post('/:tradeId/comment/:commentId/like', accessTokenValidator, async (req, res, next) =>{
+router.post('/:tradeId/comment/:commentId/like', accessTokenValidator, async (req, res, next) => {
   try {
     const tradeId = req.params.tradeId;
 
@@ -215,8 +213,8 @@ router.post('/:tradeId/comment/:commentId/like', accessTokenValidator, async (re
       where: {
         id: +commentId,
       },
-      include : {
-        likedby : true
+      include: {
+        likedby: true,
       },
     });
 
@@ -230,51 +228,45 @@ router.post('/:tradeId/comment/:commentId/like', accessTokenValidator, async (re
 
     //댓글 작성자가 자기 댓글 좋아요 누르려고 하면
     if (commentExist.userId === req.user.id) {
-      return res
-      .status(HTTP_STATUS.BAD_REQUEST)
-      .json({
-        status : HTTP_STATUS.BAD_REQUEST,
-        message : "자신이 쓴 댓글은 좋아요 할 수 없습니다."
-      })
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
+        status: HTTP_STATUS.BAD_REQUEST,
+        message: '자신이 쓴 댓글은 좋아요 할 수 없습니다.',
+      });
     }
 
     //한 명의 유저가 동일한 댓글에 좋아요를 중복으로 누르려 하면
     const isDuplicatedLike = commentExist.likedby.filter((user) => {
-      return user.id === req.user.id
-    })
-    if (isDuplicatedLike.length !== 0){
-      return res
-      .status(HTTP_STATUS.BAD_REQUEST)
-      .json({
-        status : HTTP_STATUS.BAD_REQUEST,
-        message : "이미 좋아요를 한 댓글입니다."
-      })
+      return user.id === req.user.id;
+    });
+    if (isDuplicatedLike.length !== 0) {
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
+        status: HTTP_STATUS.BAD_REQUEST,
+        message: '이미 좋아요를 한 댓글입니다.',
+      });
     }
 
     const user = await prisma.user.update({
-      where : {id : req.user.id},
-      omit : {password : true},
-      data : {
-        likedTradeComment : {
-          connect : { id : commentExist.id },
+      where: { id: req.user.id },
+      omit: { password: true },
+      data: {
+        likedTradeComment: {
+          connect: { id: commentExist.id },
         },
       },
-    })
+    });
 
-    return res
-    .status(HTTP_STATUS.CREATED)
-    .json({
-      status : HTTP_STATUS.CREATED,
-      message : '댓글 좋아요에 성공했습니다.',
-      data : { commentid : commentExist.id , userId : user.id},
-    })
-  } catch(err) {
-    next(err)
+    return res.status(HTTP_STATUS.CREATED).json({
+      status: HTTP_STATUS.CREATED,
+      message: '댓글 좋아요에 성공했습니다.',
+      data: { commentid: commentExist.id, userId: user.id },
+    });
+  } catch (err) {
+    next(err);
   }
-})
+});
 
 //좋아요 취소
-router.post('/:tradeId/comment/:commentId/unlike', accessTokenValidator, async (req, res, next) =>{
+router.post('/:tradeId/comment/:commentId/unlike', accessTokenValidator, async (req, res, next) => {
   try {
     const tradeId = req.params.tradeId;
 
@@ -297,8 +289,8 @@ router.post('/:tradeId/comment/:commentId/unlike', accessTokenValidator, async (
       where: {
         id: +commentId,
       },
-      include : {
-        likedby : true
+      include: {
+        likedby: true,
       },
     });
 
@@ -312,48 +304,42 @@ router.post('/:tradeId/comment/:commentId/unlike', accessTokenValidator, async (
 
     //댓글 작성자가 자기 댓글 좋아요 취소 누르려고 하면
     if (commentExist.userId === req.user.id) {
-      return res
-      .status(HTTP_STATUS.BAD_REQUEST)
-      .json({
-        status : HTTP_STATUS.BAD_REQUEST,
-        message : "자신이 쓴 댓글에는 좋아요 취소 할 수 없습니다."
-      })
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
+        status: HTTP_STATUS.BAD_REQUEST,
+        message: '자신이 쓴 댓글에는 좋아요 취소 할 수 없습니다.',
+      });
     }
 
     //한 명의 유저가 동일한 댓글에 좋아요 취소를 중복으로 누르려 하면
     const isDuplicatedLike = commentExist.likedby.filter((user) => {
-      return user.id === req.user.id
-    })
-    if (isDuplicatedLike.length === 0){
-      return res
-      .status(HTTP_STATUS.BAD_REQUEST)
-      .json({
-        status : HTTP_STATUS.BAD_REQUEST,
-        message : "좋아요를 누르지 않았습니다."
-      })
+      return user.id === req.user.id;
+    });
+    if (isDuplicatedLike.length === 0) {
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
+        status: HTTP_STATUS.BAD_REQUEST,
+        message: '좋아요를 누르지 않았습니다.',
+      });
     }
 
     const user = await prisma.user.update({
-      where : {id : req.user.id},
-      omit : {password : true},
-      data : {
-        likedTradeComment : {
-          disconnect : { id : commentExist.id },
+      where: { id: req.user.id },
+      omit: { password: true },
+      data: {
+        likedTradeComment: {
+          disconnect: { id: commentExist.id },
         },
       },
-    })
+    });
 
-    return res
-    .status(HTTP_STATUS.CREATED)
-    .json({
-      status : HTTP_STATUS.CREATED,
-      message : '댓글 좋아요가 취소되었습니다.',
-      data : { commentid : commentExist.id , userId : user.id},
-    })
-  } catch(err) {
-    next(err)
+    return res.status(HTTP_STATUS.CREATED).json({
+      status: HTTP_STATUS.CREATED,
+      message: '댓글 좋아요가 취소되었습니다.',
+      data: { commentid: commentExist.id, userId: user.id },
+    });
+  } catch (err) {
+    next(err);
   }
-})
+});
 
 router.delete('/:tradeId/comment/:commentId', accessTokenValidator, async (req, res, next) => {
   try {
