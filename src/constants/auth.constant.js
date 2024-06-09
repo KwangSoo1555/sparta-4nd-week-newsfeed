@@ -14,7 +14,7 @@ export const AUTH_CONSTANT = {
   AUTH_EMAIL: {
     FROM: process.env.MAIL_AUTH_USER, 
     SUBJECT: '인증 관련 메일입니다.',
-    HTML: '인증번호를 입력해주세요',
+    HTML: '인증번호입니다.',
   },
   PASSPORT: {
     COMMON: {

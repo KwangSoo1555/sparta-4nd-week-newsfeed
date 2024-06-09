@@ -34,7 +34,9 @@ router.post('/auth-email', async (req, res, next) => {
 
     const verificationCode = EmailVerificationUtil.codeIssue();
 
-    EmailVerificationUtil.codes[email] = { code: verificationCode };
+    const timestamp = Date.now();
+
+    EmailVerificationUtil.codes[email] = { code: verificationCode, timestamp };
 
     // 여기서도 메일 옵션 util 에서 관리 (html은 상수가 아니기 때문)
     // 다른 방법 mailOptions 를 그냥 함수로 만들어 보기
@@ -42,7 +44,11 @@ router.post('/auth-email', async (req, res, next) => {
       from: AUTH_CONSTANT.AUTH_EMAIL.FROM,
       to: email,
       subject: AUTH_CONSTANT.AUTH_EMAIL.SUBJECT,
-      html: `<h1>AUTH_CONSTANT.AUTH_EMAIL.HTML</h1><p>${verificationCode}</p>`,
+      html: 
+      `
+      <h1>${AUTH_CONSTANT.AUTH_EMAIL.HTML}</h1>
+      <p>${verificationCode}</p>
+      `,
     };
 
     // 메일 보내는 로직은 await 빼기
