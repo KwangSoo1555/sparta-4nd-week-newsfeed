@@ -22,6 +22,8 @@ model User {
   imgUrl    String?      @map("img_url")
   password  String?
   region    String?
+  // 소숫점 첫째 자리 까지 밖에 없는데 이것도 Int 로 바꾼 다음에 0 부터 1000 까지 범위를 정하고
+  // 36.5 도를 디폴트로 설정한 다음 10을 나누면 소수점 첫째 자리로 고정.
   manner    Float        @default(36.5)
   age       Int?
   gender    GenderType?
@@ -43,6 +45,9 @@ model User {
 
   @@map("user")
 }
+
+// enum 값을 클라이언트에게서 받아올 때 스키마에 tinyInt 로 받은 다음 DB 에 저장하는 것이 서치 속도가 훨씬 빠르다.
+// 클라이언트에서 받을 값들은 constant 에 정리.
 
 // 성별
 enum GenderType {
