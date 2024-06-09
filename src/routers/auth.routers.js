@@ -27,6 +27,12 @@ router.post('/sign-up', signUpValidator, async (req, res, next) => {
         .json({ message: MESSAGES.USER.SIGN_UP.VERIFICATION_CODE.INCONSISTENT });
     }
 
+    if (EmailVerificationUtil.isCodeExpired(latestVerification.timestamp)) {
+      return res
+        .status(HTTP_STATUS.UNAUTHORIZED)
+        .json({ message: MESSAGES.USER.SIGN_UP.VERIFICATION_CODE.EXPIRED })
+    }
+
     const isExistUser = await prisma.user.findFirst({
       where: { nickname: nickname, email: email },
     });
