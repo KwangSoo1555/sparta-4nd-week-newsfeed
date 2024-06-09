@@ -33,7 +33,7 @@ router.post('/follow/:id', accessTokenValidator, async (req, res, next) => {
     if (isFollowed) {
       return res
         .status(HTTP_STATUS.BAD_REQUEST)
-        .json({ status: HTTP_STATUS.BAD_REQUEST, message: '이미 팔로우 한 사용자입니다.' });
+        .json({ status: HTTP_STATUS.BAD_REQUEST, message: MESSAGES.USER.FOLLOW.IS_FOLLOWED });
     }
     // 팔로우 정보 DB에 저장
     const follow = await prisma.follow.create({
@@ -77,7 +77,7 @@ router.delete('/un-follow/:id', accessTokenValidator, async (req, res, next) => 
     if (!isFollowed) {
       return res
         .status(HTTP_STATUS.BAD_REQUEST)
-        .json({ status: HTTP_STATUS.BAD_REQUEST, message: '팔로우 하지 않은 사용자입니다.' });
+        .json({ status: HTTP_STATUS.BAD_REQUEST, message: MESSAGES.USER.UN_FOLLOW.NOT_FOLLOWED });
     }
 
     // 삭제할 팔로우 확인(delete는 where에 id값이 필요, deleteMany의 경우 다른 조건으로 작동 가능)
