@@ -19,17 +19,12 @@ router.post('/sign-up', signUpValidator, async (req, res, next) => {
     const { email, nickname, password, passwordCheck, region, age, gender, verificationCode } =
       req.body;
 
-    for (const idx in EmailVerificationUtil.codes) {
-      if (
-        EmailVerificationUtil.codes[idx].email === email &&
-        EmailVerificationUtil.codes[idx].code === verificationCode
-      ) {
-        break;
-      } else {
-        return res
-          .status(HTTP_STATUS.UNAUTHORIZED)
-          .json({ message: MESSAGES.USER.SIGN_UP.VERIFICATION_CODE.INCONSISTENT });
-      }
+    const latestVerification = EmailVerificationUtil.codes[email];
+
+    if (!latestVerification || latestVerification.code !== verificationCode) {
+      return res
+        .status(HTTP_STATUS.UNAUTHORIZED)
+        .json({ message: MESSAGES.USER.SIGN_UP.VERIFICATION_CODE.INCONSISTENT });
     }
 
     const isExistUser = await prisma.user.findFirst({

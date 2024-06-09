@@ -123,10 +123,12 @@ export const MESSAGES = {
     },
     FOLLOW: {
       NOT_FOUND: '팔로우 할 사용자가 존재하지 않습니다.',
+      IS_FOLLOWED: '이미 팔로우 한 사용자입니다.',
       SUCCEED: '팔로우가 성공했습니다.',
     },
     UN_FOLLOW: {
       NOT_FOUND: '언팔로우 할 사용자가 존재하지 않습니다.',
+      NOT_FOLLOWED: '팔로우 하지 않은 사용자입니다.',
       SUCCEED: '팔로우가 해제되었습니다.',
     },
   },

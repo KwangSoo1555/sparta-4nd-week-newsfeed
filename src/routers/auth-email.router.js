@@ -1,7 +1,6 @@
 import express from 'express';
 import nodemailer from 'nodemailer';
 
-import { v4 as uuidv4 } from 'uuid';
 import { AUTH_CONSTANT } from '../constants/auth.constant.js';
 import { HTTP_STATUS } from '../constants/http-status.constant.js';
 import { MESSAGES } from '../constants/message.constant.js';
@@ -33,10 +32,9 @@ router.post('/auth-email', async (req, res, next) => {
   try {
     const { email } = req.body;
 
-    const verificationId = uuidv4();
     const verificationCode = EmailVerificationUtil.codeIssue();
 
-    EmailVerificationUtil.codes[verificationId] = { email, code: verificationCode };
+    EmailVerificationUtil.codes[email] = { code: verificationCode };
 
     // 여기서도 메일 옵션 util 에서 관리 (html은 상수가 아니기 때문)
     // 다른 방법 mailOptions 를 그냥 함수로 만들어 보기
@@ -50,7 +48,7 @@ router.post('/auth-email', async (req, res, next) => {
     // 메일 보내는 로직은 await 빼기
     smtpTransport.sendMail(mailOptions);
 
-    console.log(EmailVerificationUtil.codes[verificationId].code);
+    console.log(EmailVerificationUtil.codes[email].code);
 
     res.status(HTTP_STATUS.OK).json({
       status: HTTP_STATUS.OK,

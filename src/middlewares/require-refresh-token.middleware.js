@@ -65,18 +65,15 @@ export const refreshTokenValidator = async (req, res, next) => {
         userId: decodedToken.id,
       },
     });
-    // refreshToken 검증
+    // refreshToken 검증 - existedRefreshToken이 없을경우 오류나지 않게 옵셔널체이닝 사용 / 로그아웃시 refreshToken null
     const isValidRefreshToken =
-      existedRefreshToken &&
       existedRefreshToken?.refreshToken &&
       bcrypt.compareSync(refreshToken, existedRefreshToken.refreshToken);
     if (!isValidRefreshToken) {
-      return res
-        .status(HTTP_STATUS.UNAUTHORIZED)
-        .json({
-          status: HTTP_STATUS.UNAUTHORIZED,
-          message: MESSAGES.AUTH.COMMON.JWT.DISCARDED_TOKEN,
-        });
+      return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+        status: HTTP_STATUS.UNAUTHORIZED,
+        message: MESSAGES.AUTH.COMMON.JWT.DISCARDED_TOKEN,
+      });
     }
     // refreshToken 인증 통과시 패스워드 제외 유저 정보 req.user를 통해 전달
     req.user = user;
