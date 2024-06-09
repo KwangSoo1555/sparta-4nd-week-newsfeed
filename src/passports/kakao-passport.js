@@ -45,7 +45,6 @@ passport.deserializeUser(async (id, done) => {
     const user = await prisma.user.findFirst({
       where: { id: id },
     });
-    console.log('1111');
     done(null, user);
   } catch (err) {
     done(err);

@@ -8,7 +8,7 @@ import { AUTH_CONSTANT } from '../constants/auth.constant.js';
 
 const router = express.Router();
 
-// 소셜로그인 인증 실패시 테스트 api
+// 소셜로그인 인증 실패시 API
 router.get('/fail', async (req, res, next) => {
   return res.status(401).json({ message: MESSAGES.AUTH.PASSPORT.COMMON.FAIL });
 });
