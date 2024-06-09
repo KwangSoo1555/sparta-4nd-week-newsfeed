@@ -13,15 +13,14 @@ import { optionalAccessTokenValidator } from '../middlewares/optional-access-tok
 const tradeRouter = express.Router();
 
 // 상품 게시물 작성 API
-tradeRouter.post(
-  '/',
-  accessTokenValidator,
-  uploadImage.array('img', 5),
-  createTradeValidator,
+tradeRouter.post('/', accessTokenValidator, uploadImage.array('img', 5), createTradeValidator,
   async (req, res, next) => {
     try {
       // 유효성 검사 거치고 req.body 가져옴
       const { title, content, price, region } = req.body;
+
+      // 이미지 처리는 미들웨어에서 제어하지 말고 라우터를 하나 생성해서 관리하자.
+      // 이미지는 용량이 큰 작업이기 때문에 미들웨어에서 제어하기에는 너무 스케일이 작다.
 
       // req.files에서 이미지 데이터 가져옴
       const images = req.files;
@@ -164,11 +163,7 @@ tradeRouter.get('/:tradeId', async (req, res) => {
 });
 
 // 상품 게시물 수정 API
-tradeRouter.patch(
-  '/:tradeId',
-  accessTokenValidator,
-  uploadImage.array('img', 5),
-  updateTradeValidator,
+tradeRouter.patch('/:tradeId', accessTokenValidator, uploadImage.array('img', 5), updateTradeValidator,
   async (req, res, next) => {
     try {
       // 상품 ID 가져오기
@@ -270,6 +265,10 @@ tradeRouter.delete('/:tradeId', accessTokenValidator, async (req, res, next) => 
 // 상품 게시글 좋아요 API
 tradeRouter.post('/:tradeId/like', accessTokenValidator, async (req, res, next) => {
   try {
+
+    // trade 모델에 게시글 Id 마다 좋아요 수를 총합 카운터 필드를 하나 생성하자.
+
+
     // 상품 게시글 ID 가져오기
     const id = req.params.tradeId;
 
