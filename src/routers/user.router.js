@@ -25,7 +25,7 @@ router.get('/', accessTokenValidator, async (req, res, next) => {
 });
 
 // 내 정보 수정
-router.patch('/update', accessTokenValidator, uploadImage.single('img'), async (req, res, next) => {
+router.patch('/', accessTokenValidator, uploadImage.single('img'), async (req, res, next) => {
   try {
     const { email, nickname, newPassword, currentPasswordCheck, region, age, gender, introduce } =
       req.body;

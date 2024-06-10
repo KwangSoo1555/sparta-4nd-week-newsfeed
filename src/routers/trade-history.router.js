@@ -8,7 +8,7 @@ import { MESSAGES } from '../constants/message.constant.js';
 
 const router = express.Router();
 
-router.get('/sale', accessTokenValidator, async (req, res, next) => {
+router.get('/history/sale', accessTokenValidator, async (req, res, next) => {
   try {
     const saleHistory = await prisma.history.findMany({
       where: { type: TradeType.SALE, userId: req.user.id },
@@ -24,7 +24,7 @@ router.get('/sale', accessTokenValidator, async (req, res, next) => {
   }
 });
 
-router.get('/purchase', accessTokenValidator, async (req, res, next) => {
+router.get('/history/purchase', accessTokenValidator, async (req, res, next) => {
   try {
     const purchaseHistory = await prisma.history.findMany({
       where: { type: TradeType.PURCHASE, userId: req.user.id },

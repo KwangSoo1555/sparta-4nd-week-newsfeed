@@ -6,7 +6,7 @@ export const USER_CONSTANT = {
   USER_PROVIDER: {
     LOCAL: 'LOCAL',
     KAKAO: 'KAKAO',
-    GOOGLE: 'GOOGLE',
+    NAVER: 'NAVER',
   },
   USER_ROLE: {
     USER: 'USER',

@@ -12,8 +12,7 @@ import followRouter from './follow.router.js';
 const router = express.Router();
 
 router.use('/auth', [authRouter, authEmailRouter, authPassportRouter]);
-router.use('/trade', [tradeRouter, commentRouter, tradeCompleteRouter]);
-router.use('/trade/history', historyRouter);
+router.use('/trade', [tradeRouter, commentRouter, tradeCompleteRouter, historyRouter]);
 router.use('/user', [userRouter, followRouter]);
 
 export default router;
