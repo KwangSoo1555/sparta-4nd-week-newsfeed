@@ -80,12 +80,10 @@ router.delete('/un-follow/:id', accessTokenValidator, async (req, res, next) => 
         .json({ status: HTTP_STATUS.BAD_REQUEST, message: MESSAGES.USER.UN_FOLLOW.NOT_FOLLOWED });
     }
 
-    // 삭제할 팔로우 확인(delete는 where에 id값이 필요, deleteMany의 경우 다른 조건으로 작동 가능)
-    const follow = await prisma.follow.findFirst({ where: { followerId, followingId } });
     // 해당 팔로우 삭제
     const unFollow = await prisma.follow.delete({
       where: {
-        id: follow.id,
+        id: isFollowed.id,
       },
     });
     return res.status(HTTP_STATUS.OK).json({
