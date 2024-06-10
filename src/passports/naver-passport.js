@@ -22,7 +22,7 @@ passport.use(
               email: profile._json.email,
               nickname: profile.displayName,
               socialId: profile.id,
-              provider: USER_CONSTANT.USER_PROVIDER.KAKAO,
+              provider: USER_CONSTANT.USER_PROVIDER.NAVER,
             },
           });
         }

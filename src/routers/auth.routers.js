@@ -37,12 +37,6 @@ router.post('/sign-up', signUpValidator, async (req, res, next) => {
       where: { nickname: nickname, email: email },
     });
 
-    if (isExistUser) {
-      return res
-        .status(HTTP_STATUS.CONFLICT)
-        .json({ message: MESSAGES.USER.SIGN_UP.EMAIL.DUPLICATED });
-    }
-
     if (!passwordCheck) {
       return res
         .status(HTTP_STATUS.BAD_REQUEST)
@@ -53,6 +47,12 @@ router.post('/sign-up', signUpValidator, async (req, res, next) => {
       return res
         .status(HTTP_STATUS.BAD_REQUEST)
         .json({ message: MESSAGES.USER.SIGN_UP.EMAIL.INCONSISTENT });
+    }
+    
+    if (isExistUser) {
+      return res
+        .status(HTTP_STATUS.CONFLICT)
+        .json({ message: MESSAGES.USER.SIGN_UP.EMAIL.DUPLICATED });
     }
 
     const hashedPW = await bcrypt.hash(password, AUTH_CONSTANT.HASH_SALT);
